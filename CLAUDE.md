@@ -87,7 +87,7 @@ publishable-style research paper, written incrementally across milestones.
 | # | Topic | Syllabus week | Folder | Status |
 |---|-------|---------------|--------|--------|
 | M1 | Problem framing & dataset curation (4 marks) | Wk 4–5 (Sep 7–18) | `milestones/M1_proposal/` | Submitted |
-| M2 | EDA & hypothesis report (5) (manuscript §II–III) | Wk 7 (Sep 28–Oct 2) | `milestones/M2_data_eda_hypotheses/` | Current; confirm actual due date |
+| M2 | EDA & hypothesis report (5) (manuscript §II–III) | Wk 7 (Sep 28–Oct 2) | `milestones/M2_data_eda_hypotheses/` | Current; **due 2026-10-06** (extended) |
 | M3 | Baseline model & initial findings (5) | Wk 10 (Oct 21–23) | | |
 | M4 | Final model, fairness & ethics (6) | Wk 12 (Nov 2–6) | | |
 | M5 | New data integration & re-training (5) | Wk 14 (Nov 16–20) | | |
@@ -108,8 +108,6 @@ hypotheses 15%, manuscript and code quality 15%.
 - **Hypothesis tests (Unit 07):** state H0/H1 in terms of population parameters; use the
   p-value approach.
 - **Late policy:** 20% penalty within 24 h; not accepted after 24 h.
-- **Generative-AI policy (syllabus):** AI use on assessments requires the instructor's
-  permission and must be declared and cited. Remind the team when preparing submissions.
 
 ## Repository layout
 

@@ -14,6 +14,7 @@ high-income households (Q5). The project addresses SDGs 1, 2, and 10.
 python -m venv .venv
 # Windows: .venv\Scripts\activate   |   macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
+python -m ipykernel install --user --name ds4sg --display-name "DS4SG (.venv)"   # notebook kernel
 ```
 
 ## Layout

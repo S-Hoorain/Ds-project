@@ -9,7 +9,9 @@ What each report contains (both PDF and Excel formats):
   * Quintile table: SPI level for the current week, the previous week and the same
     week last year, for Q1-Q5 and Combined, plus % changes.
   * Item table: national average price of each of the 51 items for the same three
-    weeks, % changes, basket weights (lowest quintile, combined) and impacts.
+    weeks, % changes, basket weights (lowest quintile, combined) and impacts (each
+    item's contribution, in percentage points, to the week's index change for the
+    lowest quintile and for Combined).
 
 Why the PDF parsing is done in two different ways:
   * Quintile table: PBS stores the row labels and each number column as separate text
@@ -166,7 +168,8 @@ def _item_rows_from_lines(lines):
         rows.append({"item_name_raw": m.group(2).strip(), "unit": m.group(3),
                      "price": vals[0], "price_prev_week": vals[1], "price_year_ago": vals[2],
                      "pct_wow": vals[3], "pct_yoy": vals[4],
-                     "weight_q1": vals[5], "weight_combined": vals[6]})
+                     "weight_q1": vals[5], "weight_combined": vals[6],
+                     "impact_q1": vals[7], "impact_combined": vals[8]})
     return rows
 
 
@@ -207,13 +210,14 @@ def parse_xlsx(path):
             nums = [v for v in vals[1:] if isinstance(v, (int, float))]
             if label in GROUPS and len(nums) >= 5 and label not in quint:
                 quint[label] = [float(x) for x in nums[:5]]
-            if (len(vals) >= 10 and isinstance(vals[0], (int, float))
+            if (len(vals) >= 12 and isinstance(vals[0], (int, float))
                     and isinstance(vals[1], str) and isinstance(vals[2], str)):
-                n = [float(x) for x in vals[3:10]]
+                n = [float(x) for x in vals[3:12]]
                 items.append({"item_name_raw": vals[1].strip(), "unit": vals[2].strip(),
                               "price": n[0], "price_prev_week": n[1], "price_year_ago": n[2],
                               "pct_wow": n[3], "pct_yoy": n[4],
-                              "weight_q1": n[5], "weight_combined": n[6]})
+                              "weight_q1": n[5], "weight_combined": n[6],
+                              "impact_q1": n[7], "impact_combined": n[8]})
     return week, (quint if len(quint) == 6 else None), items, base
 
 
