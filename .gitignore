@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+.pytest_cache/
+
+# Raw scraped data (reproducible from src/scraping); keep folder structure
+data/raw/**
+!data/raw/**/
+!data/raw/**/.gitkeep
+data/interim/**
+!data/interim/.gitkeep
+
+# Course materials (copyrighted slides/syllabus; local reference only)
+course/**
+!course/**/
+!course/**/.gitkeep
+
+# Hook bookkeeping
+logs/.handoff_last_hash
+
+# Personal Claude Code overrides
+.claude/settings.local.json
+
+# OS / editor / Office
+.DS_Store
+Thumbs.db
+desktop.ini
+~$*
+.vscode/
+.idea/

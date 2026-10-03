@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "ask": [
+      "Read(logs/HANDOFF_LOG.md)",
+      "Read(data/raw/**)"
+    ],
+    "deny": [
+      "Read(.venv/**)",
+      "Read(**/__pycache__/**)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR/.claude/hooks/log_handoff.py\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

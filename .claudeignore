@@ -1,0 +1,28 @@
+# Files Claude should not read or explore unless explicitly needed.
+# NOTE: Claude Code enforces exclusions via `permissions` in .claude/settings.json;
+# keep this file in sync with it.
+
+# Append-only handoff history: grows without bound; read HANDOFF.md instead
+logs/HANDOFF_LOG.md
+logs/.handoff_last_hash
+
+# Raw scraped data: hundreds of files; inspect with scripts, not by reading
+data/raw/
+
+# Environments, caches, build artefacts
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.pytest_cache/
+
+# Large / binary outputs
+*.parquet
+*.feather
+*.pkl
+*.zip
+
+# Word/Office lock files
+~$*

@@ -1,0 +1,24 @@
+# Data handling
+pandas
+numpy
+openpyxl
+xlrd
+pyarrow
+
+# Scraping
+requests
+beautifulsoup4
+lxml
+
+# Analysis & modelling
+scipy
+statsmodels
+scikit-learn
+
+# Visualisation
+matplotlib
+seaborn
+
+# Notebooks
+jupyter
+ipykernel
