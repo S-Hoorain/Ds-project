@@ -51,31 +51,65 @@ publishable-style research paper, written incrementally across milestones.
   - H2: the lowest quintile (Q1) faces higher average inflation **and** higher forecast error
     than the highest (Q5), because of its larger food/fuel budget share.
 
-### Data
+### Data (verified 2026-10-03; details in `manuscript/02_data_collection_audit.md`)
 - **Primary:** PBS Weekly Sensitive Price Indicator (SPI). It covers 51 essential items across
-  50 markets in 17 cities, with separate indices for 5 income quintiles (Q1–Q5) plus a combined index.
-  Base year 2015-16. Published weekly; **each week is a separate webpage + Excel file**, with no
-  combined historical file, so it has to be scraped.
-- **Scope:** current base year only (2016–present), about 540 weeks.
-  - Weekly × 6 groups (Q1–Q5 + combined) gives over 3,000 rows.
-  - Weekly × 51 items (national average prices) gives over 25,000 rows.
-- **Custom event calendar (we build it ourselves):** Ramadan/Eid dates, SBP Monetary
-  Policy Committee meeting dates, fuel-price revision dates.
-- **Extensions:** OGRA fortnightly petroleum price notifications. New weekly SPI releases up to
-  course Week 14 serve as a true out-of-sample test set.
-- **Known limitations:** urban only (17 cities, no rural coverage); 2015-16 expenditure weights
-  may be outdated; the PBS release format has changed over time (so check item and city
-  consistency); no cross-base-year splicing (out of scope).
+  50 markets in 17 cities, with an index for each of the 5 consumption quintiles (Q1–Q5) plus
+  Combined, on base 2015-16. Each weekly report has a quintile table (current week, previous week,
+  same week last year) and a 51-item national-average price table with fixed basket weights.
+- **Where the files are** (no consolidated history exists):
+  - the current PBS site, which embeds a JS catalogue (Jul 2023 onward; Excel only from Oct 2025);
+  - the *old* PBS site, preserved only in the **Wayback Machine** (2013–2025).
+  - `src/scraping/spi_catalogue.py` lists both sources; `spi_download.py` downloads them.
+- **Scope (corrected from M1):** the 2015-16-base weekly SPI only **started on 5 Sep 2019**.
+  Earlier weekly data is base 2007-08, with 53 items and different quintiles, so it is not
+  comparable. The sample is therefore Sep 2019 – present, about 370 weeks
+  (≈2,200 quintile-week rows, ≈18,900 item-week rows).
+- **Supporting inputs:**
+  - Ramadan/Eid calendar: `src/features/build_event_calendar.py`. The Pakistan dates are
+    *unverified*.
+  - SBP policy decisions: `src/scraping/sbp_mps.py`, from archived Monetary Policy Statements.
+  - PKR/USD exchange rate: `src/scraping/fx_rates.py`, Yahoo `PKR=X` (a market quote, not the
+    official SBP rate).
+  - Fuel revisions: derived from the SPI petrol/diesel items.
+- **Wayback Machine etiquette:** run only ONE download stream at a time. It blocks the IP (connection
+  refused) for some minutes when hit by parallel scrapers. The downloaders back off and stop after
+  repeated failures; re-run them later to resume.
+- **Extensions:** OGRA fortnightly petroleum notifications. New weekly SPI releases up to course
+  Week 14 serve as a true out-of-sample test set (M5).
+- **Known limitations:**
+  - Coverage is urban only (17 cities, no rural areas).
+  - The 2015-16 expenditure weights may be outdated.
+  - Two items were renamed: "Electricity/Gas Charges upto X" became "... for Q1". Check these
+    series for level breaks.
+  - There is no cross-base splicing (out of scope).
 
-### Milestones
-| # | Topic | Folder | Status |
-|---|-------|--------|--------|
-| M1 | Team formation, problem framing, data curation | `milestones/M1_proposal/` | Submitted |
-| M2 | Data prep, EDA, formal hypotheses (manuscript §II–III) | `milestones/M2_data_eda_hypotheses/` | Current |
+### Milestones (syllabus "Week-Wise Schedule", tentative)
+| # | Topic | Syllabus week | Folder | Status |
+|---|-------|---------------|--------|--------|
+| M1 | Problem framing & dataset curation (4 marks) | Wk 4–5 (Sep 7–18) | `milestones/M1_proposal/` | Submitted |
+| M2 | EDA & hypothesis report (5) (manuscript §II–III) | Wk 7 (Sep 28–Oct 2) | `milestones/M2_data_eda_hypotheses/` | Current; confirm actual due date |
+| M3 | Baseline model & initial findings (5) | Wk 10 (Oct 21–23) | | |
+| M4 | Final model, fairness & ethics (6) | Wk 12 (Nov 2–6) | | |
+| M5 | New data integration & re-training (5) | Wk 14 (Nov 16–20) | | |
+| M6 | Presentations (5); poster + manuscript (5) | Wk 16 (Nov 30–Dec 8) | | |
 
 The M2 rubric (`milestones/M2_data_eda_hypotheses/Milestone2_description_rubric.md`) is the
 grading spec. Check deliverables against it. Weights: data prep 35%, EDA/visualisation 35%,
 hypotheses 15%, manuscript and code quality 15%.
+
+### Course conventions to follow (from the lecture slides in `course/lecture_slides/`)
+- **Outliers (Unit 05):** use both rules.
+  - Quartile rule: *mild* outlier beyond Q1/Q3 ± 1.5×IQR; *regular* outlier beyond ±3×IQR.
+  - Mean/SD rule: *mild* beyond mean ± 2SD; *regular* beyond ±3SD.
+  - Discuss resistant (median, IQR) vs non-resistant (mean, SD) statistics.
+- **Scaling (Unit 04):** Min-Max normalisation and Z-score standardisation. Missing data
+  (Unit 03): deletion vs constant/mean/model-based imputation, and say why.
+- **Tidy data (Unit 03):** long format, with melt/pivot as needed.
+- **Hypothesis tests (Unit 07):** state H0/H1 in terms of population parameters; use the
+  p-value approach.
+- **Late policy:** 20% penalty within 24 h; not accepted after 24 h.
+- **Generative-AI policy (syllabus):** AI use on assessments requires the instructor's
+  permission and must be declared and cited. Remind the team when preparing submissions.
 
 ## Repository layout
 

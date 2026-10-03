@@ -1,0 +1,52 @@
+item_id,item_name,unit,category,weight_q1,weight_combined
+gents_chappal,Gents Sponge Chappal Bata,Pair,clothing_footwear,0.211,0.164
+gents_sandal,Gents Sandal Bata,Pair,clothing_footwear,0.635,0.5122
+georgette,Georgette (Average Quality),1 mtr,clothing_footwear,0.7584,0.9024
+ladies_sandal,Ladies Sandal Bata,Pair,clothing_footwear,0.9919,1.0148
+lawn,Lawn Printed Gul Ahmed/Al Karam,1 mtr,clothing_footwear,2.3442,2.1473
+long_cloth,"Long Cloth 57"" Gul Ahmed/Al Karam",1 mtr,clothing_footwear,4.2221,3.9577
+shirting,Shirting (Average Quality),1 mtr,clothing_footwear,0.0317,0.101
+diesel,Hi-Speed Diesel,Per Litre,energy,0.0114,0.0874
+electricity_q1,Electricity Charges for Q1,Per Unit,energy,8.3627,12.9291
+firewood,Firewood Whole,40 Kg,energy,5.0813,1.1969
+gas_q1,Gas Charges for Q1,MMBTU,energy,2.0674,3.0667
+lpg,LPG 11.67 kg Cylinder,Each,energy,0.6145,1.437
+petrol,Petrol Super,Per Litre,energy,1.4673,6.7018
+bananas,Bananas (Kela) Local,1 Dozen,food,0.7124,0.9413
+beef,Beef with Bone (Average Quality),1 Kg,food,2.4988,3.3533
+bread,Bread plain (Small Size),Each,food,0.1041,0.5698
+chicken,Chicken Farm Broiler (Live),1 Kg,food,2.9269,3.8681
+chilies_powder,Chilies Powder NATIONAL 200 gm Packet,Each,food,1.3896,0.8454
+cooked_beef,Cooked Beef at Average Hotel,Per Plate,food,0.5033,1.0497
+cooked_daal,Cooked Daal at Average Hotel,Per Plate,food,1.3118,1.3014
+cooking_oil_5l,"Cooking Oil DALDA or Other Similar Brand (SN), 5 Litre Tin",Each,food,2.148,3.126
+curd,Curd (Dahi) Loose,1 Kg,food,0.7366,1.8181
+eggs,Eggs Hen (Farm),1 Dozen,food,1.178,1.4424
+garlic,Garlic (Lehsun),1 Kg,food,0.6807,0.5795
+ghee_1kg,Vegetable Ghee DALDA/HABIB or Other superior Quality 1 kg Pouch,Each,food,3.2833,1.4648
+ghee_2_5kg,Vegetable Ghee DALDA/HABIB 2.5 kg Tin,Each,food,3.2833,1.4648
+gur,Gur (Average Quality),1 Kg,food,0.2341,0.1075
+milk_fresh,Milk fresh (Un-boiled),1 Ltr,food,17.5449,18.3937
+mustard_oil,Mustard Oil (Average Quality),1 Kg,food,0.0216,0.0341
+mutton,Mutton (Average Quality),1 Kg,food,0.5498,2.4387
+onions,Onions,1 Kg,food,2.6815,1.6822
+potatoes,Potatoes,1 Kg,food,2.2955,1.2157
+powdered_milk,Powdered Milk NIDO 390 gm Polybag,Each,food,0.0803,0.3817
+pulse_gram,Pulse Gram,1 Kg,food,0.7967,0.4711
+pulse_mash,Pulse Mash (Washed),1 Kg,food,0.2855,0.3269
+pulse_masoor,Pulse Masoor (Washed),1 Kg,food,0.6545,0.4608
+pulse_moong,Pulse Moong (Washed),1 Kg,food,0.8715,0.4816
+rice_basmati,Rice Basmati Broken (Average Quality),1 Kg,food,2.961,1.2636
+rice_irri,Rice IRRI-6/9 (Sindh/Punjab),1 Kg,food,0.5922,0.1671
+salt,Salt Powdered (NATIONAL/SHAN) 800 gm Packet,Each,food,0.2844,0.2279
+sugar,Sugar Refined,1 Kg,food,5.1148,3.1584
+tea_packet,Tea Lipton Yellow Label 190 gm Packet,Each,food,3.1478,2.3913
+tea_prepared,Tea Prepared Ordinary,Per Cup,food,2.5003,2.3564
+tomatoes,Tomatoes,1 Kg,food,1.4395,0.9816
+wheat_flour,Wheat Flour Bag,20 Kg,food,6.1372,3.9725
+cigarettes,Cigarettes Capstan 20'S Packet,Each,household,1.617,1.0931
+energy_saver,Energy Saver Philips 14 Watt,Each,household,0.2495,0.3374
+match_box,Match Box,Each,household,0.3495,0.1969
+telephone_call,Telephone Call Charges,Per Minute,household,0.0645,0.5468
+toilet_soap,Toilet Soap LIFEBUOY 115 gm,Each,household,0.8529,0.6784
+washing_soap,Sufi Washing Soap 250 gm Cake,Each,household,1.1178,0.5917

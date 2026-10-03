@@ -1,0 +1,31 @@
+event,hijri_year,date_pakistan,date_end,duration_days,date_umm_al_qura,offset_days,date_source,verified,note
+ramadan_start,1439,2018-05-17,2018-06-15,30,2018-05-16,1,pakistan_override,False,"Recalled, not yet checked against an official source; Pakistan is often +1 day vs Umm al-Qura"
+eid_ul_fitr,1439,2018-06-16,2018-06-18,3,2018-06-15,1,pakistan_override,False,"Recalled, not yet checked against an official source"
+eid_ul_adha,1439,2018-08-22,2018-08-24,3,2018-08-21,1,pakistan_override,False,"Recalled, not yet checked against an official source"
+ramadan_start,1440,2019-05-07,2019-06-04,29,2019-05-06,1,pakistan_override,False,"Recalled, not yet checked against an official source"
+eid_ul_fitr,1440,2019-06-05,2019-06-07,3,2019-06-04,1,pakistan_override,False,"Recalled, not yet checked against an official source (2019 sighting was disputed)"
+eid_ul_adha,1440,2019-08-12,2019-08-14,3,2019-08-11,1,pakistan_override,False,"Recalled, not yet checked against an official source"
+ramadan_start,1441,2020-04-25,2020-05-23,29,2020-04-24,1,pakistan_override,False,"Recalled, not yet checked against an official source"
+eid_ul_fitr,1441,2020-05-24,2020-05-26,3,2020-05-24,0,umm_al_qura_fallback,False,
+eid_ul_adha,1441,2020-08-01,2020-08-03,3,2020-07-31,1,pakistan_override,False,"Recalled, not yet checked against an official source"
+ramadan_start,1442,2021-04-14,2021-05-12,29,2021-04-13,1,pakistan_override,False,"Recalled, not yet checked against an official source"
+eid_ul_fitr,1442,2021-05-13,2021-05-15,3,2021-05-13,0,umm_al_qura_fallback,False,
+eid_ul_adha,1442,2021-07-21,2021-07-23,3,2021-07-20,1,pakistan_override,False,Recalled; consistent with PBS skipping the 22-07-2021 SPI release
+ramadan_start,1443,2022-04-03,2022-05-02,30,2022-04-02,1,pakistan_override,False,"Recalled, not yet checked against an official source"
+eid_ul_fitr,1443,2022-05-03,2022-05-05,3,2022-05-02,1,pakistan_override,False,Recalled; consistent with PBS skipping the 05-05-2022 SPI release
+eid_ul_adha,1443,2022-07-10,2022-07-12,3,2022-07-09,1,pakistan_override,False,"Recalled, not yet checked against an official source"
+ramadan_start,1444,2023-03-23,2023-04-21,30,2023-03-23,0,umm_al_qura_fallback,False,
+eid_ul_fitr,1444,2023-04-22,2023-04-24,3,2023-04-21,1,pakistan_override,False,"Recalled, not yet checked against an official source"
+eid_ul_adha,1444,2023-06-29,2023-07-01,3,2023-06-28,1,pakistan_override,False,Recalled; consistent with PBS skipping the 29-06-2023 SPI release
+ramadan_start,1445,2024-03-12,2024-04-09,29,2024-03-11,1,pakistan_override,False,"Recalled, not yet checked against an official source"
+eid_ul_fitr,1445,2024-04-10,2024-04-12,3,2024-04-10,0,umm_al_qura_fallback,False,
+eid_ul_adha,1445,2024-06-17,2024-06-19,3,2024-06-16,1,pakistan_override,False,"Recalled, not yet checked against an official source"
+ramadan_start,1446,2025-03-02,2025-03-30,29,2025-03-01,1,pakistan_override,False,"Recalled, not yet checked against an official source"
+eid_ul_fitr,1446,2025-03-31,2025-04-02,3,2025-03-30,1,pakistan_override,False,"Recalled, not yet checked against an official source"
+eid_ul_adha,1446,2025-06-07,2025-06-09,3,2025-06-06,1,pakistan_override,False,"Recalled, not yet checked against an official source"
+ramadan_start,1447,2026-02-18,2026-03-19,30,2026-02-18,0,umm_al_qura_fallback,False,
+eid_ul_fitr,1447,2026-03-20,2026-03-22,3,2026-03-20,0,umm_al_qura_fallback,False,
+eid_ul_adha,1447,2026-05-27,2026-05-29,3,2026-05-27,0,umm_al_qura_fallback,False,
+ramadan_start,1448,2027-02-08,2027-03-08,29,2027-02-08,0,umm_al_qura_fallback,False,
+eid_ul_fitr,1448,2027-03-09,2027-03-11,3,2027-03-09,0,umm_al_qura_fallback,False,
+eid_ul_adha,1448,2027-05-16,2027-05-18,3,2027-05-16,0,umm_al_qura_fallback,False,

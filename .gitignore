@@ -11,6 +11,8 @@ env/
 data/raw/**
 !data/raw/**/
 !data/raw/**/.gitkeep
+!data/raw/spi_weekly/catalogue.csv
+!data/raw/spi_weekly/manifest.csv
 data/interim/**
 !data/interim/.gitkeep
 
@@ -32,3 +34,6 @@ desktop.ini
 ~$*
 .vscode/
 .idea/
+
+# Run logs
+logs/*.log
