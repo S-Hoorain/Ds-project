@@ -1,7 +1,6 @@
 # Data Collection Audit (draft for Manuscript §II.1 / M2 Section 2.1)
 
-*Status: working draft, 2026-10-03. Numbers marked [TBC] are filled in once the full
-download and parse have run. See `HANDOFF.md` for the current state.*
+*Status: working draft, 2026-10-03. All numbers are from the full run on 2026-10-03.*
 
 ## 1. Primary source: PBS weekly Sensitive Price Indicator (SPI)
 
@@ -67,7 +66,15 @@ Archive's Wayback Machine.
 the 11 missing weeks are Eid weeks, when PBS did not publish (e.g. 13 May 2021,
 22 Jul 2021, 29 Jun 2023, 11 Apr 2024). Because every report also states the *previous*
 week's values, the quintile index for most missing weeks can be recovered from the
-following week's report. [TBC: final count of downloaded / recovered weeks]
+following week's report.
+
+**Final result.** 359 weekly reports were downloaded and validated: 222 PDFs from the
+Wayback Machine and 137 from the current PBS site (86 PDF, 51 Excel). 15 current-site
+links were dead (HTTP 404). For 5 of them the Wayback copy was used instead. The other 10
+carry off-Thursday dates such as 25 Jul or 26 Aug 2023, and are mis-dated duplicates of
+weeks that were obtained under their correct date. All 11 weeks without their own report were
+recovered from the next report's previous-week column, so the quintile series has **no
+missing weeks (370/370)**.
 
 **Scope change vs. the Milestone 1 proposal.** The proposal assumed weekly 2015-16-base
 data from 2016 (about 540 weeks). In fact PBS began publishing the 2015-16-base weekly SPI
@@ -97,14 +104,21 @@ noted as an option, not yet used.
   checked for level breaks in cleaning.
 - Validation: every parsed file is checked for the 2015-16 base, a complete 6-row
   quintile table, and 51 uniquely matched items; results go to
-  `data/interim/spi_parse_log.csv`. On the first 69 files: 69/69 complete. [TBC: full run]
+  `data/interim/spi_parse_log.csv`. **Result: 359/359 files complete** (18,309 item-week
+  rows, no duplicates). Every item name matched exactly, except one PBS typo
+  ("Gad Charges for Q1"), which was matched correctly to gas_q1 with score 0.93.
+- Revisions: in 13 cases a report's "previous week" value differs from what was first
+  published. 12 are small revisions of all groups at once (12 Sep 2019, 11 Feb 2021).
+  One is a 2.04-point revision of Q1 only (20 Nov 2025), traced to a correction of the
+  Q1 electricity tariff (+Rs 0.57/unit). The master dataset uses the latest published
+  (revised) value and flags it (`revised_by_next_report`).
 
 ## 3. Supporting sources
 
 | Data | Source | How collected | Notes / limitations |
 |---|---|---|---|
 | Ramadan / Eid dates | Umm al-Qura calendar via `hijridate`; Pakistan-specific overrides | `src/features/build_event_calendar.py` | Pakistan moon-sighting is often +1 day; overrides are **unverified** and must be checked |
-| SBP policy rate decisions | SBP Monetary Policy Statements (archived PDFs, 2018 – Apr 2026) | `src/scraping/sbp_mps.py` parses date + decision | SBP site redesign removed the archive; recent decisions to be added from SBP press releases |
+| SBP policy rate decisions | SBP Monetary Policy Statements: archived PDFs (2018 – Apr 2026) + SBP press releases (Jun–Sep 2026) | `src/scraping/sbp_mps.py` parses date + decision; 6 entries hand-coded with evidence in `sbp_mpc_decisions_manual.csv` | 66 decisions (32 hold, 21 hike, 13 cut); stated changes agree with the rate path in every case. Day of the Jan 2018 decision unverified (before sample) |
 | PKR/USD exchange rate | Yahoo Finance `PKR=X`, daily | `src/scraping/fx_rates.py` | Market quote, not official SBP interbank rate; 2 bad-tick episodes found (1–2 Aug 2022, 19–20 Sep 2022) |
 | Fuel price revisions | Derived from SPI items *Petrol Super* and *Hi-Speed Diesel* | (cleaning step) | Weekly resolution only; OGRA notifications remain a planned extension |
 

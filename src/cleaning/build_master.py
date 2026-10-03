@@ -86,16 +86,26 @@ def complete_grid(q):
     log(f"D2  weeks filled from next report's previous-week value: {fill.sum() // 6}; "
         f"still missing: {q['spi'].isna().sum() // 6}")
 
-    # D3: consistency of spi_prev_week(t) with spi(t-1).
+    # D3: consistency of spi_prev_week(t) with spi(t-1). A mismatch means PBS revised the
+    # previous week in its later report (e.g. 20 Nov 2025: the Q1 electricity tariff was
+    # corrected by +Rs 0.57/unit). Standard practice is to use the latest published
+    # vintage, so the revised value replaces spi(t-1) and is flagged.
+    q["revised_by_next_report"] = False
     prev_spi = q.groupby("group")["spi"].shift(1)
     both = q["spi_prev_week"].notna() & prev_spi.notna() & ~q["filled_from_next_report"]
-    diff = (q.loc[both, "spi_prev_week"] - prev_spi[both]).abs()
-    bad = diff > 0.011  # allow rounding to 2 decimals
-    log(f"D3  week-to-week consistency checks: {both.sum()}; mismatches > 0.01: {bad.sum()}")
+    diff = (q["spi_prev_week"] - prev_spi).abs()
+    bad = both & (diff > 0.011)  # allow rounding to 2 decimals
+    log(f"D3  week-to-week consistency checks: {both.sum()}; PBS revisions > 0.01: {bad.sum()}")
     if bad.any():
-        cols = ["week_end", "group", "spi_prev_week"]
-        mism = q.loc[both].loc[bad, cols].assign(spi_last_week=prev_spi[both][bad])
-        log(mism.head(20).to_string(index=False))
+        mism = q.loc[bad, ["week_end", "group", "spi_prev_week"]].assign(
+            spi_as_first_published=prev_spi[bad])
+        log(mism.to_string(index=False))
+        # Write the revised value onto the previous week's row.
+        nxt_prev = q.groupby("group")["spi_prev_week"].shift(-1)
+        target = bad.groupby(q["group"]).shift(-1, fill_value=False)
+        q.loc[target, "spi"] = nxt_prev[target]
+        q.loc[target, "revised_by_next_report"] = True
+        log(f"D3  previous-week values replaced by PBS's revised figure: {target.sum()}")
     return q
 
 

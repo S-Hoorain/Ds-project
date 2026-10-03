@@ -1,0 +1,67 @@
+decision_date,action,change_bps,policy_rate,source,evidence
+2018-01-26,hike,25.0,6.0,http://www.sbp.org.pk:80/m_policy/2018/MPS-Jan-2018-Eng.pdf,"Statement: 'raise the policy rate by 25 bps to 6.00 percent'. It is dated only 'January 2018'; day 26 is UNVERIFIED (before the SPI sample, so it does not affect it)"
+2018-03-30,hold,0.0,6.0,http://www.sbp.org.pk:80/m_policy/2018/MPS-Mar-2018-Eng.pdf,"Dated March 30, 2018; decision sentence not captured by the regex. Hold at 6.00% implied by the rate path (Jan 2018 6.00%; May 2018 +50 bps to 6.50%)"
+2018-05-25,hike,50.0,6.5,http://www.sbp.org.pk:80/m_policy/2018/MPS-May-2018-Eng.pdf,increase the policy rate by 50bps to 6.50 percent
+2018-07-14,hike,100.0,7.5,http://www.sbp.org.pk:80/m_policy/2018/MPS-Jul-2018-Eng.pdf,increase the policy rate by 100 bps to 7.50 percent
+2018-09-29,hike,100.0,8.5,http://www.sbp.org.pk:80/m_policy/2018/MPS-Sep-2018-Eng.pdf,raise the SBP target policy rate by 100 bps to 8.5 percent
+2018-11-30,hike,150.0,10.0,http://www.sbp.org.pk:80/m_policy/2018/MPS-Nov-2018-Eng.pdf,"Dated November 30, 2018. +150 bps to 10.00% implied by the rate path (Sep 2018 8.50%; Jan 2019 +25 to 10.25%) and by the text's '275 basis point increase ... since January 2018'"
+2019-01-31,hike,25.0,10.25,http://www.sbp.org.pk:80/m_policy/2019/MPS-Jan-2019-Eng.pdf,raise the policy rate by 25 bps to 10.25 percent
+2019-03-29,hike,50.0,10.75,http://www.sbp.org.pk:80/m_policy/2019/MPS-Mar-2019-Eng.pdf,increase the policy rate by 50 bps to 10.75 percent
+2019-05-20,hike,150.0,12.25,http://www.sbp.org.pk/m_policy/2019/MPS-May-2019-Eng.pdf,increase the policy rate by 150 bps to 12.25 percent
+2019-07-16,hike,100.0,13.25,http://www.sbp.org.pk/m_policy/2019/MPS-Jul-2019-Eng.pdf,raise the policy rate by 100 bps to 13.25 percent
+2019-09-16,hold,0.0,13.25,http://www.sbp.org.pk:80/m_policy/2019/MPS-Sep-2019-Eng.pdf,leave the policy rate unchanged at 13.25 percent
+2019-11-22,hold,0.0,13.25,http://www.sbp.org.pk:80/m_policy/2019/MPS-Nov-2019-Eng.pdf,leave the policy rate unchanged at 13.25 percent
+2020-01-28,hold,0.0,13.25,http://www.sbp.org.pk:80/m_policy/2020/MPS-Jan-2020-Eng.pdf,keep the policy rate unchanged at 13.25 percent
+2020-03-17,cut,-75.0,12.5,http://www.sbp.org.pk:80/m_policy/2020/MPS-Mar-2020-Eng.pdf,cut the policy rate by 75 bps to 12.50 percent
+2020-03-24,cut,-150.0,11.0,http://www.sbp.org.pk:80/m_policy/2020/MPS-Mar-24--03-2020-Eng.pdf,cut the policy rate by a further 150 basis points to 11 percent
+2020-04-16,cut,-200.0,9.0,https://www.sbp.org.pk/m_policy/2020/MPS-Apr-2020-Eng.pdf,cut the policy rate by a further 200 basis points to 9 percent
+2020-05-15,cut,-100.0,8.0,http://www.sbp.org.pk/m_policy/2020/MPS-May-2020-Eng.pdf,reduce the policy rate by 100 basis points to 8 percent
+2020-06-25,cut,-100.0,7.0,https://www.sbp.org.pk/m_policy/2020/MPS-Jun-2020-Eng.pdf,reduce the policy rate by 100 basis points to 7 percent
+2020-09-21,hold,0.0,7.0,https://www.sbp.org.pk/m_policy/2020/MPS-Sep-2020-Eng.pdf,keep the policy rate unchanged at 7 percent
+2020-11-23,hold,0.0,7.0,https://www.sbp.org.pk/m_policy/2020/MPS-Nov-2020-Eng.pdf,maintain the policy rate at 7 percent
+2021-01-22,hold,0.0,7.0,https://www.sbp.org.pk/m_policy/2021/MPS-Jan-2021-Eng.pdf,maintain the policy rate at 7 percent
+2021-03-19,hold,0.0,7.0,https://www.sbp.org.pk/m_policy/2021/MPS-Mar-2021-Eng.pdf,maintain the policy rate at 7 percent
+2021-05-28,hold,0.0,7.0,https://www.sbp.org.pk/m_policy/2021/MPS-May-2021-Eng.pdf,maintain the policy rate at 7 percent
+2021-07-27,hold,0.0,7.0,https://www.sbp.org.pk/m_policy/2021/MPS-Jul-2021-Eng.pdf,maintain the policy rate at 7 percent
+2021-09-20,hike,25.0,7.25,https://www.sbp.org.pk/m_policy/2021/MPS-Sep-2021-Eng.pdf,raise the policy rate by 25 basis points to 7.25 percent
+2021-11-19,hike,150.0,8.75,https://www.sbp.org.pk/m_policy/2021/MPS-Nov-2021-Eng.pdf,raise the policy rate by 150 basis points to 8.75 percent
+2021-12-14,hike,100.0,9.75,https://www.sbp.org.pk/m_policy/2021/MPS-Dec-2021-Eng.pdf,raise the policy rate by 100 basis points to 9.75 percent
+2022-01-24,hold,0.0,9.75,https://www.sbp.org.pk/m_policy/2022/MPS-Jan-2022-Eng.pdf,maintain the policy rate at 9.75 percent
+2022-03-08,hold,0.0,9.75,https://www.sbp.org.pk/m_policy/2022/MPS-Mar-2022-Eng.pdf,maintain the policy rate at 9.75 percent
+2022-04-07,hike,250.0,12.25,https://www.sbp.org.pk/m_policy/2022/MPS-Apr-2022-Eng.pdf,raise the policy rate by 250 basis points to 12.25 percent
+2022-05-23,hike,150.0,13.75,https://www.sbp.org.pk/m_policy/2022/MPS-May-2022-Eng.pdf,raise the policy rate by 150 basis points to 13.75 percent
+2022-07-07,hike,125.0,15.0,https://www.sbp.org.pk/m_policy/2022/MPS-Jul-2022-Eng.pdf,raise the policy rate by 125 basis points to 15 percent
+2022-08-22,hold,0.0,15.0,https://www.sbp.org.pk/m_policy/2022/MPS-Aug-2022-Eng.pdf,maintain the policy rate at 15 percent
+2022-10-10,hold,0.0,15.0,https://www.sbp.org.pk/m_policy/2022/MPS-Oct-2022-Eng.pdf,maintain the policy rate at 15 percent
+2022-11-25,hike,100.0,16.0,https://www.sbp.org.pk/m_policy/2022/MPS-Nov-2022-Eng.pdf,raise the policy rate by 100 basis points to 16 percent
+2023-01-23,hike,100.0,17.0,https://www.sbp.org.pk/m_policy/2023/MPS-Jan-2023-Eng.pdf,increase the policy rate by 100 basis points to 17 percent
+2023-03-02,hike,300.0,20.0,https://www.sbp.org.pk/m_policy/2023/MPS-Mar-2023-Eng.pdf,increase the policy rate by 300 basis points to 20 percent
+2023-04-04,hike,100.0,21.0,https://www.sbp.org.pk/m_policy/2023/MPS-Apr-2023-Eng.pdf,increase the policy rate by 100 basis points to 21 percent
+2023-06-12,hold,0.0,21.0,https://www.sbp.org.pk/m_policy/2023/MPS-Jun-2023-Eng.pdf,keep the policy rate unchanged at 21 percent
+2023-06-26,hike,100.0,22.0,https://www.sbp.org.pk/m_policy/2023/MPS-Jun-2023-Eng-1.pdf,raise the policy rate by 100 bps to 22 percent
+2023-07-31,hold,0.0,22.0,https://www.sbp.org.pk/m_policy/2023/MPS-Jul-2023-Eng.pdf,keep the policy rate unchanged at 22 percent
+2023-09-14,hold,0.0,22.0,https://www.sbp.org.pk/m_policy/2023/MPS-Sep-2023-Eng.pdf,maintain the policy rate at 22 percent
+2023-10-30,hold,0.0,22.0,https://www.sbp.org.pk/m_policy/2023/MPS-Oct-2023-Eng.pdf,maintain the policy rate at 22 percent
+2023-12-12,hold,0.0,22.0,https://www.sbp.org.pk/m_policy/2023/MPS-Dec-2023-Eng.pdf,maintain the policy rate at 22 percent
+2024-01-29,hold,0.0,22.0,https://www.sbp.org.pk/m_policy/2024/MPS-Jan-2024-Eng.pdf,maintain the policy rate at 22 percent
+2024-03-18,hold,0.0,22.0,https://www.sbp.org.pk/m_policy/2024/MPS-Mar-2024-Eng.pdf,keep the policy rate unchanged at 22 percent
+2024-04-29,hold,0.0,22.0,https://www.sbp.org.pk/m_policy/2024/MPS-Apr-2024-Eng.pdf,keep the policy rate unchanged at 22 percent
+2024-06-10,cut,-150.0,20.5,https://www.sbp.org.pk/m_policy/2024/MPS-Jun-2024-Eng.pdf,reduce the policy rate by 150 bps to 20.5 percent
+2024-07-29,cut,-100.0,19.5,https://www.sbp.org.pk/m_policy/2024/MPS-Jul-2024-Eng.pdf,cut the policy rate by 100 basis points to 19.5 percent
+2024-09-12,cut,-200.0,17.5,https://www.sbp.org.pk/m_policy/2024/MPS-Sep-2024-Eng.pdf,cut the policy rate by 200 bps to 17.5 percent
+2024-11-04,cut,-250.0,15.0,https://www.sbp.org.pk/m_policy/2024/MPS-Nov-2024-Eng.pdf,cut the policy rate by 250 basis points to 15 percent
+2024-12-16,cut,-200.0,13.0,https://www.sbp.org.pk/m_policy/2024/MPS-Dec-2024-Eng.pdf,cut the policy rate by 200 bps to 13 percent
+2025-01-27,cut,-100.0,12.0,https://www.sbp.org.pk/m_policy/2025/MPS-Jan-2025-Eng.pdf,cut the policy rate by 100 bps to 12 percent
+2025-03-10,hold,0.0,12.0,https://www.sbp.org.pk/m_policy/2025/MPS-Mar-2025-Eng.pdf,keep the policy rate unchanged at 12 percent
+2025-05-05,cut,-100.0,11.0,https://www.sbp.org.pk/m_policy/2025/MPS-May-2025-Eng.pdf,cut the policy rate by 100 bps to 11 percent
+2025-06-16,hold,0.0,11.0,https://www.sbp.org.pk/m_policy/2025/MPS-Jun-2025-Eng.pdf,keep the policy rate unchanged at 11 percent
+2025-07-30,hold,0.0,11.0,https://www.sbp.org.pk/m_policy/2025/MPS-July-2025-Eng.pdf,keep the policy rate unchanged at 11 percent
+2025-09-15,hold,0.0,11.0,https://www.sbp.org.pk/m_policy/2025/MPS-Sep-2025-Eng.pdf,keep the policy rate unchanged at 11 percent
+2025-10-27,hold,0.0,11.0,https://www.sbp.org.pk/m_policy/2025/MPS-OCT-2025-Eng.pdf,keep the policy rate unchanged at 11 percent
+2025-12-15,cut,-50.0,10.5,https://www.sbp.org.pk/m_policy/2025/MPS-DEC-2025-Eng.pdf,decrease the policy rate by 50 bps
+2026-01-26,hold,0.0,10.5,https://www.sbp.org.pk/m_policy/2026/MPS-Jan-2026-Eng.pdf,keep the policy rate unchanged at 10.5 percent
+2026-03-09,hold,0.0,10.5,https://www.sbp.org.pk/m_policy/2026/MPS-Mar-2026-Eng.pdf,keep the policy rate unchanged at 10.5 percent
+2026-04-27,hike,100.0,11.5,https://www.sbp.org.pk/m_policy/2026/MPS-Apr-2026-Eng.pdf,increase the policy rate by 100 bps to 11.50 percent
+2026-06-15,hold,0.0,11.5,https://www.sbp.org.pk/assets/documents/press-release/Pr-15-Jun-2026.pdf,"'decided to keep the policy rate unchanged at 11.5 percent in its meeting today' (June 15, 2026)"
+2026-07-27,hold,0.0,11.5,https://www.sbp.org.pk/assets/documents/press-release/PR-27-July-2026.pdf,"'unanimously decided to keep the policy rate unchanged at 11.5 percent' (July 27, 2026)"
+2026-09-14,hold,0.0,11.5,https://www.sbp.org.pk/assets/documents/press-release/PR-14-Sep-2026.pdf,"'decided to keep the policy rate unchanged at 11.5%' (September 14, 2026)"

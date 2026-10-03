@@ -1,0 +1,7 @@
+decision_date,action,change_bps,policy_rate,source,evidence
+2018-01-26,hike,25,6.0,http://www.sbp.org.pk:80/m_policy/2018/MPS-Jan-2018-Eng.pdf,"Statement: 'raise the policy rate by 25 bps to 6.00 percent'. It is dated only 'January 2018'; day 26 is UNVERIFIED (before the SPI sample, so it does not affect it)"
+2018-03-30,hold,0,6.0,http://www.sbp.org.pk:80/m_policy/2018/MPS-Mar-2018-Eng.pdf,"Dated March 30, 2018; decision sentence not captured by the regex. Hold at 6.00% implied by the rate path (Jan 2018 6.00%; May 2018 +50 bps to 6.50%)"
+2018-11-30,hike,150,10.0,http://www.sbp.org.pk:80/m_policy/2018/MPS-Nov-2018-Eng.pdf,"Dated November 30, 2018. +150 bps to 10.00% implied by the rate path (Sep 2018 8.50%; Jan 2019 +25 to 10.25%) and by the text's '275 basis point increase ... since January 2018'"
+2026-06-15,hold,0,11.5,https://www.sbp.org.pk/assets/documents/press-release/Pr-15-Jun-2026.pdf,"'decided to keep the policy rate unchanged at 11.5 percent in its meeting today' (June 15, 2026)"
+2026-07-27,hold,0,11.5,https://www.sbp.org.pk/assets/documents/press-release/PR-27-July-2026.pdf,"'unanimously decided to keep the policy rate unchanged at 11.5 percent' (July 27, 2026)"
+2026-09-14,hold,0,11.5,https://www.sbp.org.pk/assets/documents/press-release/PR-14-Sep-2026.pdf,"'decided to keep the policy rate unchanged at 11.5%' (September 14, 2026)"

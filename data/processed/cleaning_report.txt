@@ -1,0 +1,24 @@
+D1  reports dated off-Thursday and aligned to nearest Thursday: 14
+D2  weeks on the Thursday grid: 370; without their own report: 11
+D2  weeks filled from next report's previous-week value: 11; still missing: 0
+D3  week-to-week consistency checks: 2148; PBS revisions > 0.01: 13
+  week_end    group  spi_prev_week  spi_as_first_published
+2019-09-12 Combined         124.34                  124.28
+2021-02-11 Combined         141.70                  141.62
+2019-09-12       Q1         127.08                  127.06
+2021-02-11       Q1         146.54                  146.45
+2025-11-27       Q1         331.17                  329.13
+2019-09-12       Q2         122.67                  122.65
+2021-02-11       Q2         141.86                  141.78
+2019-09-12       Q3         125.27                  125.23
+2021-02-11       Q3         143.83                  143.75
+2019-09-12       Q4         122.95                  122.90
+2021-02-11       Q4         140.76                  140.69
+2019-09-12       Q5         126.45                  126.37
+2021-02-11       Q5         142.77                  142.70
+D3  previous-week values replaced by PBS's revised figure: 13
+D4  FX bad-tick days dropped: 2
+D5  fuel-price revision weeks (|petrol or diesel w/w change| > 1.0%): 126 of 359
+
+master dataset: 2220 rows x 36 columns -> data\processed\master_weekly_quintile.csv
+weeks: 2019-09-05 to 2026-10-01
