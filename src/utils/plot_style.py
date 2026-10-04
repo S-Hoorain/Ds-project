@@ -48,7 +48,7 @@ def apply_style():
         "savefig.bbox": "tight",
         "font.size": 10,
         "axes.titlesize": 12,
-        "axes.titleweight": "semibold",
+        "axes.titleweight": "bold",
         "axes.titlecolor": INK,
         "axes.titlelocation": "left",
         "axes.labelcolor": INK_SECONDARY,

@@ -45,11 +45,20 @@ publishable-style research paper, written incrementally across milestones.
 - **Research question:** Can weekly price shocks in essential items be predicted, and how do
   their size and predictability differ across income quintiles? Policy angle: better timing
   and targeting of social protection (e.g., BISP).
-- **Initial hypotheses (M1):**
-  - H1: recent SPI trends, exchange-rate changes, and calendar events (Ramadan/Eid) predict
-    next week's SPI movement.
-  - H2: the lowest quintile (Q1) faces higher average inflation **and** higher forecast error
-    than the highest (Q5), because of its larger food/fuel budget share.
+- **Narrative (chosen 2026-10-04, see `reports/quintile_insights.md`):**
+  - **Spine: "an early-warning system for the poor".** Forecast price-shock weeks for each quintile
+    from lead signals: the administered-price calendar, perishable-spike momentum, exchange-rate
+    moves, and the Eid ul-Adha run-up. Then ask whether the model is as accurate for the poor as for
+    the rich; that question is the M4 fairness analysis.
+  - **Lens, the "rotating burden":** the Q1–Q5 inflation gap depends on the shock's source.
+    Food-driven periods hit Q1 harder; energy, fuel and currency periods hit Q5 harder. Exposures and
+    FX pass-through also differ by quintile. This is why forecasts must be quintile-specific.
+  - Supporting EDA result, "shocks vs grind": staple food is about half of Q1's cumulative inflation
+    but drives little weekly variance, while utility tariffs drive about 61% of it.
+- **M1 hypotheses (superseded by the M2 set in `notebooks/02_eda.ipynb`):**
+  - H1: SPI trends, FX and calendar events predict next week's SPI.
+  - H2: Q1 has higher inflation and forecast error than Q5. The data contradict the inflation part:
+    over the full sample Q1's inflation was the lowest of all groups.
 
 ### Data (verified 2026-10-03; details in `manuscript/02_data_collection_audit.md`)
 - **Primary:** PBS Weekly Sensitive Price Indicator (SPI). It covers 51 essential items across
