@@ -1,5 +1,5 @@
 // Usage (from a folder where the npm package "docx" is installed: npm install docx):
-//   node tools/build_reference_doc.js reports/DS4SG_Script_and_Data_Reference.docx
+//   node tools/build_reference_doc.js DS4SG_Script_and_Data_Reference.docx
 // Then open the file in Word and update the table of contents (or right-click it > Update Field).
 // Keep the SCRIPTS / DATA / FIGURES / TABLES / DOCS / M arrays in sync with the repository.
 // Builds "DS4SG_Script_and_Data_Reference.docx": every script and data file, with lineage.
