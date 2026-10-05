@@ -17,7 +17,6 @@ pip install -r requirements.txt
 python -m ipykernel install --user --name ds4sg --display-name "DS4SG (.venv)"   # notebook kernel
 ```
 
-## Layout
+## Reference
 
-See `CLAUDE.md` → *Repository layout*. Current status and next steps are in `HANDOFF.md`.
-Raw data is not committed. Regenerate it with the scrapers in `src/scraping/`.
+See DS4SG_Script_and_Data_Reference.docx for explanations for each script and data file.
