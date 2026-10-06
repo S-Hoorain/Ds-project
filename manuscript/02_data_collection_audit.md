@@ -117,7 +117,7 @@ noted as an option, not yet used.
 
 | Data | Source | How collected | Notes / limitations |
 |---|---|---|---|
-| Ramadan / Eid dates | Umm al-Qura calendar via `hijridate`; Pakistan-specific overrides | `src/features/build_event_calendar.py` | Pakistan moon-sighting is often +1 day; overrides are **unverified** and must be checked |
+| Ramadan / Eid dates | Umm al-Qura calendar via `hijridate`; Pakistan-specific overrides | `src/features/build_event_calendar.py` | Pakistan moon-sighting is often +1 day; Pakistani dates verified by the team (2026-10-06) for May 2018 – Mar 2026; later dates are Umm al-Qura |
 | SBP policy rate decisions | SBP Monetary Policy Statements: archived PDFs (2018 – Apr 2026) + SBP press releases (Jun–Sep 2026) | `src/scraping/sbp_mps.py` parses date + decision; 6 entries hand-coded with evidence in `sbp_mpc_decisions_manual.csv` | 66 decisions (32 hold, 21 hike, 13 cut); stated changes agree with the rate path in every case. Day of the Jan 2018 decision unverified (before sample) |
 | PKR/USD exchange rate | Yahoo Finance `PKR=X`, daily | `src/scraping/fx_rates.py` | Market quote, not official SBP interbank rate; 2 bad-tick episodes found (1–2 Aug 2022, 19–20 Sep 2022) |
 | Fuel price revisions | Derived from SPI items *Petrol Super* and *Hi-Speed Diesel* | (cleaning step) | Weekly resolution only; OGRA notifications remain a planned extension |

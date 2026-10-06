@@ -10,8 +10,9 @@ No ready-made dataset of Pakistan's religious-festival dates exists, so we build
   otherwise it falls back to the Umm al-Qura date.
 
 For weekly features the one-day difference only matters when an event falls on the
-day a SPI week ends. Even so, the dates should be verified before final modelling
-(see the overrides file).
+day a SPI week ends. The team verified the Pakistani dates for 1439-1447 AH (May 2018 to
+Eid ul-Fitr 2026) on 2026-10-06; later dates are Umm al-Qura and unverified. To change a
+date, edit the overrides file and re-run this script; never hand-edit the output.
 
 Run:  python src/features/build_event_calendar.py
 Output: data/external/islamic_events.csv

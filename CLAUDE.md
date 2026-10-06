@@ -74,8 +74,9 @@ publishable-style research paper, written incrementally across milestones.
   comparable. The sample is therefore Sep 2019 – present, about 370 weeks
   (≈2,200 quintile-week rows, ≈18,900 item-week rows).
 - **Supporting inputs:**
-  - Ramadan/Eid calendar: `src/features/build_event_calendar.py`. The Pakistan dates are
-    *unverified*.
+  - Ramadan/Eid calendar: `src/features/build_event_calendar.py`. The Pakistan dates were
+    verified by the team on 2026-10-06 (2018 to Eid ul-Fitr 2026). Edit the *overrides* file, not
+    the generated `islamic_events.csv`.
   - SBP policy decisions: `src/scraping/sbp_mps.py`, from archived Monetary Policy Statements.
   - PKR/USD exchange rate: `src/scraping/fx_rates.py`, Yahoo `PKR=X` (a market quote, not the
     official SBP rate).
