@@ -1,92 +1,70 @@
 # HANDOFF
 
-**Last updated:** 2026-10-04 (session 4)
-**Session summary:** Ran a deep quintile analysis and the user chose the narrative: **early-warning forecasting (C) +
-rotating-burden lens (A)**. Built the early-warning features and `notebooks/02_eda.ipynb` (rubric §3 and §4,
-5 figures, 5 formal hypotheses). Next: manuscript §II–III for the M2 PDF (due **2026-10-06**).
+**Last updated:** 2026-10-06 (session 5)
+**Session summary:** Pulled the team's commits (verified Eid/Ramadan dates from Sarah; notebook comment edits from Hoorain),
+moved the verified dates into the overrides file, re-ran the whole pipeline, and produced the **M2 manuscript draft**
+(Word + PDF, 19 pages, Sections I–IV). M2 is due **today, 2026-10-06**; the PDF is ready to submit after a team read-through.
 
 ## 1. Project overview
 CS/SDP 312/314 project. Using the PBS weekly Sensitive Price Indicator (SPI, base 2015-16, 370 weeks, Sep 2019 – Oct 2026)
 we build **an early-warning system for essential-price shocks for each consumption quintile** (Q1 poorest … Q5 richest),
 and test whether it works as well for the poor as for the rich. Lens: the **burden of inflation rotates** (food shocks
 hit Q1, energy, fuel and currency shocks hit Q5), so forecasts must be quintile-specific. SDGs 1, 2, 10; policy angle:
-timing BISP top-ups. **M2 (data prep, EDA, hypotheses; manuscript §II–III) is due 2026-10-06.**
+timing BISP top-ups.
 
 ## 2. Done so far
-- **Sessions 1–3:**
-  - scaffolding, handoff/log hook, git;
-  - SPI archive mapped and the full pipeline run: 359 reports downloaded, 370/370 weeks after recovering missing weeks;
-  - supporting inputs: SBP decisions, FX, Ramadan/Eid calendar;
-  - `notebooks/01_data_preparation.ipynb` (rubric §2) → `master_model_ready.csv` (2,220 × 70),
-    `items_weekly_panel.csv`, `DATA_DICTIONARY.md`;
-  - `manuscript/02_data_collection_audit.md`.
-- **Session 4 (2026-10-04):**
-  - `src/analysis/quintile_insights.py` → `reports/quintile_insights.md` and `reports/tables/insights_*.csv`.
-    Findings:
-    - cumulative inflation: Q1 179%, Q5 193%, Q3 202%;
-    - regimes: Q1 > Q5 from Mar 2020 to Nov 2021, Q5 > Q1 from Feb 2022 to Dec 2024;
-    - Q1 weekly variance: utilities about 61%, perishables 28%, staples 8%, although staples are 57% of the basket;
-    - exposure gradient across quintiles; FX pass-through bigger for Q5 (point estimates);
-    - momentum after onion, potato and pulse spikes;
-    - Ramadan is not an index-wide effect; the Eid ul-Adha effect is confounded with the fiscal-year start.
-  - **Narrative chosen by the user: C spine + A lens** (recorded in CLAUDE.md).
-  - `src/features/build_features.py` → `data/processed/master_features.csv` (2,220 × 105) + `FEATURES_DICTIONARY.md`.
-    - Decision F1: shock week = SPI rise ≥ 1% (13–17% of weeks); `target_shock_next`.
-    - Calendar signals known in advance: `fuel_review_next_week` (1st/16th; 64% of those weeks had a fuel revision
-      vs 9% otherwise), `fy_start_next_week`, `pre_eid_adha_4w`, `ramadan_next_week`.
-    - `fx_chg_4w/8w/13w`, component inflation `infl_*_wow/_4w`, `shocks_last_4w`, `spi_chg_4w/13w`,
-      `gap_q1_q5_wow`, `target_spi_chg_next4w/8w/13w`.
-    - Momentum items chosen on training weeks only (≤ 2024): bananas, chilies, onions, potatoes, pulse gram, pulse moong,
-      tea.
-  - **`notebooks/02_eda.ipynb`** (16 code cells, runs cleanly on the `ds4sg` kernel):
-    - §1: univariate summaries with resistant vs non-resistant statistics;
-    - §2: outliers by both course rules plus masking, and the extreme weeks traced to tariff and fuel decisions
-      (kept, not removed);
-    - §3: rotating burden (group-bys, exposure regressions), shocks vs grind, contingency tables with Fisher tests for
-      the signals, FX pass-through with HAC errors, Spearman correlation matrices;
-    - §4: hypotheses H1–H5 with variable mapping;
-    - §5: findings summary.
-    - Figures in `reports/figures/`:
-      - E1: rotating burden;
-      - E2: shocks vs grind;
-      - E3: weekly-change distribution and outliers;
-      - E4: early-warning signals;
-      - E5: FX pass-through.
-    - Tables: `reports/tables/eda_*.csv`.
-  - `src/utils/plot_style.py`: titles are now bold (semibold isn't available). Both notebooks were re-executed.
+- **Sessions 1–3:** scaffolding, handoff hook, git; SPI archive mapped and scraped (359 reports, 370/370 weeks after
+  recovering 11 unpublished weeks); SBP decisions, FX, Ramadan/Eid calendar; `notebooks/01_data_preparation.ipynb`
+  → `master_model_ready.csv` (2,220 × 70), `items_weekly_panel.csv`, `DATA_DICTIONARY.md`; `manuscript/02_data_collection_audit.md`.
+- **Session 4 (2026-10-04):** quintile insights (`reports/quintile_insights.md`); narrative chosen (C spine + A lens);
+  `src/features/build_features.py` → `master_features.csv` (2,220 × 105); `notebooks/02_eda.ipynb` (EDA, Figures E1–E5,
+  hypotheses H1–H5).
+- **Session 5 (2026-10-06):**
+  - **Team changes pulled.** Sarah verified the Pakistani Eid/Ramadan dates, but edited the *generated*
+    `islamic_events.csv` by hand (the overrides file only got the 2019 Ramadan fix). Her dates were moved into
+    `data/external/islamic_events_pk_overrides.csv` (all 1439–1447 AH rows `verified=True`, now including the dates that
+    equal Umm al-Qura, plus 2026 Ramadan 19 Feb and Eid ul-Fitr 21 Mar). Regenerating reproduces her file exactly
+    except one slip in it (2019 Ramadan duration 29 → correctly 30 days). Eid ul-Adha 2026 and later remain unverified.
+  - **Pipeline re-run:** `build_event_calendar.py` → `build_master.py` → notebook 01 → `build_features.py` → notebook 02 →
+    `quintile_insights.py`. Only Ramadan columns changed (2019 and 2026 starts moved one day). Ramadan-next-week
+    signal weeks 36 → 37; still no effect (p ≥ 0.33). No Eid ul-Adha or headline numbers changed. Commit `7b38274`.
+  - **CLAUDE.md, build_event_calendar.py docstring, audit doc** now say the dates are verified and that the overrides
+    file (not the output) is the place to edit.
+  - **M2 manuscript draft** (user chose Word → PDF; black text and headings only, no header/footer, plain professional):
+    - `tools/build_manuscript_m2.js` (docx-js) → `manuscript/M2_manuscript_draft.docx`; PDF exported from Word →
+      `milestones/M2_data_eda_hypotheses/M2_manuscript_draft.pdf` (19 pp, Times New Roman, A4, three-rule tables).
+    - `tools/prepare_manuscript_figures.py` → `manuscript/figures/` (copies of the figures with the printed caption cropped,
+      white background; captions are Word text instead).
+    - Contents: title, authors with disciplines, abstract; I Introduction (short, RQ, SDGs, team); II Data & Preprocessing
+      (A inventory, B sources, C collection audit, D parsing/validation, E alignment/reshaping/merging, F missing data and
+      selection bias, G log/scaling/encoding, H early-warning features, I decisions table, J limitations); III EDA
+      (A univariate, B outliers + masking, C rotating burden + exposures, D shocks vs grind, E signals, F FX pass-through,
+      G correlations, H findings); IV Hypotheses (H1–H5 formal H0/H1, variable mapping table, analytical plan);
+      data/code availability; 15 references (IEEE style). Figures 1–6 = P1, E3, E1, E2, E4, E5.
+  - Fixed notebook 02 findings text: SD is 1.5–1.75× the robust SD (was "1.3–1.6", contradicting its own table).
+  - Commit `e9609c5`.
 
 ## 3. Where we are now
-- **The M2 hypotheses** (full statement in notebook 02 §4):
-  - **H1:** lead signals predict next-week shocks (logit LR test; out-of-sample AUC vs own-history baseline).
-  - **H2:** FX pass-through is larger for Q5 (interaction, HAC Wald test). EDA bands overlap, so this is not yet
-    established.
-  - **H3:** the Q1−Q5 gap rises with food inflation and falls with energy inflation (OLS, HAC).
-  - **H4:** signal effects differ by quintile (signal × Q5 interactions, LR test).
-  - **H5:** the model is less accurate for Q1 than Q5 (Diebold–Mariano on Brier score; recall gap) → M4.
-- **Key EDA evidence for the signals** (next-week shock probability, signal vs no signal):
-  - FX depreciation >2% over 8 weeks: Q1 23% vs 11%, Q5 27% vs 8% (p ≤ 0.004).
-  - Shock in the past 4 weeks: +12 to +13 pp.
-  - Momentum spikes: +5 to +8 pp (significant for Q5 and Combined, not for Q1).
-  - Fiscal-year start: +29 pp, but only n = 7.
-  - Fuel review: about +6 pp for Q5, about +1 pp for Q1.
-  - Ramadan and Eid ul-Adha: no shock effect, so they are kept as controls.
-- The notebook generator scripts are not in the repo; edit the notebooks directly.
+- **M2 deliverables exist:** notebooks 01 and 02 (both run cleanly), figures, tables, dictionaries, and the PDF.
+- **Needs a team read-through before submission today:** the PDF has not been reviewed by Hoorain or Sarah.
+  To change text, edit `tools/build_manuscript_m2.js`, rebuild, and re-export (see Key files). Small wording edits can
+  also be made directly in the .docx in Word, but those are lost on the next rebuild.
+- Word COM export hangs when the output path is inside the project folder; export to a temp folder and copy (works).
+- The `docx` npm package is not installed in the project; it was installed in a scratch folder. To rebuild:
+  `npm install docx` in any folder, then `NODE_PATH=<that folder>/node_modules node tools/build_manuscript_m2.js manuscript/M2_manuscript_draft.docx`.
+- Page layout: tables are kept on one page, so pages 13 and 15 end with some white space. This is fine for a draft.
 
 ## 4. What's next
-1. **Manuscript drafts for the M2 PDF** (rubric §5):
-   - §II Data & Preprocessing (from the audit draft and notebook 01);
-   - §III EDA (from notebook 02 §5, Figures E1–E5, and the key tables);
-   - include the hypotheses section (rubric §4) and team metadata and research question (rubric §1).
-   - Format: scientific paper; decide the tool (LaTeX/Word/Markdown → PDF) with the user.
-2. Final check of the M2 rubric against the deliverables (notebooks, figures, PDF).
-3. Team to verify the Pakistan Eid/Ramadan dates (`data/external/islamic_events_pk_overrides.csv`), which affect
-   `pre_eid_adha_4w` and `ramadan_next_week`.
-4. M3 (due Week 10, Oct 21–23):
+1. **Today (M2 due 2026-10-06):** team reads the PDF; fix anything flagged; submit
+   `milestones/M2_data_eda_hypotheses/M2_manuscript_draft.pdf` plus the two notebooks. Late penalty: 20% within 24 h.
+2. M3 (due Week 10, Oct 21–23):
    - baseline models (logistic regression, KNN) for `target_shock_next`, trained ≤ 2024, tested 2025–26;
-   - tests for H1–H4.
+   - tests for H1–H3 (H4 can start); report as manuscript §IV results.
+3. Verify Eid ul-Adha 2026 (27 May per Umm al-Qura) when convenient; add it to the overrides file, never the output.
+4. Expand the manuscript Introduction and add a literature review for the final paper.
 
 ## 5. Decisions & rationale
-- Sample: 5 Sep 2019 – 1 Oct 2026, base 2015-16 only. Missing weeks are filled from official previous-week values;
+- Sample: 5 Sep 2019 – 1 Oct 2026, base 2015-16 only. Missing weeks filled from official previous-week values;
   revisions use the latest vintage.
 - No imputation of the target. Outliers are kept (they are the shocks); inference uses resistant statistics, HAC
   errors and non-parametric tests.
@@ -94,16 +72,21 @@ timing BISP top-ups. **M2 (data prep, EDA, hypotheses; manuscript §II–III) is
   chosen on training data only.
 - Train ≤ 2024-12-31; test 2025-01 onward. New weeks up to course Week 14 are added in M5.
 - Ramadan and Eid ul-Adha are controls, not hypotheses (no shock effect; Eid ul-Adha is confounded with the fiscal-year start).
+- Event calendar: `islamic_events_pk_overrides.csv` is the single source of truth; `islamic_events.csv` is generated.
+- Manuscript is built from code (`tools/build_manuscript_m2.js`) so numbers can be refreshed after re-runs; every number
+  in it was taken from the 2026-10-06 run.
 
 ## 6. Open questions
-- Which tool and format should the M2 manuscript PDF use?
 - Should the year-ago columns be used to extend the series back to Sep 2018 (more training data for M3)?
 - Should the team register for SBP EasyData to get the official PKR/USD rate?
+- What source did Sarah use to verify the Eid/Ramadan dates? Worth citing in the final manuscript.
 
 ## 7. Key files
 - `CLAUDE.md`: narrative, data facts, conventions, milestone dates
+- `milestones/M2_data_eda_hypotheses/M2_manuscript_draft.pdf` (submission) and `manuscript/M2_manuscript_draft.docx`
+- `tools/build_manuscript_m2.js`, `tools/prepare_manuscript_figures.py`, `manuscript/figures/`
 - `notebooks/01_data_preparation.ipynb`, `notebooks/02_eda.ipynb`
 - `data/processed/master_features.csv` + `FEATURES_DICTIONARY.md`; `master_model_ready.csv` + `DATA_DICTIONARY.md`
-- `reports/quintile_insights.md`; `reports/figures/figE1-E5, figP1`; `reports/tables/`
-- `src/features/build_features.py`, `src/analysis/quintile_insights.py`, `src/utils/plot_style.py`
+- `data/external/islamic_events_pk_overrides.csv` → `src/features/build_event_calendar.py` → `islamic_events.csv`
+- `reports/figures/figE1-E5, figP1`; `reports/tables/`; `reports/quintile_insights.md`
 - `manuscript/02_data_collection_audit.md`
