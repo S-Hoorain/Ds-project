@@ -97,15 +97,16 @@ publishable-style research paper, written incrementally across milestones.
 | # | Topic | Syllabus week | Folder | Status |
 |---|-------|---------------|--------|--------|
 | M1 | Problem framing & dataset curation (4 marks) | Wk 4–5 (Sep 7–18) | `milestones/M1_proposal/` | Submitted |
-| M2 | EDA & hypothesis report (5) (manuscript §II–III) | Wk 7 (Sep 28–Oct 2) | `milestones/M2_data_eda_hypotheses/` | Current; **due 2026-10-06** (extended) |
-| M3 | Baseline model & initial findings (5) | Wk 10 (Oct 21–23) | | |
+| M2 | EDA & hypothesis report (5) (manuscript §II–III) | Wk 7 (Sep 28–Oct 2) | `milestones/M2_data_eda_hypotheses/` | Submitted (full marks) |
+| M3 | Baseline model & initial findings (5) (manuscript §IV–V) | Wk 10 (Oct 21–23) | `milestones/M3_baseline_model/` | Current; **due 2026-10-24** |
 | M4 | Final model, fairness & ethics (6) | Wk 12 (Nov 2–6) | | |
 | M5 | New data integration & re-training (5) | Wk 14 (Nov 16–20) | | |
 | M6 | Presentations (5); poster + manuscript (5) | Wk 16 (Nov 30–Dec 8) | | |
 
-The M2 rubric (`milestones/M2_data_eda_hypotheses/Milestone2_description_rubric.md`) is the
-grading spec. Check deliverables against it. Weights: data prep 35%, EDA/visualisation 35%,
-hypotheses 15%, manuscript and code quality 15%.
+Each milestone folder holds its rubric, which is the grading spec; check deliverables against it.
+M3 (`milestones/M3_baseline_model/M3_rubric.md`) weights: baseline models + CV framework 35%,
+metrics + asymmetric error costs 30%, feature importance + insights 20%, report + code 15%, all
+scaled by a viva factor V ∈ [0, 1]. The viva study guide is `DS4SG_M3_Reference.docx` (root).
 
 ### Course conventions to follow (from the lecture slides in `course/lecture_slides/`)
 - **Outliers (Unit 05):** use both rules.
@@ -138,6 +139,8 @@ data/
 notebooks/                numbered analysis notebooks (01_..., 02_...)
 src/                      reusable Python code
   scraping/ cleaning/ features/ models/ utils/
+models/                   fitted model artifacts (joblib) + model cards, e.g. models/m3_baselines/
+tools/                    manuscript and reference-document builders (docx-js), figure helpers
 reports/figures/          exported publication-quality figures
 reports/tables/           exported summary tables
 manuscript/               paper drafts, section by section
