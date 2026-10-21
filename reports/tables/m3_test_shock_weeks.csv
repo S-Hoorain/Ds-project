@@ -3,12 +3,12 @@ shock week,groups shocked,mean SPI rise %,"main driver (item, weekly change)",dr
 2025-07-10,"Q1,Q2,Q4",1.0580992041732573,chicken +23%; tomatoes +13%,perishables,0/3,1/3,2/3
 2025-07-24,"Q1,Q2,Q3,Q4,Q5",4.0821105472085275,gas_q1 +30%; electricity_q1 +21%,utilities,0/5,5/5,1/5
 2025-09-04,"Q1,Q2,Q3,Q4",1.7496705753137498,wheat_flour +25%; tomatoes +46%,staples,0/4,4/4,2/4
-2025-10-16,Q1,1.070946360623548,tomatoes +33%; chicken -6%,perishables,0/1,0/1,0/1
+2025-10-16,Q1,1.070946360623548,tomatoes +33%; onions +9%,perishables,0/1,0/1,0/1
 2026-02-19,"Q1,Q2,Q3",1.2121291260722995,electricity_q1 +15%; bananas +16%,utilities,0/3,0/3,0/3
 2026-03-12,"Q3,Q4,Q5",1.7046679155221367,petrol +21%; lpg +12%,motor_fuel,0/3,0/3,0/3
 2026-03-26,Q2,1.0873196659073605,electricity_q1 +6%; lpg +10%,utilities,0/1,0/1,0/1
 2026-04-02,Q5,1.1529548088064834,milk_fresh +1%; lpg +13%,staples,1/1,1/1,1/1
 2026-04-09,"Q2,Q3,Q4,Q5",1.5609042041098364,petrol +18%; lpg +9%,motor_fuel,4/4,4/4,4/4
-2026-07-02,Q1,1.4171650805810063,petrol -20%; tomatoes +125%,motor_fuel,1/1,0/1,0/1
+2026-07-02,Q1,1.4171650805810063,tomatoes +125%; wheat_flour +5%,perishables,1/1,0/1,0/1
 2026-07-16,"Q1,Q2,Q3,Q4,Q5",1.2644930253829045,chicken +15%; petrol +4%,perishables,0/5,5/5,0/5
-2026-09-24,Q2,1.2837588913764186,electricity_q1 +19%; tomatoes -13%,utilities,0/1,0/1,0/1
+2026-09-24,Q2,1.2837588913764186,electricity_q1 +19%; chicken +1%,utilities,0/1,0/1,0/1

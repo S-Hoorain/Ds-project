@@ -1,4 +1,4 @@
-"""Make manuscript copies of the EDA figures: crop the caption printed under each plot and whiten the background.
+"""Make manuscript copies of the EDA and baseline-model figures: crop the caption printed under each plot and whiten the background.
 
 The figures in reports/figures/ carry their caption inside the image (useful in the notebooks and on the poster).
 In the Word manuscript the caption is set as text under the figure instead, so the printed one would appear
@@ -17,7 +17,10 @@ ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "reports" / "figures"
 OUT = ROOT / "manuscript" / "figures"
 FIGURES = ["figP1_log_transform", "figE3_weekly_change_distribution", "figE1_rotating_burden",
-           "figE2_shocks_vs_grind", "figE4_early_warning_signals", "figE5_fx_passthrough"]
+           "figE2_shocks_vs_grind", "figE4_early_warning_signals", "figE5_fx_passthrough",
+           # Milestone 3 (Sections IV-V)
+           "figB1_cv_design", "figB2_validation_curves", "figB3_roc_pr_test", "figB4_cost_analysis",
+           "figB5_confusion_matrices", "figB7_feature_importance", "figB10_rotating_burden_test"]
 MIN_GAP = 25  # blank pixel rows that separate the caption block from the plot
 
 
