@@ -1,0 +1,5 @@
+model,false alarms,fuel review next week,fiscal year starts next week,rupee fell >2% in 8 weeks,shock in past 4 weeks
+Logistic regression,37,65%,24%,0%,73%
+KNN,133,50%,1%,0%,68%
+Decision tree,91,47%,0%,0%,75%
+all test rows,455,46%,2%,0%,27%

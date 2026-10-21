@@ -1,0 +1,67 @@
+{
+  "features": [
+    "spi_wow_pct",
+    "spi_chg_4w",
+    "fx_chg_8w",
+    "shocks_last_4w",
+    "momentum_spikes_4w",
+    "infl_staples_4w",
+    "fuel_review_next_week",
+    "fy_start_next_week",
+    "infl_perishables_4w",
+    "infl_utilities_4w",
+    "infl_motor_fuel_4w",
+    "policy_rate",
+    "ramadan_next_week",
+    "pre_eid_adha_4w",
+    "grp_Q1",
+    "grp_Q2",
+    "grp_Q3",
+    "grp_Q4"
+  ],
+  "train_end": "2024-12-31",
+  "validation_years": [
+    2021,
+    2022,
+    2023,
+    2024
+  ],
+  "cost_fp": 1.0,
+  "cost_fn": 5.0,
+  "sklearn_version": "1.9.1",
+  "models": {
+    "Logistic regression": {
+      "params": {
+        "C": 0.0001,
+        "class_weight": "balanced",
+        "l1_ratio": 0.0
+      },
+      "pooled_cv_auc": 0.6433721183443097,
+      "mean_fold_auc": 0.6507301426111453,
+      "fold_auc_sd": 0.05313209763825557,
+      "threshold": 0.5
+    },
+    "KNN": {
+      "params": {
+        "n_neighbors": 100,
+        "weights": "uniform",
+        "cont": "StandardScaler"
+      },
+      "pooled_cv_auc": 0.6433397484565448,
+      "mean_fold_auc": 0.6723285909814709,
+      "fold_auc_sd": 0.08022573767288411,
+      "threshold": 0.12
+    },
+    "Decision tree": {
+      "params": {
+        "class_weight": null,
+        "max_depth": 4,
+        "min_samples_leaf": 40
+      },
+      "pooled_cv_auc": 0.6524680568062102,
+      "mean_fold_auc": 0.5776940033537161,
+      "fold_auc_sd": 0.08160224116514342,
+      "threshold": 0.16
+    }
+  }
+}

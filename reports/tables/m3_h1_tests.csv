@@ -1,0 +1,5 @@
+test,statistic,df,p
+LR test (in-sample),93.99277500082167,6.0,4.480266302494747e-18
+"Wald test, week-clustered (in-sample)",22.427870160479156,6.0,0.0010125875568250031
+"DeLong, test AUC full > base (one-sided)",0.21128804117454214,,0.4163312570242813
+"Week-block bootstrap, test AUC full > base",0.0066727286521407,,0.4505
