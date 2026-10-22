@@ -136,7 +136,7 @@ const FILES = [
     why: "The rubric asks for clean modular scripts for training and evaluation, separate from the narrative notebook. Running it reproduces the notebook's predictions exactly (checked).",
     reads: ["`data/processed/master_features.csv`"],
     writes: ["`models/m3_baselines/{logistic_regression,knn,decision_tree}.joblib`, `model_card.json`", "`reports/tables/m3_cv_grid_*.csv`, `m3_cv_folds.csv`, `m3_test_metrics.csv`, `m3_predictions.csv`"],
-    run: "`python src/models/train_baselines.py` (about 20 seconds; use the project `.venv`).",
+    run: "`python src/models/train_baselines.py` (about 30 seconds; use the project `.venv`).",
     concepts: "reproducibility, separation of code and narrative, model artifacts.",
   },
   {
@@ -145,7 +145,7 @@ const FILES = [
     why: "The rubric's executable notebook: all data splits, CV runs, model fits and metrics, documented for the SDP members of the team.",
     reads: ["`data/processed/master_features.csv`", "`data/processed/items_weekly_panel.csv` (edge-case drivers)", "code: `src/models/baseline.py`, `src/utils/plot_style.py`, `component()` from `src/features/build_features.py`"],
     writes: ["`reports/figures/figB1`–`figB8`", "`reports/tables/m3_*.csv` (all model tables)", "`models/m3_baselines/*`"],
-    run: "Open in Jupyter/VS Code with the DS4SG kernel and Run All (about 1.5 minutes), or `jupyter nbconvert --to notebook --execute --inplace notebooks/03_baseline_models.ipynb`.",
+    run: "Open in Jupyter/VS Code with the DS4SG kernel and Run All (2–4 minutes, depending on the machine), or `jupyter nbconvert --to notebook --execute --inplace notebooks/03_baseline_models.ipynb`.",
     concepts: "everything in Section 5 of this document.",
   },
   {
@@ -254,7 +254,7 @@ const FIGURES = [
   ["`figB7_feature_importance.png`", "LR relative coefficients, tree Gini importance, permutation importance.", "Long bars/large drops = important. Rupee depreciation and recent momentum lead."],
   ["`figB8_decision_tree.png`", "First three levels of the tuned tree.", "Each box: the split, share of training rows, class shares. First split: rupee fell > 8% in 8 weeks."],
   ["`figB9_fx_passthrough_test.png`", "Exchange-rate pass-through by quintile and horizon (H2).", "Overlapping intervals at the same height: no difference between Q1 and Q5."],
-  ["`figB10_rotating_burden_test.png`", "What widens (orange) or narrows (blue) the Q1 − Q5 gap (H3).", "Food, perishables and utility tariffs hit the poor; motor fuel and LPG hit the rich."],
+  ["`figB10_rotating_burden_test.png`", "What widens (orange) or narrows (blue) the Q1 − Q5 gap (H3).", "Food (above all perishables) hits the poor harder; motor fuel and LPG hit the rich harder. Utility tariffs lean towards the poor but their interval crosses zero."],
 ];
 
 const TABLES = [
@@ -319,7 +319,7 @@ const CONCEPTS = [
   ]],
   ["Feature importance", [
     ["Standardised coefficient", "Effect of a one-standard-deviation change in a feature.", "Because all LR inputs are z-scored, coefficients are comparable across features. We show them relative to the largest.", "Figure B7"],
-    ["Odds ratio", "How many times the odds of a shock multiply when a feature rises by one unit.", "exp(coefficient) from the unpenalised logit: rupee +1% → odds × 1.11; fiscal-year start → odds × 5.3.", "`m3_odds_ratios.csv`"],
+    ["Odds ratio", "How many times the odds of a shock multiply when a feature rises by one unit.", "exp(coefficient) from the unpenalised logit: rupee +1% → odds × 1.11; fiscal-year start → odds × 5.3 (from only five fiscal years, so the 95% interval is 1.4–19.5).", "`m3_odds_ratios.csv`"],
     ["Gini importance", "How much a feature helped the tree separate shocks from calm weeks.", "Share of the total impurity reduction from splits on that feature (rupee 0.45).", "Figure B7"],
     ["Permutation importance", "Shuffle one feature and see how much worse the model gets.", "Mean drop in validation AUC over folds and repeats; works for any model (including KNN); computed on the validation years, not the test.", "`cv_permutation_importance()`"],
   ]],
@@ -373,8 +373,8 @@ const DECISIONS = [
   {
     id: "B5", title: "Select hyperparameters by ROC-AUC of the pooled out-of-fold predictions",
     simple: "We choose the setting whose predictions, put together across all four validation years, rank shock weeks best — because one alarm threshold must work in every year.",
-    detail: "ROC-AUC is threshold-free and unaffected by the shock rate, and it is the metric of hypothesis H1. Pooling matters: an unweighted LR scored 0.65 averaged over folds but only 0.53 pooled, because its probability level followed each fold's base rate. The majority class shows the same effect (0.5 per fold, 0.467 pooled). Mean ± SD of per-fold AUCs is still reported for the rubric's 'variance across folds'.",
-    alt: "Mean per-fold AUC (standard GridSearchCV): would pick models whose probabilities drift between years. Accuracy: rewards never alerting.",
+    detail: "ROC-AUC is threshold-free and unaffected by the shock rate, and it is the metric of hypothesis H1. Pooling matters: an unweighted LR scored 0.65 averaged over folds but only 0.53 pooled, because its probability level followed each fold's base rate. The majority class shows the same effect (0.5 per fold, 0.467 pooled). Mean ± SD of per-fold AUCs is still reported for the rubric's 'variance across folds'. Caveat found in the audit: pooled AUC also rewards telling crisis years from calm ones. An oracle that knows only each validation year's realised shock rate (constant within the year) scores 0.640 pooled. Within years (mean fold AUC) the order is KNN 0.672 > LR 0.651 > tree 0.578 ≈ persistence 0.569, and that is the order the test reproduced. We kept the planned rule, because switching after seeing the test would leak test information into model choice; M4 reports both.",
+    alt: "Mean per-fold AUC (standard GridSearchCV): ignores whether probability levels are comparable across years, but measures within-year ranking cleanly (M4 will report it alongside). Accuracy: rewards never alerting.",
     where: "`grid_search_time_cv()`",
   },
   {
@@ -387,7 +387,7 @@ const DECISIONS = [
   {
     id: "B7", title: "Alarm threshold minimises expected cost with a missed shock = 5 false alarms; ratios 1–20 tested",
     simple: "Missing a real shock hurts poor families much more than a false alarm costs the government, so we count a miss as five times worse and pick the cut-off that minimises total cost.",
-    detail: "Evidence: Q1 prices stay 4.2% higher 8 weeks after a shock (only 16% revert), a typical shock is up to Rs 355/month at the Q1 ceiling (≈ 8% of the Rs 4,500/month Kafaalat value), coping is irreversible, and FAO found ≈ US$7 return per US$1 of early action. A false alarm is a transfer to poor households, not a pure loss, so 5:1 sits between parity and 7:1. Thresholds are chosen on 2021–24 out-of-fold predictions (not the test): LR 0.50, KNN 0.12, tree 0.16. The Bayes rule 1/6 is quoted for comparison but needs calibrated probabilities.",
+    detail: "Evidence: a Q1 shock is not given back (8 weeks later Q1 prices are 4.2% above the pre-shock week, against 1.9% around an ordinary week, and after the shock they keep rising at the usual pace, 2.1% vs 2.0%), a typical shock is up to Rs 355/month at the Q1 ceiling (≈ 8% of the Rs 4,500/month Kafaalat value), coping is irreversible, and FAO found ≈ US$7 return per US$1 of early action. A false alarm is a transfer to poor households, not a pure loss, so 5:1 sits between parity and 7:1. Thresholds are chosen on 2021–24 out-of-fold predictions (not the test): LR 0.50, KNN 0.12, tree 0.16. The Bayes rule 1/6 is quoted for comparison but needs calibrated probabilities.",
     alt: "Default 0.5; maximising F1; a different ratio (all reported in the sensitivity table).",
     where: "`COST_FN`, `best_threshold()`, nb03 §7, Figure B4",
   },
@@ -443,7 +443,7 @@ const DECISIONS = [
   {
     id: "B15", title: "H3 tested as pre-stated; the component split reported as exploratory",
     simple: "We tested exactly the hypothesis written in M2 first. When energy did not behave as expected, we looked deeper, but we label that deeper look as a new idea, not a proven result.",
-    detail: "β_food = 0.12 (p = 0.003) supports the food part; β_energy = +0.04 (p = 0.92 for < 0) does not support the energy part. Splitting energy shows motor fuel (−0.07) and LPG (−0.03) narrow the gap but utility tariffs (+0.03) widen it (the 'for Q1' tariff slabs weigh heavily in Q1's basket). Because the split was chosen after seeing the result, it is a hypothesis for M4 (avoids p-hacking).",
+    detail: "β_food = 0.12 (p = 0.003) supports the food part; β_energy = +0.04 (p = 0.92 for < 0) does not support the energy part. Splitting energy shows motor fuel (−0.07) and LPG (−0.03) narrow the gap, while utility tariffs point the other way (+0.03, p = 0.10, not significant; the 'for Q1' tariff slabs weigh heavily in Q1's basket). Because the split was chosen after seeing the result, it is a hypothesis for M4 (avoids p-hacking).",
     alt: "Replacing H3 after the fact (would be HARKing: hypothesising after results are known).",
     where: "nb04 §2",
   },
@@ -494,8 +494,10 @@ const NUMBERS = [
   ["Brier (test)", "KNN 0.070, tree 0.078, majority 0.080, LR 0.238"],
   ["Cost 2021–24 (5:1)", "33–39% below never-alert; 18–26% below always-alert"],
   ["Cost test (5:1)", "4–23% above never-alert (LR 1.04, KNN 1.19, tree 1.23)"],
-  ["Q1 shock size", "median 1.6%, mean 2.0%; 4.2% higher 8 weeks later; Rs 355/month ≈ 8% of Kafaalat"],
-  ["Top drivers", "rupee 8-week change (LR weight 1.00, Gini 0.45, OR 1.11 per 1%); fiscal-year start OR 5.3"],
+  ["Q1 shock size", "median 1.6%, mean 2.0%; not reversed: 4.2% above the pre-shock week 8 weeks later (ordinary week: 1.9%); Rs 355/month ≈ 8% of Kafaalat"],
+  ["Regime tracking (CV)", "year-level oracle pooled AUC 0.640; within-year (mean fold) AUC: KNN 0.672, LR 0.651, tree 0.578, persistence 0.569"],
+  ["Top drivers", "rupee 8-week change (LR weight 1.00, Gini 0.45, OR 1.11 per 1%); fiscal-year start OR 5.3 (5 fiscal years, 14 of 25 rows shocked; CI 1.4–19.5)"],
+  ["July in the test", "4 of 13 shock weeks (14 of 35 shock rows); only 1 in the week containing 1 July"],
   ["H1", "in sample Wald χ²(6) = 22.4, p = 0.001 (LR χ² = 94); test AUC 0.554 → 0.561, DeLong p = 0.42"],
   ["H2", "pass-through ≈ 0.21 (Q1) vs 0.22 (Q5) per 1% over 8 weeks; δ = 0.04, p = 0.27"],
   ["H3", "β_food = 0.12 (p = 0.003); β_energy = +0.04 (p = 0.92); split R² 0.16 → 0.38"],
@@ -508,21 +510,23 @@ const VIVA = [
   ["Why K = 4?", "One fold per calendar year 2021–2024, so each validation block has exactly one fiscal-year start, Ramadan and Eid. 2020 cannot be a validation year because its training window would hold only 9 weeks (Oct–Dec 2019)."],
   ["What would shuffled K-fold have shown?", "AUCs of 0.70–0.73 instead of 0.58–0.67: inflated by sister rows of the same week and by learning from the future."],
   ["Why ROC-AUC for tuning and not accuracy?", "Accuracy rewards never raising an alarm (92% in the test). AUC measures ranking, is threshold-free and is not affected by the shock rate."],
-  ["What is 'pooled' AUC?", "One AUC over the out-of-fold predictions of all four years together. Because the system uses one threshold for all years, probabilities must mean the same in every year; pooled AUC checks that, the per-fold average does not."],
+  ["What is 'pooled' AUC?", "One AUC over the out-of-fold predictions of all four years together. Because the system uses one threshold for all years, probabilities must mean the same in every year; pooled AUC checks that, the per-fold average does not. Its weakness: it also rewards telling crisis years from calm ones (a year-level oracle scores 0.640)."],
+  ["Your tree had the best CV score but the worst test score. Why?", "Pooled AUC rewards regime tracking, and the tree's first split (rupee down > 8% in 8 weeks) recognises the 2022–23 crisis. Within years its AUC is only 0.578, about persistence (0.569). The test period is one calm regime, so only within-year ranking counts there, and the within-year order (KNN > LR > tree) is exactly the test order. We did not re-select after seeing this, because that would leak the test into model choice; M4 will report both views."],
   ["Explain the C you chose.", "C is the inverse of the penalty strength. C = 0.0001 means a very strong L2 penalty: coefficients are shrunk heavily. Weaker penalties fit training weeks better (AUC 0.86) but validate worse (0.56): overfitting. The curve is flat for C ≤ 0.01."],
   ["Why k = 100 for KNN?", "Small k overfits (k = 5: training AUC 0.98, validation 0.56). Around 100 neighbours the validation AUC peaks (0.64) and then declines as the forecast becomes too smooth."],
   ["Why does KNN need scaling and the tree not?", "KNN uses distances, so a feature measured in large units would dominate. A tree only asks 'is x above a cut-off?', which no rescaling changes."],
   ["What does a confusion matrix show for KNN?", "Test: 20 shocks caught (TP), 15 missed (FN), 133 false alarms (FP), 287 calm weeks correctly left alone (TN)."],
   ["Precision is only 0.13. Is the model useless?", "Precision depends on how common shocks are. In 2025–26 only 7.7% of rows were shocks, so most alarms are false even with decent ranking (AUC 0.68). In 2021–24 precision was 0.26–0.38."],
-  ["Why is a false negative worse than a false positive here?", "A miss leaves poor households to absorb a lasting price jump (4.2% higher 8 weeks later) with irreversible coping; a false alarm is a top-up that still reaches poor families. We weight a miss as 5 false alarms and test 1–20."],
+  ["Why is a false negative worse than a false positive here?", "A miss leaves poor households to absorb a price step that is not given back (8 weeks later Q1 prices are 4.2% above the pre-shock week, against 1.9% around an ordinary week), with irreversible coping; a false alarm is a top-up that still reaches poor families. We weight a miss as 5 false alarms and test 1–20."],
   ["How did you choose the threshold?", "The value that minimises 1 × FP + 5 × FN on the 2021–24 out-of-fold predictions; then applied unchanged to the test."],
-  ["Why did no model beat 'never alert' in the test?", "Prior shift: the shock rate halved. Thresholds learned when shocks were common over-alert when they are rare. The ranking still works (KNN AUC 0.68), so recalibration/retraining (M4–M5) is the fix."],
-  ["Which features matter most?", "The 8-week rupee depreciation (largest LR weight, the tree's first split, odds ratio 1.11 per 1%), recent shocks and food-price momentum. The fiscal-year start multiplies the odds by about 5 but is rare."],
+  ["Why did no model beat 'never alert' in the test?", "Prior shift: the shock rate halved. Thresholds learned when shocks were common over-alert when they are rare. The ranking still works (KNN AUC 0.68), so recalibration/retraining (M4–M5) is the fix. (At 5:1. At 20:1 the models do beat never-alert, but only by alerting almost every week, i.e. by matching the always-alert policy.)"],
+  ["Which features matter most?", "The 8-week rupee depreciation (largest LR weight, the tree's first split, odds ratio 1.11 per 1%), recent shocks and food-price momentum. The fiscal-year start multiplies the odds by about 5 but is rare, and that estimate rests on only five fiscal years (CI 1.4–19.5)."],
+  ["Is 'front-load support before 1 July' still justified?", "Yes for the timing, not for the one-week flag. In 2019–24, 14 of the 25 rows flagged as fiscal-year starts were followed by a shock (56% vs 17%). In 2025–26, 4 of the 13 shock weeks fell in July, but three came after its first week. M4 will try a first-month-of-the-fiscal-year window."],
   ["What is permutation importance?", "Shuffle one feature in the validation data and measure how much the AUC falls. Works for any model, including KNN."],
   ["What is an odds ratio?", "exp(coefficient): how many times the odds of a shock multiply for a one-unit rise. 1.11 for the rupee means +11% odds per 1% depreciation."],
   ["Was H1 supported?", "In sample yes (clustered Wald p = 0.001). Out of sample in 2025–26 no (DeLong p = 0.42). The early warning works in turbulent periods but not in a calm one."],
   ["Why cluster standard errors by week?", "The five quintile rows of a week share the same signals, so they are not independent; the plain LR test (χ² = 94) overstates the evidence about four-fold."],
-  ["What did H2 and H3 find?", "H2: pass-through is about the same for Q1 and Q5 (p = 0.27). H3: food widens the gap against the poor (p = 0.003); energy as a whole does not narrow it, because utility tariffs hit the poor while motor fuel hits the rich (exploratory)."],
+  ["What did H2 and H3 find?", "H2: pass-through is about the same for Q1 and Q5 (p = 0.27). H3: food widens the gap against the poor (p = 0.003); energy as a whole does not narrow it. The exploratory split shows why: motor fuel and LPG hit the rich harder, while utility tariffs lean towards the poor (not significant, p = 0.10)."],
   ["What are the systematic errors?", "First waves of a new shock, administered utility tariffs and perishable supply spikes are missed; false alarms follow past shocks."],
   ["What are the main limitations?", "Weak signal (underfitting), uncalibrated probabilities, a small test set (13 shock weeks), no data on tariff decisions, urban-only SPI (rural poor invisible), revised data vintage."],
   ["What will you do in M4?", "Ensembles (random forest, gradient boosting) under the same protocol; calibration; a tariff-notification calendar; fairness audit of Q1 vs Q5 (Brier, miss rates, Diebold–Mariano, equal opportunity); ethics of public warnings."],
@@ -580,11 +584,11 @@ body.push(H1("2. Milestone 3 at a glance"));
 body.push(H2("2.1 What we built, in one paragraph"));
 body.push(P("We built and honestly evaluated the first versions of an early-warning classifier. Standing at the end of a week, it predicts whether next week will be a price-shock week (SPI up by at least 1%) for each income quintile. Three baseline models (logistic regression, KNN, a shallow decision tree) were compared with two naive benchmarks. They were tuned with cross-validation that respects time, judged with all standard metrics and with a cost analysis in which missing a shock is five times worse than a false alarm, and explained with three feature-importance measures. We also ran the three hypothesis tests promised in Milestone 2."));
 body.push(H2("2.2 Headline results"));
-body.push(BUL("In the 2021–24 validation years all three models beat both benchmarks (pooled AUC 0.64–0.65 vs 0.58 for persistence) and cut error costs by a third compared with never alerting."));
-body.push(BUL("In the calm 2025–26 test period, KNN ranked shocks best (AUC 0.68), but no model beat 'never alert' on cost: the shock rate halved (17% → 8%), so thresholds learned in crisis years over-alert."));
-body.push(BUL("Drivers: rupee depreciation and recent price momentum; the fiscal-year start multiplies shock odds about five-fold."));
+body.push(BUL("In the 2021–24 validation years all three models beat both benchmarks on pooled AUC (0.64–0.65 vs 0.58 for persistence) and cut error costs by a third compared with never alerting. Much of the pooled score is regime tracking, though: within years, KNN (0.67) and LR (0.65) beat persistence (0.57) and the tree (0.58) barely does."));
+body.push(BUL("In the calm 2025–26 test period, KNN ranked shocks best (AUC 0.68), but at 5:1 no model beat 'never alert' on cost: the shock rate halved (17% → 8%), so thresholds learned in crisis years over-alert."));
+body.push(BUL("Drivers: rupee depreciation and recent price momentum; the fiscal-year start multiplies shock odds about five-fold (from only five fiscal years)."));
 body.push(BUL("Misses: first waves of new shocks, utility-tariff hikes and perishable spikes. False alarms follow past shocks."));
-body.push(BUL("H1 is supported in sample but not in the test period; H2 is not supported (pass-through is equal); H3 holds for food. Utility tariffs hit the poor while motor fuel hits the rich."));
+body.push(BUL("H1 is supported in sample but not in the test period; H2 is not supported (pass-through is equal); H3 holds for food. Motor fuel hits the rich harder; utility tariffs lean towards the poor but are not significant."));
 body.push(H2("2.3 Rubric map"));
 body.push(grid(["Rubric item", "Weight", "Where", "One-line answer"], RUBRIC, [2100, 800, 2800, 3326], { size: 17 }));
 
@@ -652,10 +656,11 @@ body.push(grid(["Question", "Short answer"], VIVA, [3000, 6026], { size: 18, fir
 body.push(H1("9. Limitations and the road to Milestone 4"));
 body.push(BUL("**Underfitting and a weak signal:** no cross-validated AUC reaches 0.7; the best LR is shrunk almost to a constant."));
 body.push(BUL("**Calibration and prior shift:** class weights and shrinkage distort probabilities; thresholds do not transfer from crisis to calm years."));
+body.push(BUL("**Selection criterion:** pooled AUC partly rewards telling crisis years from calm ones (year-level oracle 0.640), which flattered the tree; M4 reports within-year AUC alongside it."));
 body.push(BUL("**Small test set:** 35 shock rows in 13 weeks, so the confidence intervals are wide."));
 body.push(BUL("**Missing lead information:** tariff decisions (NEPRA, OGRA, ECC) and perishable supply shocks."));
 body.push(BUL("**Potential bias:** urban-only SPI (17 cities); 2015-16 quintile weights; LR and tree missed 6 of 7 Q1 shocks vs 4 of 6 for Q5."));
-body.push(BUL("**M4 plan:** ensembles (random forest, gradient boosting) under the same protocol; quintile-specific models and the H4 interaction test; Platt/isotonic calibration; a tariff-notification calendar and a regime feature; fairness audit (H5: Brier and miss rates Q1 vs Q5, Diebold–Mariano test, equal opportunity, welfare-weighted thresholds); ethics of public warnings."));
+body.push(BUL("**M4 plan:** ensembles (random forest, gradient boosting) under the same protocol; quintile-specific models and the H4 interaction test; Platt/isotonic calibration; within-year AUC reported next to pooled AUC; a tariff-notification calendar, a first-month-of-the-fiscal-year window and a regime feature; fairness audit (H5: Brier and miss rates Q1 vs Q5, Diebold–Mariano test, equal opportunity, welfare-weighted thresholds); ethics of public warnings."));
 
 // ================================================================ DOCUMENT
 const matrixHeading = H1("10. Cross-reference matrix: files × steps");
