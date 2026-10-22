@@ -3,7 +3,8 @@
 **Last updated:** 2026-10-22 (session 7)
 **Session summary:** Full audit of Milestone 3 (code, data, results, insights). No code or result errors were found;
 everything reproduces exactly. Several interpretation errors and overclaims were fixed in the notebooks, the manuscript
-and the viva guide, and one methodological caveat (pooled AUC partly measures regime tracking) is now disclosed.
+and the viva guide, and one methodological caveat (pooled AUC partly measures regime tracking) is now disclosed. The
+viva guide was rebuilt in the root once the user closed it in Word.
 
 M3 is due **2026-10-24**.
 
@@ -69,14 +70,13 @@ all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in
     - Fig B4 legend no longer overlaps markers. The notebook writes integer counts, so notebook and script produce
       identical CSVs.
   - Manuscript is now 3,296 body words (was 3,000; no word limit in any rubric), still 12 pages; PDF re-exported.
+  - Viva guide `DS4SG_M3_Reference.docx` rebuilt with all fixes (28 pages, 27 viva questions, validator passed).
 
 ## 3. Where we are now
 - **M3 deliverables are complete and audited.** The team still needs a read-through.
-- **PENDING:** `DS4SG_M3_Reference.docx` in the root is the OLD version. It was open in the user's Word (lock file
-  `~$4SG_M3_Reference.docx`), so it could not be overwritten. `tools/build_m3_reference_doc.js` holds the fixes.
-  After closing it in Word, rebuild it:
-  `NODE_PATH=<folder with node_modules/docx> node tools/build_m3_reference_doc.js DS4SG_M3_Reference.docx`
-  (the docx package is not in the project: `npm install docx` in any folder), then commit it.
+- **Rebuilding the viva guide:** `NODE_PATH=<folder with node_modules/docx> node tools/build_m3_reference_doc.js
+  DS4SG_M3_Reference.docx` (the docx package is not in the project: `npm install docx` in any folder). Close the file
+  in Word first, or the write fails with EBUSY.
 - **Notebooks are the source** (the scratchpad builders are gone): edit them directly.
 - **Word automation (COM):**
   - It works again this session via a NEW hidden instance, exporting to a folder outside the project.
@@ -92,7 +92,6 @@ all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in
 
 ## 4. What's next
 1. **By 2026-10-24 (M3 due):**
-   - close the reference doc in Word and rebuild it (above);
    - the team reads the PDF and the notebooks; to fix the manuscript, edit `tools/build_manuscript_m3.js`, rebuild,
      re-check `python tools/word_count_body.py manuscript/M3_manuscript_sections_IV_V.docx`, and re-export the PDF;
    - submit the PDF, `notebooks/03_baseline_models.ipynb`, `notebooks/04_hypothesis_tests.ipynb`,
@@ -180,7 +179,7 @@ all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in
 - **M3 outputs:** `models/m3_baselines/`, `reports/figures/figB1`–`figB10`, `reports/tables/m3_*.csv` (23 files).
 - **M3 manuscript:** `tools/build_manuscript_m3.js` → `manuscript/M3_manuscript_sections_IV_V.docx` →
   `milestones/M3_baseline_model/M3_manuscript_sections_IV_V.pdf`.
-- **Viva guide:** `DS4SG_M3_Reference.docx` (built by `tools/build_m3_reference_doc.js`; rebuild pending, see §3).
+- **Viva guide:** `DS4SG_M3_Reference.docx` (built by `tools/build_m3_reference_doc.js`).
 - **Project reference:** `DS4SG_Script_and_Data_Reference.docx` (M1–M2 pipeline).
 - **M2:** `notebooks/01_data_preparation.ipynb`, `notebooks/02_eda.ipynb`, `tools/build_manuscript_m2.js`.
 - **Data:** `data/processed/master_features.csv` + `FEATURES_DICTIONARY.md`; `master_model_ready.csv` +
