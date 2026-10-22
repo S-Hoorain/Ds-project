@@ -4,7 +4,7 @@
 // The contents list is static (clickable links to bookmarked headings), so no field update is needed in Word.
 // Same layout as tools/build_reference_doc.js (the project-wide script and data reference).
 // Every number comes from notebooks/03_baseline_models.ipynb, notebooks/04_hypothesis_tests.ipynb and
-// reports/tables/m3_*.csv (run of 2026-10-21).
+// reports/tables/m3_*.csv (run of 2026-10-22).
 const fs = require("fs");
 const {
   Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, ShadingType,
@@ -123,12 +123,12 @@ const STEPS = [
 const FILES = [
   {
     path: "src/models/baseline.py", type: "Python module (imported, not run directly)",
-    what: "The single home of all Milestone 3 modelling code. It defines the feature lists, loads and splits the data, builds the cross-validation folds, defines the three model pipelines and their hyperparameter grids, runs the grid search, computes every metric, chooses the cost-based alarm threshold, and implements the DeLong test and the week-block bootstrap. Its docstring lists decisions B1–B8.",
+    what: "The single home of all Milestone 3 modelling code. It defines the feature lists, loads and splits the data, builds the cross-validation folds, defines the three model pipelines and their hyperparameter grids, runs the grid search, computes every metric, chooses the cost-based alarm threshold, and implements the week-block bootstrap. Its docstring lists decisions B1–B8.",
     why: "Keeping the logic in one module means the notebook and the command-line script use the same code and give identical numbers (a reproducibility requirement in the rubric), and the notebook stays readable.",
     reads: ["`data/processed/master_features.csv` (via `load_model_data()`)"],
     writes: ["`models/m3_baselines/*.joblib` and `model_card.json` (via `save_models()`)"],
     run: "Imported: `from models import baseline as B` (after adding `src/` to the path).",
-    concepts: "pipelines, time-series cross-validation, grid search, out-of-fold predictions, ROC-AUC, cost-sensitive thresholds, DeLong test, block bootstrap, cluster-robust logit.",
+    concepts: "pipelines, time-series cross-validation, grid search, out-of-fold predictions, ROC-AUC, cost-sensitive thresholds, week-block bootstrap, standard errors clustered by week.",
   },
   {
     path: "src/models/train_baselines.py", type: "Python script (command line)",
@@ -171,7 +171,7 @@ const FILES = [
     why: "Building the manuscript from code keeps every number traceable to the notebooks and makes re-runs easy.",
     reads: ["`manuscript/figures/figB*.png`"],
     writes: ["`manuscript/M3_manuscript_sections_IV_V.docx` (then exported to `milestones/M3_baseline_model/M3_manuscript_sections_IV_V.pdf`)"],
-    run: "`node tools/build_manuscript_m3.js manuscript/M3_manuscript_sections_IV_V.docx` (needs the npm package `docx`); word count: `python tools/word_count_body.py manuscript/M3_manuscript_sections_IV_V.docx` (3,000 body words).",
+    run: "`node tools/build_manuscript_m3.js manuscript/M3_manuscript_sections_IV_V.docx` (needs the npm package `docx`); word count: `python tools/word_count_body.py manuscript/M3_manuscript_sections_IV_V.docx` (3,349 body words).",
     concepts: "IEEE-style manuscript, reproducible documents.",
   },
   {
@@ -215,10 +215,9 @@ const FUNCS = [
   ["`classification_metrics(y, p, threshold)`", "Confusion-matrix counts and accuracy, precision, recall, specificity, F1, ROC-AUC, PR-AUC, Brier, number of alerts and expected cost.", "all rubric metrics"],
   ["`expected_cost(y, p, t)` / `best_threshold(y, p)`", "Cost = 1 × FP + 5 × FN at threshold t; the best threshold minimises it over 0.01–0.99 (middle of any tie).", "cost-sensitive threshold (B7)"],
   ["`trivial_policy_costs(y)`", "Cost of never alerting (every shock missed) and of always alerting (every calm week a false alarm).", "reference policies for the cost analysis"],
-  ["`fit_logit(d, cols)` / `logit_predict(...)`", "Unpenalised logit (statsmodels) with standard errors clustered by week; prediction helper.", "H1 test, odds ratios, cluster-robust SE"],
+  ["`fit_logit(d, cols)` / `logit_predict(...)`", "Unpenalised logit (statsmodels) with standard errors clustered by week; prediction helper.", "H1 test, odds ratios, standard errors clustered by week"],
   ["`save_models(fitted, card)`", "Writes the joblib files and the model card.", "model artifacts"],
-  ["`delong_test(y, p_a, p_b)`", "DeLong test that two AUCs on the same rows are equal (fast midrank algorithm); returns both AUCs, z and p-values.", "comparing correlated AUCs"],
-  ["`week_block_bootstrap(y, scores, weeks)`", "Resamples whole test weeks 2,000 times and recomputes each AUC.", "block bootstrap, confidence intervals"],
+  ["`week_block_bootstrap(y, scores, weeks)`", "Bootstrap sampling of whole test weeks (2,000 times, with replacement), recomputing each AUC.", "bootstrap and cluster sampling (Unit 04), confidence intervals (Unit 06)"],
 ];
 
 // Notebook 03 sections
@@ -232,7 +231,7 @@ const NB03 = [
   ["§7 Asymmetric costs", "FP vs FN consequences; Q1 shock size and persistence; cost-ratio sensitivity; cost curves.", "`m3_cost_sensitivity.csv`, figB4"],
   ["§8 Confusion matrices and edge cases", "Confusion matrices; every test shock week with its driver and which models caught it; false-alarm profile; week-by-week forecasts for Q1 and Q5.", "`m3_test_shock_weeks.csv`, `m3_false_alarm_profile.csv`, figB5, figB6"],
   ["§9 Feature importance", "LR standardised coefficients; unpenalised odds ratios; tree Gini; permutation importance; tree rules.", "`m3_feature_importance.csv`, `m3_odds_ratios.csv`, figB7, figB8"],
-  ["§10 H1 test", "In-sample LR and week-clustered Wald tests; out-of-sample AUC comparison with DeLong and week-block bootstrap.", "`m3_h1_tests.csv`, `m3_h1_signal_odds_ratios.csv`"],
+  ["§10 H1 test", "In-sample LR and week-clustered Wald tests; out-of-sample AUC comparison with the week-block bootstrap (replacing the DeLong test planned in M2).", "`m3_h1_tests.csv`, `m3_h1_signal_odds_ratios.csv`"],
   ["§11 Save artifacts", "Saves the three fitted pipelines and the model card.", "`models/m3_baselines/*`"],
   ["§12 Summary", "Findings, policy takeaways, limitations, M4 roadmap.", "—"],
 ];
@@ -283,7 +282,7 @@ const CONCEPTS = [
     ["Expanding-window (forward-chaining) CV", "Always train on the past and test on the next period, adding history each time.", "Fold k trains on all weeks before year 2020+k and validates on that year (K = 4). Respects time order, mimics a real forecaster, and lets us see how performance varies by year (13–33% shock rates).", "`time_series_folds()`"],
     ["Stratified sampling", "Split so that each part has the same share of each class (e.g. 17% shocks).", "Needs random assignment of rows, which would put future weeks in training and split a week's five quintile rows; rejected for time series. Shown in §5 to inflate AUC.", "nb03 §1, §5"],
     ["Out-of-fold (OOF) prediction", "A prediction for a week made by a model that never saw that week.", "Collecting OOF predictions over all validation years lets us choose thresholds and compute pooled AUC honestly.", "`grid_search_time_cv()`"],
-    ["Pooled vs mean fold AUC", "Pooled: one AUC over all validation predictions together. Mean: average of each year's AUC.", "Mean rewards ranking within each year; pooled also requires probability levels to be comparable across years, which a single alarm threshold needs. We select by pooled AUC and report mean ± SD.", "decision B5"],
+    ["Pooled vs mean fold AUC", "Pooled: one AUC over all validation predictions together. Mean: average of each year's AUC.", "Mean rewards ranking within each year; pooled also requires probability levels to be comparable across years, which a single alarm threshold needs. We select by pooled AUC and report mean ± SD. Pooled AUC also rewards telling crisis years from calm years: the tree's pooled AUC beats three of its four yearly AUCs.", "decision B5"],
     ["Pipeline", "A chain 'scale → model' treated as one object.", "Guarantees the scaler is fitted only on each fold's training rows, so no information leaks from validation data.", "`make_models()`"],
   ]],
   ["Models", [
@@ -292,11 +291,11 @@ const CONCEPTS = [
     ["Logistic regression", "Adds up weighted features into a score, then turns the score into a probability between 0 and 1.", "log(p/(1−p)) = b0 + b1x1 + … Coefficients are changes in log-odds; exp(coefficient) = odds ratio. Linear in the log-odds, no interactions unless added.", "nb03 §4, §9, §10"],
     ["Regularisation (L1, L2, C)", "A penalty that keeps coefficients small so the model does not chase noise.", "L2 (ridge) shrinks all coefficients; L1 (lasso) can set some to zero. C = 1/penalty strength: small C = strong penalty. Our best: C = 0.0001, L2 — a strongly shrunk model, because the signal is weak and shifts over time.", "grid, Figure B2"],
     ["Class weights ('balanced')", "Make each rare shock count more during training.", "Weights each class inversely to its frequency so the model does not ignore the minority class. Side effect: probabilities are no longer calibrated (centred near 0.5 for LR).", "grids for LR and tree"],
-    ["k-nearest neighbours (KNN)", "Find the k most similar past weeks and use the share of them that were followed by a shock.", "Non-parametric 'analogue' forecast. Small k = flexible (overfits); large k = smooth (underfits). Needs scaled features because it uses distances. Selected k = 100, uniform weights, z-scores.", "nb03 §4"],
+    ["k-nearest neighbours (KNN)", "Find the k most similar past weeks and use the share of them that were followed by a shock.", "Non-parametric 'analogue' forecast (Unit 11). Small k = flexible (overfits); large k = smooth (underfits). Needs scaled features because it uses distances. Selected k = 100, uniform weights, z-scores.", "nb03 §4"],
     ["Distance weighting (KNN)", "Closer neighbours get a bigger vote.", "Gives training AUC = 1.0 (each training row is its own neighbour) — memorisation without validation gain.", "grid"],
     ["Decision tree", "A flow-chart of yes/no questions that ends in a prediction.", "Each split picks the feature and cut-off that most reduce impurity. max_depth and min_samples_leaf limit complexity. Selected: depth 4, leaves ≥ 40 rows. First split: rupee fell > 8% in 8 weeks.", "nb03 §4, §9"],
-    ["Gini impurity", "How mixed a group is (0 = all one class).", "Gini = 1 − Σ p_k². A split is good if it lowers the weighted Gini of the child groups.", "tree"],
-    ["Scaling (z-score, Min-Max)", "Put features on comparable scales.", "z = (x − mean)/SD; Min-Max = (x − min)/(max − min). Min-Max is hurt by outliers (heavy tails squeeze normal weeks together); z-score won for KNN (0.64 vs 0.53).", "Unit 04; `make_models()`"],
+    ["Gini impurity", "How mixed a group is (0 = all one class).", "Gini = 1 − Σ p_k². A split is good if it lowers the weighted Gini of the child groups (Units 08–09).", "tree"],
+    ["Scaling (z-score, Min-Max)", "Put features on comparable scales.", "z = (x − mean)/SD; Min-Max = (x − min)/(max − min). Min-Max is hurt by outliers (heavy tails squeeze normal weeks together); z-score won for KNN (0.64 vs 0.53).", "Units 04 and 11; `make_models()`"],
   ]],
   ["Metrics", [
     ["Confusion matrix", "A 2 × 2 count of right and wrong predictions.", "TP = shock caught; FN = shock missed; FP = false alarm; TN = calm week left alone. All threshold metrics come from these four counts.", "Figure B5"],
@@ -306,16 +305,15 @@ const CONCEPTS = [
     ["Specificity", "Of the calm weeks, how many did we correctly leave alone?", "TN / (TN + FP). Trade-off with recall as the threshold moves.", ""],
     ["F1 score", "One number balancing precision and recall.", "Harmonic mean 2PR/(P+R); low if either is low.", ""],
     ["ROC curve and ROC-AUC", "How well the model ranks shock weeks above calm weeks, over all thresholds.", "ROC plots recall against false-positive rate. AUC = probability a random shock row scores higher than a random calm row: 0.5 = chance, 1 = perfect. Threshold-free and insensitive to the shock rate.", "Figure B3"],
-    ["PR curve and PR-AUC", "Precision against recall over all thresholds.", "Focuses on the rare class; no-skill level = shock rate (0.077). More informative than ROC under imbalance.", "Figure B3"],
-    ["Brier score", "Average squared error of the predicted probabilities.", "Mean of (p − y)²; lower is better. Measures calibration (does 20% mean 20%?). LR 0.238 is poor because its probabilities sit near 0.5.", ""],
-    ["Calibration", "Whether predicted probabilities match observed frequencies.", "Needed if officials read the probability itself. Class weights and heavy shrinkage break it; M4 will calibrate (Platt, isotonic).", ""],
+    ["PR curve and PR-AUC", "Precision against recall over all thresholds.", "Focuses on the rare class; no-skill level = shock rate (0.077). More informative than ROC under imbalance (the Unit 10 homework question).", "Figure B3"],
+    ["Brier score", "Average squared error of the predicted probabilities.", "Mean of (p − y)²; lower is better. Measures calibration (does 20% mean 20%?). LR 0.238 is poor because its probabilities sit near 0.5. It is also the loss in the fairness hypothesis H5 (M2).", ""],
+    ["Calibration", "Whether predicted probabilities match observed frequencies.", "Needed if officials read the probability itself. Class weights and heavy shrinkage break it; M4 will adjust the probabilities so they match observed shock rates.", ""],
   ]],
   ["Costs and thresholds", [
     ["Decision threshold", "The probability above which we raise an alarm.", "Default 0.5 is arbitrary. We pick the threshold that minimises expected cost on out-of-fold predictions.", "`best_threshold()`"],
     ["Asymmetric error costs", "Missing a shock hurts more than a false alarm.", "We weight a miss (FN) as 5 false alarms (FP). Expected cost = 1 × FP + 5 × FN.", "nb03 §7"],
-    ["Bayes-optimal threshold", "With true probabilities, alert when p ≥ c_FP / (c_FP + c_FN).", "= 1/6 ≈ 0.17 at 5:1. Only valid for calibrated probabilities, hence our empirical choice.", "nb03 §6"],
     ["Trivial policies", "Never alert, or always alert.", "The cheaper of the two is the benchmark any model must beat on cost. In 2021–24 at 5:1 always-alert was cheaper (shock rate 19.5% > 1/6); in the test never-alert was.", "`trivial_policy_costs()`"],
-    ["Prior shift / base-rate effect", "The share of shocks changes between periods.", "Shock rate 17% (train) → 8% (test). Ranking can stay similar but precision falls and fixed thresholds over-alert.", "nb03 §1, §7"],
+    ["Base-rate change", "The share of shocks changes between periods.", "Shock rate 17% (train) → 8% (test). Ranking can stay similar but precision falls and fixed thresholds over-alert.", "nb03 §1, §7"],
   ]],
   ["Feature importance", [
     ["Standardised coefficient", "Effect of a one-standard-deviation change in a feature.", "Because all LR inputs are z-scored, coefficients are comparable across features. We show them relative to the largest.", "Figure B7"],
@@ -327,17 +325,27 @@ const CONCEPTS = [
     ["Hypothesis test, p-value", "Assume no effect (H0); p = how surprising our data would be if H0 were true.", "Reject H0 when p < 0.05 (Unit 07). One-sided tests when M2 stated a direction.", "nb03 §10, nb04"],
     ["Likelihood-ratio (LR) test", "Compare a model with and without the signals.", "2 × (log-likelihood difference) ~ χ²(6). Assumes independent rows, so overstated here (χ² = 94).", "H1"],
     ["Wald test, clustered SE", "Test whether coefficients are zero using their standard errors.", "Standard errors clustered by week treat a week's five quintile rows as one block of evidence: χ²(6) = 22.4, p = 0.001.", "H1"],
-    ["DeLong test", "Are two AUCs on the same rows different?", "Uses each row's contribution to the AUC to get the variance of the difference (Sun & Xu fast algorithm). Assumes independent rows.", "`delong_test()`"],
-    ["Block bootstrap", "Resample whole weeks many times to see how much a result could vary.", "2,000 resamples of test weeks (all five rows together) give 95% intervals for AUCs and AUC differences.", "`week_block_bootstrap()`"],
+    ["Block bootstrap", "Resample whole weeks many times to see how much a result could vary.", "2,000 resamples of test weeks (all five rows together) give 95% intervals for AUCs and AUC differences. Built from bootstrap sampling and cluster sampling (Unit 04) and confidence intervals (Unit 06). For H1 it replaces the DeLong test planned in M2, which assumes independent rows.", "`week_block_bootstrap()`"],
     ["HAC (Newey–West) SE", "Standard errors that allow weekly errors to be correlated over time.", "Without them, p-values would be too small. Lags = horizon + 2 for overlapping windows.", "nb04"],
     ["Difference regression", "Regress Q5's minus Q1's outcome on the shared driver.", "Its slope equals β_Q5 − β_Q1 directly, with one standard error that already handles the correlation between the groups.", "H2"],
   ]],
-  ["Bias and variance", [
+  ["Overfitting and tuning", [
     ["Overfitting", "The model memorises training data and does worse on new data.", "Seen as training AUC rising while validation AUC falls (KNN k = 5: 0.98 vs 0.56).", "Figure B2"],
     ["Underfitting", "The model is too simple to capture the pattern.", "Both training and validation scores low. Our baselines underfit a weak signal (CV AUC ≈ 0.64).", "nb03 §12"],
-    ["Validation curve", "A plot of score against a hyperparameter.", "Shows the bias–variance trade-off and where the best setting lies.", "Figure B2"],
+    ["Validation curve", "A plot of score against a hyperparameter.", "Shows where overfitting begins and where the best setting lies.", "Figure B2"],
     ["Grid search", "Try every combination of candidate settings and keep the best.", "Exhaustive and transparent; 48 (LR), 44 (KNN), 98 (tree) settings × 4 folds.", "`grid_search_time_cv()`"],
   ]],
+];
+
+// Methods used from beyond the lecture slides (Section 5.8)
+const BEYOND = [
+  ["Expanding-window cross-validation (new in M3)", "Shuffled K-fold (Week 7) lets the model learn from the future and from sister rows of the same week; nb03 §5 shows it inflates AUC by 0.05–0.14.", "Always train on the past and validate on the next year, like a real forecaster."],
+  ["Permutation importance (new in M3)", "KNN has no coefficients and no Gini importance, but the rubric asks which features drive the models.", "Shuffle one feature in the validation year; the bigger the drop in AUC, the more the model relied on it."],
+  ["Standard errors clustered by week (new in M3)", "The five quintile rows of a week share the same signals; treating them as independent overstates the H1 evidence about four-fold (χ² 94 against 22.4).", "Count each week as one block of evidence, not five rows."],
+  ["Logit likelihood-ratio test (from the M2 plan)", "H1 compares a model with and without the six signals.", "Twice the gain in log-likelihood, compared with a chi-square distribution."],
+  ["OLS with Newey–West (HAC) errors (from the M2 plan)", "H2 and H3 are regressions on weekly data, and errors in nearby weeks are correlated (overlapping 8-week windows).", "Regression is Week 10; HAC widens the standard errors so the p-values are not too optimistic."],
+  ["Brier score (from the M2 plan)", "It is the loss in the fairness hypothesis H5; in M3 it shows that LR's probabilities are not calibrated.", "Mean squared error of the predicted probabilities."],
+  ["Diebold–Mariano test (M4 plan only, from M2)", "It will test H5 (are Q1's forecast errors larger than Q5's?) in Milestone 4.", "A t-test on the weekly difference between two groups' losses, with standard errors that allow for autocorrelation."],
 ];
 
 // ---------------------------------------------------------------- decisions
@@ -373,7 +381,7 @@ const DECISIONS = [
   {
     id: "B5", title: "Select hyperparameters by ROC-AUC of the pooled out-of-fold predictions",
     simple: "We choose the setting whose predictions, put together across all four validation years, rank shock weeks best — because one alarm threshold must work in every year.",
-    detail: "ROC-AUC is threshold-free and unaffected by the shock rate, and it is the metric of hypothesis H1. Pooling matters: an unweighted LR scored 0.65 averaged over folds but only 0.53 pooled, because its probability level followed each fold's base rate. The majority class shows the same effect (0.5 per fold, 0.467 pooled). Mean ± SD of per-fold AUCs is still reported for the rubric's 'variance across folds'. Caveat found in the audit: pooled AUC also rewards telling crisis years from calm ones. An oracle that knows only each validation year's realised shock rate (constant within the year) scores 0.640 pooled. Within years (mean fold AUC) the order is KNN 0.672 > LR 0.651 > tree 0.578 ≈ persistence 0.569, and that is the order the test reproduced. We kept the planned rule, because switching after seeing the test would leak test information into model choice; M4 reports both.",
+    detail: "ROC-AUC is threshold-free and unaffected by the shock rate, and it is the metric of hypothesis H1. Pooling matters: an unweighted LR scored 0.65 averaged over folds but only 0.53 pooled, because its probability level followed each fold's base rate. The majority class shows the same effect (0.5 per fold, 0.467 pooled). Mean ± SD of per-fold AUCs is still reported for the rubric's 'variance across folds'. Caveat found in the audit: pooled AUC also rewards telling crisis years from calm ones. The tree's pooled AUC (0.652) beats three of its four yearly AUCs (0.49–0.67), which can only come from differences between years. Within years (mean fold AUC) the order is KNN 0.672 > LR 0.651 > tree 0.578 ≈ persistence 0.569, and that is the order the test reproduced. We kept the planned rule, because switching after seeing the test would leak test information into model choice; M4 reports both.",
     alt: "Mean per-fold AUC (standard GridSearchCV): ignores whether probability levels are comparable across years, but measures within-year ranking cleanly (M4 will report it alongside). Accuracy: rewards never alerting.",
     where: "`grid_search_time_cv()`",
   },
@@ -387,7 +395,7 @@ const DECISIONS = [
   {
     id: "B7", title: "Alarm threshold minimises expected cost with a missed shock = 5 false alarms; ratios 1–20 tested",
     simple: "Missing a real shock hurts poor families much more than a false alarm costs the government, so we count a miss as five times worse and pick the cut-off that minimises total cost.",
-    detail: "Evidence: a Q1 shock is not given back (8 weeks later Q1 prices are 4.2% above the pre-shock week, against 1.9% around an ordinary week, and after the shock they keep rising at the usual pace, 2.1% vs 2.0%), a typical shock is up to Rs 355/month at the Q1 ceiling (≈ 8% of the Rs 4,500/month Kafaalat value), coping is irreversible, and FAO found ≈ US$7 return per US$1 of early action. A false alarm is a transfer to poor households, not a pure loss, so 5:1 sits between parity and 7:1. Thresholds are chosen on 2021–24 out-of-fold predictions (not the test): LR 0.50, KNN 0.12, tree 0.16. The Bayes rule 1/6 is quoted for comparison but needs calibrated probabilities.",
+    detail: "Evidence: a Q1 shock is not given back (8 weeks later Q1 prices are 4.2% above the pre-shock week, against 1.9% around an ordinary week, and after the shock they keep rising at the usual pace, 2.1% vs 2.0%), a typical shock is up to Rs 355/month at the Q1 ceiling (≈ 8% of the Rs 4,500/month Kafaalat value), coping is irreversible, and FAO found ≈ US$7 return per US$1 of early action. A false alarm is a transfer to poor households, not a pure loss, so 5:1 sits between parity and 7:1. Thresholds are chosen on 2021–24 out-of-fold predictions (not the test): LR 0.50, KNN 0.12, tree 0.16.",
     alt: "Default 0.5; maximising F1; a different ratio (all reported in the sensitivity table).",
     where: "`COST_FN`, `best_threshold()`, nb03 §7, Figure B4",
   },
@@ -415,7 +423,7 @@ const DECISIONS = [
   {
     id: "B11", title: "Grid ranges, extended where the best value sat on an edge; saga solver for LR",
     simple: "We tried wide ranges of settings and widened them when the best setting landed at the edge of the range.",
-    detail: "LR C was extended down to 10^−4; the curve is flat for C ≤ 0.01 (all within 0.013), so the edge choice is a plateau, not a missed optimum. KNN k stops at 250 because the smallest training fold has about 310 rows. Tree leaf size extended to 160. The saga solver supports L1 and L2 and, unlike liblinear, does not penalise the intercept (a penalised intercept pushed every probability towards 0.5 in an early trial).",
+    detail: "LR C was extended down to 10^−4; the curve is flat for C ≤ 0.01 (all within 0.013), so the edge choice is a plateau, not a missed optimum. KNN k stops at 250 because the smallest training fold has about 310 rows. Tree leaf size extended to 160. The saga solver is used because it fits both the L1 and the L2 penalty of the grid.",
     alt: "Random search (unnecessary for small grids).",
     where: "`make_models()`",
   },
@@ -427,11 +435,11 @@ const DECISIONS = [
     where: "nb03 §9, `cv_permutation_importance()`",
   },
   {
-    id: "B13", title: "H1: week-clustered Wald test in sample; DeLong and week-block bootstrap out of sample",
+    id: "B13", title: "H1: week-clustered Wald test in sample; week-block bootstrap out of sample (replacing the DeLong test)",
     simple: "The five quintile rows of a week are not five independent pieces of evidence, so our tests treat each week as one block.",
-    detail: "Plain LR test χ²(6) = 94 vs clustered Wald χ²(6) = 22.4 (p = 0.001): clustering cuts the evidence about four-fold but H0 is still rejected in sample. Out of sample, DeLong (promised in M2) gives p = 0.42; because DeLong also assumes independent rows, the week-block bootstrap is the robustness check (gain −0.08 to +0.10).",
-    alt: "Only the plain LR test (overstates evidence).",
-    where: "nb03 §10, `fit_logit()`, `delong_test()`, `week_block_bootstrap()`",
+    detail: "Plain LR test χ²(6) = 94 vs clustered Wald χ²(6) = 22.4 (p = 0.001): clustering cuts the evidence about four-fold but H0 is still rejected in sample. Out of sample, M2 had planned the DeLong test, but DeLong also assumes independent rows. We resample whole test weeks instead (bootstrap and cluster sampling, Unit 04): the 95% interval for the AUC gain is −0.08 to +0.10, and 45% of resamples show no gain (p = 0.45).",
+    alt: "Only the plain LR test (overstates evidence); the DeLong test (assumes independent rows and is hard to check by hand).",
+    where: "nb03 §10, `fit_logit()`, `week_block_bootstrap()`",
   },
   {
     id: "B14", title: "H2 tested with a Q5 − Q1 difference regression on the training period, HAC errors",
@@ -450,7 +458,7 @@ const DECISIONS = [
   {
     id: "B16", title: "The test period is used once; results reported honestly",
     simple: "We looked at the test results only after all choices were fixed, and we report that the models did not beat 'never alert' in 2025–26 instead of re-tuning until they did.",
-    detail: "All tuning, thresholds and the cost ratio come from 2019–24 data; the cost evidence also uses training weeks only. The calm test period (prior shift) is a real finding: thresholds learned in crisis years over-alert in calm years. Adjusting thresholds to the test would be leakage.",
+    detail: "All tuning, thresholds and the cost ratio come from 2019–24 data; the cost evidence also uses training weeks only. The calm test period (the shock rate halved) is a real finding: thresholds learned in crisis years over-alert in calm years. Adjusting thresholds to the test would be leakage.",
     alt: "Re-tuning on the test set (invalid).",
     where: "nb03 §6–§7",
   },
@@ -495,10 +503,10 @@ const NUMBERS = [
   ["Cost 2021–24 (5:1)", "33–39% below never-alert; 18–26% below always-alert"],
   ["Cost test (5:1)", "4–23% above never-alert (LR 1.04, KNN 1.19, tree 1.23)"],
   ["Q1 shock size", "median 1.6%, mean 2.0%; not reversed: 4.2% above the pre-shock week 8 weeks later (ordinary week: 1.9%); Rs 355/month ≈ 8% of Kafaalat"],
-  ["Regime tracking (CV)", "year-level oracle pooled AUC 0.640; within-year (mean fold) AUC: KNN 0.672, LR 0.651, tree 0.578, persistence 0.569"],
+  ["Within-year AUC (CV)", "mean fold AUC: KNN 0.672, LR 0.651, tree 0.578, persistence 0.569 (pooled favours the tree: 0.652)"],
   ["Top drivers", "rupee 8-week change (LR weight 1.00, Gini 0.45, OR 1.11 per 1%); fiscal-year start OR 5.3 (5 fiscal years, 14 of 25 rows shocked; CI 1.4–19.5)"],
   ["July in the test", "4 of 13 shock weeks (14 of 35 shock rows); only 1 in the week containing 1 July"],
-  ["H1", "in sample Wald χ²(6) = 22.4, p = 0.001 (LR χ² = 94); test AUC 0.554 → 0.561, DeLong p = 0.42"],
+  ["H1", "in sample Wald χ²(6) = 22.4, p = 0.001 (LR χ² = 94); test AUC 0.554 → 0.561, week-block bootstrap 95% CI −0.08 to +0.10, p = 0.45"],
   ["H2", "pass-through ≈ 0.21 (Q1) vs 0.22 (Q5) per 1% over 8 weeks; δ = 0.04, p = 0.27"],
   ["H3", "β_food = 0.12 (p = 0.003); β_energy = +0.04 (p = 0.92); split R² 0.16 → 0.38"],
 ];
@@ -510,7 +518,7 @@ const VIVA = [
   ["Why K = 4?", "One fold per calendar year 2021–2024, so each validation block has exactly one fiscal-year start, Ramadan and Eid. 2020 cannot be a validation year because its training window would hold only 9 weeks (Oct–Dec 2019)."],
   ["What would shuffled K-fold have shown?", "AUCs of 0.70–0.73 instead of 0.58–0.67: inflated by sister rows of the same week and by learning from the future."],
   ["Why ROC-AUC for tuning and not accuracy?", "Accuracy rewards never raising an alarm (92% in the test). AUC measures ranking, is threshold-free and is not affected by the shock rate."],
-  ["What is 'pooled' AUC?", "One AUC over the out-of-fold predictions of all four years together. Because the system uses one threshold for all years, probabilities must mean the same in every year; pooled AUC checks that, the per-fold average does not. Its weakness: it also rewards telling crisis years from calm ones (a year-level oracle scores 0.640)."],
+  ["What is 'pooled' AUC?", "One AUC over the out-of-fold predictions of all four years together. Because the system uses one threshold for all years, probabilities must mean the same in every year; pooled AUC checks that, the per-fold average does not. Its weakness: it also rewards telling crisis years from calm ones (the tree's pooled AUC beats three of its four yearly AUCs)."],
   ["Your tree had the best CV score but the worst test score. Why?", "Pooled AUC rewards regime tracking, and the tree's first split (rupee down > 8% in 8 weeks) recognises the 2022–23 crisis. Within years its AUC is only 0.578, about persistence (0.569). The test period is one calm regime, so only within-year ranking counts there, and the within-year order (KNN > LR > tree) is exactly the test order. We did not re-select after seeing this, because that would leak the test into model choice; M4 will report both views."],
   ["Explain the C you chose.", "C is the inverse of the penalty strength. C = 0.0001 means a very strong L2 penalty: coefficients are shrunk heavily. Weaker penalties fit training weeks better (AUC 0.86) but validate worse (0.56): overfitting. The curve is flat for C ≤ 0.01."],
   ["Why k = 100 for KNN?", "Small k overfits (k = 5: training AUC 0.98, validation 0.56). Around 100 neighbours the validation AUC peaks (0.64) and then declines as the forecast becomes too smooth."],
@@ -519,17 +527,19 @@ const VIVA = [
   ["Precision is only 0.13. Is the model useless?", "Precision depends on how common shocks are. In 2025–26 only 7.7% of rows were shocks, so most alarms are false even with decent ranking (AUC 0.68). In 2021–24 precision was 0.26–0.38."],
   ["Why is a false negative worse than a false positive here?", "A miss leaves poor households to absorb a price step that is not given back (8 weeks later Q1 prices are 4.2% above the pre-shock week, against 1.9% around an ordinary week), with irreversible coping; a false alarm is a top-up that still reaches poor families. We weight a miss as 5 false alarms and test 1–20."],
   ["How did you choose the threshold?", "The value that minimises 1 × FP + 5 × FN on the 2021–24 out-of-fold predictions; then applied unchanged to the test."],
-  ["Why did no model beat 'never alert' in the test?", "Prior shift: the shock rate halved. Thresholds learned when shocks were common over-alert when they are rare. The ranking still works (KNN AUC 0.68), so recalibration/retraining (M4–M5) is the fix. (At 5:1. At 20:1 the models do beat never-alert, but only by alerting almost every week, i.e. by matching the always-alert policy.)"],
+  ["Why did no model beat 'never alert' in the test?", "The shock rate halved. Thresholds learned when shocks were common over-alert when they are rare. The ranking still works (KNN AUC 0.68), so recalibration/retraining (M4–M5) is the fix. (At 5:1. At 20:1 the models do beat never-alert, but only by alerting almost every week, i.e. by matching the always-alert policy.)"],
   ["Which features matter most?", "The 8-week rupee depreciation (largest LR weight, the tree's first split, odds ratio 1.11 per 1%), recent shocks and food-price momentum. The fiscal-year start multiplies the odds by about 5 but is rare, and that estimate rests on only five fiscal years (CI 1.4–19.5)."],
   ["Is 'front-load support before 1 July' still justified?", "Yes for the timing, not for the one-week flag. In 2019–24, 14 of the 25 rows flagged as fiscal-year starts were followed by a shock (56% vs 17%). In 2025–26, 4 of the 13 shock weeks fell in July, but three came after its first week. M4 will try a first-month-of-the-fiscal-year window."],
   ["What is permutation importance?", "Shuffle one feature in the validation data and measure how much the AUC falls. Works for any model, including KNN."],
   ["What is an odds ratio?", "exp(coefficient): how many times the odds of a shock multiply for a one-unit rise. 1.11 for the rupee means +11% odds per 1% depreciation."],
-  ["Was H1 supported?", "In sample yes (clustered Wald p = 0.001). Out of sample in 2025–26 no (DeLong p = 0.42). The early warning works in turbulent periods but not in a calm one."],
+  ["Was H1 supported?", "In sample yes (clustered Wald p = 0.001). Out of sample in 2025–26 no (week-block bootstrap p = 0.45). The early warning works in turbulent periods but not in a calm one."],
+  ["M2 promised a DeLong test for H1. Why did you use a bootstrap?", "DeLong treats the 455 test rows as independent, but the five quintile rows of a week share the same signals and move together. Resampling whole weeks with replacement (bootstrap and cluster sampling, Unit 04) keeps them together, gives a 95% interval (−0.08 to +0.10) and a p-value (0.45), and is easy to check by hand."],
+  ["Which methods did you use that were not in the lecture slides, and why?", "Three, each because the course method alone would give a wrong or incomplete answer: expanding-window CV (shuffled K-fold leaks the future, inflating AUC by 0.05–0.14), permutation importance (KNN has no coefficients or Gini importance) and standard errors clustered by week (the five quintile rows of a week are not independent). The LR test, HAC errors and the Brier score were already in our M2 plan."],
   ["Why cluster standard errors by week?", "The five quintile rows of a week share the same signals, so they are not independent; the plain LR test (χ² = 94) overstates the evidence about four-fold."],
   ["What did H2 and H3 find?", "H2: pass-through is about the same for Q1 and Q5 (p = 0.27). H3: food widens the gap against the poor (p = 0.003); energy as a whole does not narrow it. The exploratory split shows why: motor fuel and LPG hit the rich harder, while utility tariffs lean towards the poor (not significant, p = 0.10)."],
   ["What are the systematic errors?", "First waves of a new shock, administered utility tariffs and perishable supply spikes are missed; false alarms follow past shocks."],
   ["What are the main limitations?", "Weak signal (underfitting), uncalibrated probabilities, a small test set (13 shock weeks), no data on tariff decisions, urban-only SPI (rural poor invisible), revised data vintage."],
-  ["What will you do in M4?", "Ensembles (random forest, gradient boosting) under the same protocol; calibration; a tariff-notification calendar; fairness audit of Q1 vs Q5 (Brier, miss rates, Diebold–Mariano, equal opportunity); ethics of public warnings."],
+  ["What will you do in M4?", "Ensembles (random forest, gradient boosting) under the same protocol; calibration; a tariff-notification calendar; fairness audit of Q1 vs Q5 (Brier scores and miss rates with the Diebold–Mariano test planned in M2; equal recall across quintiles); ethics of public warnings."],
   ["Can you show the code that prevents leakage?", "`time_series_folds()` (folds by year, asserted in nb03 §2), the scaler inside each `Pipeline` in `make_models()`, and `best_threshold()` applied to out-of-fold predictions only."],
   ["How do you know the notebook is reproducible?", "Fixed seed 42; `python src/models/train_baselines.py` gives exactly the same test predictions as the notebook; fitted models and the model card are saved."],
 ];
@@ -558,7 +568,7 @@ body.push(new Paragraph({ children: [new TextRun({ text: "Milestone 3 Reference 
 body.push(P("Baseline models, evaluation and initial findings: files, concepts and decisions", { size: 28, color: MUTED, after: 120 }));
 body.push(P("Early-warning system for essential-price shocks across income quintiles in Pakistan", { size: 24, color: MUTED, after: 120 }));
 body.push(P("CS/SDP 312/314 Data Science for Social Good · Team: Syeda Hoorain Imran, Muhammad Munib Sattar, Sarah Khalid", { size: 22, color: MUTED, after: 120 }));
-body.push(P("Version: 21 October 2026 (Milestone 3 due 24 October 2026)", { size: 22, color: MUTED, after: 600 }));
+body.push(P("Version: 22 October 2026 (Milestone 3 due 24 October 2026)", { size: 22, color: MUTED, after: 600 }));
 body.push(P("This document is the companion to Milestone 3. It lists every file the milestone created or used, what each one does and the concepts behind it, and explains every important modelling decision twice: once in plain words and once in technical detail. It ends with a cheat sheet of key numbers and a list of likely viva questions with short answers. The project-wide script and data reference (`DS4SG_Script_and_Data_Reference.docx`) still covers the data pipeline of Milestones 1–2.", { size: 22 }));
 body.push(pageBreak());
 
@@ -584,7 +594,7 @@ body.push(H1("2. Milestone 3 at a glance"));
 body.push(H2("2.1 What we built, in one paragraph"));
 body.push(P("We built and honestly evaluated the first versions of an early-warning classifier. Standing at the end of a week, it predicts whether next week will be a price-shock week (SPI up by at least 1%) for each income quintile. Three baseline models (logistic regression, KNN, a shallow decision tree) were compared with two naive benchmarks. They were tuned with cross-validation that respects time, judged with all standard metrics and with a cost analysis in which missing a shock is five times worse than a false alarm, and explained with three feature-importance measures. We also ran the three hypothesis tests promised in Milestone 2."));
 body.push(H2("2.2 Headline results"));
-body.push(BUL("In the 2021–24 validation years all three models beat both benchmarks on pooled AUC (0.64–0.65 vs 0.58 for persistence) and cut error costs by a third compared with never alerting. Much of the pooled score is regime tracking, though: within years, KNN (0.67) and LR (0.65) beat persistence (0.57) and the tree (0.58) barely does."));
+body.push(BUL("In the 2021–24 validation years all three models beat both benchmarks on pooled AUC (0.64–0.65 vs 0.58 for persistence) and cut error costs by a third compared with never alerting. Much of the pooled score comes from telling crisis years from calm years, though: within years, KNN (0.67) and LR (0.65) beat persistence (0.57) and the tree (0.58) barely does."));
 body.push(BUL("In the calm 2025–26 test period, KNN ranked shocks best (AUC 0.68), but at 5:1 no model beat 'never alert' on cost: the shock rate halved (17% → 8%), so thresholds learned in crisis years over-alert."));
 body.push(BUL("Drivers: rupee depreciation and recent price momentum; the fiscal-year start multiplies shock odds about five-fold (from only five fiscal years)."));
 body.push(BUL("Misses: first waves of new shocks, utility-tariff hikes and perishable spikes. False alarms follow past shocks."));
@@ -626,11 +636,15 @@ body.push(grid(["File(s)", "Contents", "Produced by"], TABLES, [3300, 4126, 1600
 // 5. Concepts
 body.push(pageBreak());
 body.push(H1("5. Concepts"));
-body.push(P("Each concept is explained in plain words and then in more detail, with where it appears. Course units: KNN, hold-out and cross-validation, and bias in training data are Week 7; logistic regression is Week 9; model evaluation metrics are Week 6; scaling is Unit 04; resistant statistics are Unit 05; hypothesis tests and p-values are Unit 07. Decision trees, ensembles and fairness come later in the course and are explained here."));
+body.push(P("Each concept is explained in plain words and then in more detail, with where it appears. Lecture slides: scaling, sampling and bootstrap sampling are Unit 04; resistant statistics and correlation Unit 05; confidence intervals Unit 06; hypothesis tests and p-values Unit 07; decision trees, Gini and entropy Units 08–09; the confusion matrix, precision, recall, F-measure, ROC and AUC Unit 10 (PR-AUC is its homework); KNN, distances, weighted voting and normalisation Unit 11. The syllabus adds hold-out and cross-validation (Week 7), logistic regression (Week 9) and regression analysis (Week 10); ensembles (Week 12) and fairness (Week 15) come later. Section 5.8 lists the few methods we used from beyond the course, and why."));
 for (const [group, rows] of CONCEPTS) {
   body.push(H2(`5.${CONCEPTS.findIndex((c) => c[0] === group) + 1} ${group}`));
   body.push(grid(["Concept", "In simple words", "In more detail", "Where"], rows, [1700, 2600, 3500, 1226], { size: 17, firstBold: true }));
 }
+body.push(H2("5.8 Methods beyond the lecture slides"));
+body.push(P("Almost everything in Milestone 3 comes from the lecture slides, the syllabus or the rubric. These are the exceptions. Each one is there because the course method alone would have given a wrong or incomplete answer, so be ready to say why in one sentence."));
+body.push(grid(["Method", "Why we needed it", "One-line explanation"], BEYOND, [2300, 3600, 3126], { size: 17, firstBold: true }));
+body.push(P("Dropped in this version: the DeLong test planned in M2 (replaced by the week-block bootstrap, which is built from bootstrap and cluster sampling in Unit 04).", { before: 80 }));
 
 // 6. Decisions
 body.push(pageBreak());
@@ -655,12 +669,12 @@ body.push(grid(["Question", "Short answer"], VIVA, [3000, 6026], { size: 18, fir
 // 9. Limitations and roadmap
 body.push(H1("9. Limitations and the road to Milestone 4"));
 body.push(BUL("**Underfitting and a weak signal:** no cross-validated AUC reaches 0.7; the best LR is shrunk almost to a constant."));
-body.push(BUL("**Calibration and prior shift:** class weights and shrinkage distort probabilities; thresholds do not transfer from crisis to calm years."));
-body.push(BUL("**Selection criterion:** pooled AUC partly rewards telling crisis years from calm ones (year-level oracle 0.640), which flattered the tree; M4 reports within-year AUC alongside it."));
+body.push(BUL("**Calibration and a changing shock rate:** class weights and shrinkage distort probabilities; thresholds do not transfer from crisis to calm years."));
+body.push(BUL("**Selection criterion:** pooled AUC partly rewards telling crisis years from calm ones, which flattered the tree; M4 reports within-year AUC alongside it."));
 body.push(BUL("**Small test set:** 35 shock rows in 13 weeks, so the confidence intervals are wide."));
 body.push(BUL("**Missing lead information:** tariff decisions (NEPRA, OGRA, ECC) and perishable supply shocks."));
 body.push(BUL("**Potential bias:** urban-only SPI (17 cities); 2015-16 quintile weights; LR and tree missed 6 of 7 Q1 shocks vs 4 of 6 for Q5."));
-body.push(BUL("**M4 plan:** ensembles (random forest, gradient boosting) under the same protocol; quintile-specific models and the H4 interaction test; Platt/isotonic calibration; within-year AUC reported next to pooled AUC; a tariff-notification calendar, a first-month-of-the-fiscal-year window and a regime feature; fairness audit (H5: Brier and miss rates Q1 vs Q5, Diebold–Mariano test, equal opportunity, welfare-weighted thresholds); ethics of public warnings."));
+body.push(BUL("**M4 plan:** ensembles (random forest, gradient boosting) under the same protocol; quintile-specific models and the H4 interaction test; calibration of the probabilities; within-year AUC reported next to pooled AUC; a tariff-notification calendar, a first-month-of-the-fiscal-year window and a regime feature; fairness audit (H5: Brier scores and miss rates Q1 vs Q5 with the Diebold–Mariano test planned in M2, equal recall across quintiles, quintile-specific thresholds); ethics of public warnings."));
 
 // ================================================================ DOCUMENT
 const matrixHeading = H1("10. Cross-reference matrix: files × steps");

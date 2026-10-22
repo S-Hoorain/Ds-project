@@ -9,7 +9,7 @@
 // The sections continue the submitted Milestone 2 draft (Sections II-III, Tables 1-13, Figs. 1-6, refs [1]-[10]),
 // so numbering starts at Section IV, Table 14, Fig. 7 and reference [11].
 // Every number comes from notebooks/03_baseline_models.ipynb, notebooks/04_hypothesis_tests.ipynb and
-// reports/tables/m3_*.csv (run of 2026-10-21).
+// reports/tables/m3_*.csv (run of 2026-10-22).
 // Style: as the M2 draft. Black text and headings only, no header or footer, Times New Roman.
 const fs = require("fs");
 const path = require("path");
@@ -123,7 +123,7 @@ add(H1("IV. Baseline Models and Experimental Setup"));
 add(
   H2("A. Task, Data Partitioning and Class Imbalance"),
   P("Standing at the end of week *t*, each classifier predicts whether week *t*+1 will be a shock week (a weekly SPI rise of at least 1%) for each quintile (`target_shock_next`, Section II-F). The unit is a quintile-week. The Combined index is excluded because it is a weighted average of the quintiles and would add each week's information a sixth time. Eighteen features known at the end of week *t* enter every model (Table 14). Rows with a missing feature or target (the first eight weeks, before an eight-week exchange-rate change exists, and the final week) are dropped, as planned in Table 2."),
-  P("The split is chronological and was fixed in Milestone 2, before any model was fitted. Training covers 270 weeks (1,350 rows) and the test period 91 weeks (455 rows), a 74.8/25.2 split by weeks. Shocks are the minority class: 17.2% of training rows and 7.7% of test rows (35 rows in 13 distinct weeks). Stratified random splitting, the usual remedy for imbalance, does not apply to a time series. It would train on later weeks to predict earlier ones, and it would separate the five quintile rows of a week, which share every week-level feature. Imbalance is handled instead by class weights (a tuned option), a cost-based alarm threshold (Section IV-E) and metrics that do not reward a model that never raises an alarm. The halving of the shock rate in the test period is a genuine prior shift [20], caused by the 2025 disinflation and not by sampling, and it makes the test harder for any alarm."),
+  P("The split is chronological and was fixed in Milestone 2, before any model was fitted. Training covers 270 weeks (1,350 rows) and the test period 91 weeks (455 rows), a 74.8/25.2 split by weeks. Shocks are the minority class: 17.2% of training rows and 7.7% of test rows (35 rows in 13 distinct weeks). Stratified random splitting, the usual remedy for imbalance, does not apply to a time series. It would train on later weeks to predict earlier ones, and it would separate the five quintile rows of a week, which share every week-level feature. Imbalance is handled instead by class weights (a tuned option), a cost-based alarm threshold (Section IV-E) and metrics that do not reward a model that never raises an alarm. The halving of the shock rate in the test period is a genuine change, caused by the 2025 disinflation and not by sampling, and it makes the test harder for any alarm."),
   table("Experimental design.", ["Element", "Specification"], [
     ["Rows", "Quintile-weeks Q1–Q5; 1,805 after listwise deletion of 45 rows (9 weeks)"],
     ["Target", "`target_shock_next`: SPI rise ≥ 1% in week *t*+1"],
@@ -136,13 +136,13 @@ add(
     ["Validation", "Expanding window; 4 folds = validation years 2021–2024; whole weeks; scaling inside each pipeline"],
     ["Selection", "Highest ROC-AUC of pooled out-of-fold predictions"],
     ["Alarm threshold", "Minimum expected cost on out-of-fold predictions, FN : FP = 5 : 1"],
-    ["Software", "scikit-learn 1.9 [13], statsmodels 0.15; random seed 42"],
+    ["Software", "scikit-learn 1.9 [11], statsmodels 0.15; random seed 42"],
   ], [2100, 6926], ["l", "l"]),
 );
 
 add(
   H2("B. Validation Framework and Leakage Control"),
-  P("Hyperparameters are chosen by forward-chaining (expanding-window) cross-validation [14] with K = 4 folds (Fig. 7). Fold *k* validates on calendar year 2020 + *k* and trains on every earlier week, and whole weeks always move together. Calendar years, rather than equal-sized blocks, ensure that each validation block contains exactly one fiscal-year start, one Ramadan and one Eid ul-Adha. Validation shock rates range from 12% (2024) to 33% (2022), so the folds span both calm and crisis regimes. Because the target is one week ahead, no gap between training and validation is needed. The other leakage channels are closed as follows:"),
+  P("Hyperparameters are chosen by forward-chaining (expanding-window) cross-validation [12] with K = 4 folds (Fig. 7). Fold *k* validates on calendar year 2020 + *k* and trains on every earlier week, and whole weeks always move together. Calendar years, rather than equal-sized blocks, ensure that each validation block contains exactly one fiscal-year start, one Ramadan and one Eid ul-Adha. Validation shock rates range from 12% (2024) to 33% (2022), so the folds span both calm and crisis regimes. Because the target is one week ahead, no gap between training and validation is needed. The other leakage channels are closed as follows:"),
   BUL("**Scaling** is fitted inside each model's pipeline, on the fold's training rows only. The Milestone 2 scaled columns were fitted on all of 2019–24, so they are not used."),
   BUL("**Features** use only information available at the end of week *t*."),
   BUL("**Hyperparameters and alarm thresholds** are chosen without the test period, which is scored once."),
@@ -153,7 +153,7 @@ add(
 add(
   H2("C. Naive Benchmarks and Model Choice"),
   P("Two benchmarks need no learning. The **majority class** always predicts \"no shock\", and its probability is the training shock rate. **Persistence** predicts a shock next week if this week was a shock week, the standard naive forecast for time series. The three baseline learners were chosen for complementary strengths (Table 15):"),
-  BUL("**Logistic regression** is the model form of H1, so its coefficients test the hypothesis directly, and L1/L2 regularisation suits a short sample [19]."),
+  BUL("**Logistic regression** is the model form of H1, so its coefficients test the hypothesis directly, and L1/L2 regularisation suits a short sample [13]."),
   BUL("**k-nearest neighbours (KNN)** is an analogue forecast (\"what followed the last weeks that looked like this one?\") and imposes no functional form."),
   BUL("**A shallow decision tree** produces if-then alarm rules that officials can audit. It also captures thresholds and interactions, such as a fiscal-year start that coincides with a falling rupee."),
   table("Baseline models: rationale, weakness and tuning grid (selected setting in the last column).", ["Model", "Why for this problem", "Main weakness", "Grid", "Selected"], [
@@ -172,9 +172,9 @@ add(
 
 add(
   H2("E. Evaluation Metrics, Error Costs and Alarm Thresholds"),
-  P("We report accuracy, precision, recall (sensitivity), specificity, F1, ROC-AUC, PR-AUC (average precision, which is more informative than ROC under class imbalance [16]) and the Brier score (calibration). Test AUCs carry 95% intervals from a bootstrap that resamples whole test weeks 2,000 times."),
-  P("The two errors carry different social costs (Table 16). A **false positive** (false alarm) triggers an early or unneeded top-up: fiscal space is spent and repeated alarms erode trust, but the money still reaches poor households. A **false negative** (missed shock) leaves households to absorb a lasting price step without a buffer. For Q1 the step is not given back: eight weeks after a shock week, prices were a median 4.2% above the pre-shock week, against 1.9% over the same span around an ordinary week, and after the shock they kept rising at the usual pace (2.1% against 2.0% over eight weeks; training weeks). A typical Q1 shock (median 1.6%, mean 2.0%), applied to the Q1 expenditure ceiling of Rs 17,732 a month, costs up to Rs 355 a month, about 8% of the BISP Kafaalat stipend (Rs 13,500 a quarter since January 2025 [12]). Coping is often irreversible: smaller or cheaper meals, borrowing, asset sales. An evaluation of early action before Mongolia's 2017/18 dzud found about US$7 of avoided losses and added benefits per US$1 spent [11]."),
-  P("We therefore set the cost of a miss at five false alarms (*c*_{FN} : *c*_{FP} = 5 : 1). This is below that return, because a false alarm is a transfer rather than a pure loss, and above parity, because misses are irreversible. All cost results are repeated for ratios from 1 : 1 to 20 : 1. For calibrated probabilities, the cost-minimising rule is to alert when *p* ≥ *c*_{FP} / (*c*_{FP} + *c*_{FN}) = 1/6 [15]. Class-weighted models are not calibrated, so each model's threshold is instead the value that minimises expected cost on its 2021–24 out-of-fold predictions."),
+  P("We report accuracy, precision, recall (sensitivity), specificity, F1, ROC-AUC, PR-AUC (average precision, which is more informative than ROC under class imbalance [14]) and the Brier score (calibration). Test AUCs carry 95% intervals from a bootstrap that resamples whole test weeks 2,000 times."),
+  P("The two errors carry different social costs (Table 16). A **false positive** (false alarm) triggers an early or unneeded top-up: fiscal space is spent and repeated alarms erode trust, but the money still reaches poor households. A **false negative** (missed shock) leaves households to absorb a lasting price step without a buffer. For Q1 the step is not given back: eight weeks after a shock week, prices were a median 4.2% above the pre-shock week, against 1.9% over the same span around an ordinary week, and after the shock they kept rising at the usual pace (2.1% against 2.0% over eight weeks; training weeks). A typical Q1 shock (median 1.6%, mean 2.0%), applied to the Q1 expenditure ceiling of Rs 17,732 a month, costs up to Rs 355 a month, about 8% of the BISP Kafaalat stipend (Rs 13,500 a quarter since January 2025 [15]). Coping is often irreversible: smaller or cheaper meals, borrowing, asset sales. An evaluation of early action before Mongolia's 2017/18 dzud found about US$7 of avoided losses and added benefits per US$1 spent [16]."),
+  P("We therefore set the cost of a miss at five false alarms (*c*_{FN} : *c*_{FP} = 5 : 1). This is below that return, because a false alarm is a transfer rather than a pure loss, and above parity, because misses are irreversible. All cost results are repeated for ratios from 1 : 1 to 20 : 1. The default cut-off of 0.5 is arbitrary, and class weights shift the predicted probabilities, so each model's threshold is the value that minimises expected cost on its 2021–24 out-of-fold predictions."),
   table("Social consequences of the two errors.", ["", "False alarm (FP)", "Missed shock (FN)"], [
     ["Households", "early or unneeded top-up, still spent on essentials", "unbuffered, lasting price step; coping by cutting meals, borrowing, selling assets"],
     ["BISP / government", "fiscal space used (one month's stipend to about 10 million families ≈ Rs 45 billion); trust eroded by repeated alarms", "relief arrives weeks late through reactive channels"],
@@ -190,12 +190,12 @@ add(H1("V. Results and Initial Findings"));
 
 add(
   H2("A. Cross-Validated Performance"),
-  P("Table 17 and Fig. 8 summarise the tuning. On pooled AUC all three learners beat both benchmarks: 0.643 (logistic regression), 0.643 (KNN) and 0.652 (tree), against 0.584 for persistence and 0.467 for the majority class. The majority class falls below 0.5 because its constant prediction drifts with each fold's base rate, which is exactly the failure that the pooled criterion penalises. The validation curves show the bias–variance trade-off:"),
+  P("Table 17 and Fig. 8 summarise the tuning. On pooled AUC all three learners beat both benchmarks: 0.643 (logistic regression), 0.643 (KNN) and 0.652 (tree), against 0.584 for persistence and 0.467 for the majority class. The majority class falls below 0.5 because its constant prediction drifts with each fold's base rate, which is exactly the failure that the pooled criterion penalises. The validation curves show where overfitting begins:"),
   BUL("**Logistic regression:** weakening the penalty lifts the training AUC from 0.79 to 0.86 while the pooled validation AUC falls to 0.56."),
   BUL("**KNN:** with *k* = 5 it fits the training weeks almost perfectly (training AUC 0.98) but validates at 0.56, rising to 0.64 at *k* = 100."),
   BUL("**Decision tree:** trees deeper than four levels fit the training weeks better without validating better."),
-  P("Logistic regression selects the strongest L2 penalty in the grid (C = 10^{−4}, balanced class weights), although with balanced weights every C ≤ 0.01 scores within 0.013 of it. With a small, shifting sample, heavily shrunk weights, close to an \"improper\" linear model [21], generalise better than freely fitted ones. For KNN, z-score scaling beats Min-Max (0.64 against at most 0.53), because heavy tails let Min-Max compress ordinary weeks into a narrow band. The fold-to-fold standard deviations (0.05–0.08) are as large as the differences between learners, so the three learners are statistically indistinguishable in cross-validation."),
-  P("Pooled AUC also rewards tracking the regime. An oracle score equal to each validation year's realised shock rate, constant within the year, reaches 0.640. Ranking within years, the mean of the per-fold AUCs, orders the learners differently: KNN 0.672, logistic regression 0.651, tree 0.578, persistence 0.569. The tree leads the pooled ranking mainly because its first split recognises the 2022–23 crisis, and the within-year order is the one the test period reproduced (Section V-B). The selection rule was kept as planned, because changing it after seeing the test results would let them leak into model choice."),
+  P("Logistic regression selects the strongest L2 penalty in the grid (C = 10^{−4}, balanced class weights), although with balanced weights every C ≤ 0.01 scores within 0.013 of it. With a small sample that shifts over time, heavily shrunk weights generalise better than freely fitted ones. For KNN, z-score scaling beats Min-Max (0.64 against at most 0.53), because heavy tails let Min-Max compress ordinary weeks into a narrow band. The fold-to-fold standard deviations (0.05–0.08) are as large as the differences between learners, so the three learners are statistically indistinguishable in cross-validation."),
+  P("Pooled AUC also rewards telling crisis years from calm years. The tree's pooled AUC is higher than three of its four yearly AUCs, which can only come from differences between years: its first split recognises the 2022–23 crisis. Ranking within years, measured by the mean of the per-fold AUCs, orders the learners differently: KNN 0.672, logistic regression 0.651, tree 0.578, persistence 0.569, and this is the order the test period reproduced (Section V-B). The selection rule was kept as planned, because changing it after seeing the test results would let them leak into model choice."),
   table("Cross-validated ROC-AUC, validation years 2021–24.", ["Model", "Pooled", "Mean ± SD", "2021", "2022", "2023", "2024", "Train"], [
     ["Logistic regression", "0.643", "0.651 ± 0.053", "0.736", "0.634", "0.644", "0.590", "0.790"],
     ["KNN", "0.643", "0.672 ± 0.080", "0.792", "0.565", "0.671", "0.661", "0.776"],
@@ -273,7 +273,7 @@ add(
 
 add(
   H2("E. Feature Drivers"),
-  P("The three importance measures agree on the leading drivers (Fig. 12, Table 22). Rupee depreciation over eight weeks carries logistic regression's largest standardised weight and provides the tree's first split (above 8%; Gini importance 0.45). Recent shocks, staple-food inflation and perishables inflation rank high in at least two measures. Permutation importance [18], computed on the validation folds, is led by perishables inflation, recent shocks, the four-week SPI change and the rupee. In an unpenalised logit with week-clustered errors, each 1% of depreciation raises the odds of a shock next week by 11% (odds ratio 1.11, *p* = 0.015), and a fiscal-year start multiplies them by 5.3 (*p* = 0.013). That estimate rests on only five fiscal-year starts (14 of their 25 quintile rows were followed by a shock), so its 95% interval is wide (1.4–19.5). The fiscal-year start matters greatly but rarely (2% of rows), so permutation importance barely registers it. Quintile dummies are near zero in every measure: once the signals are included, the groups do not differ in baseline shock risk."),
+  P("The three importance measures agree on the leading drivers (Fig. 12, Table 22). Rupee depreciation over eight weeks carries logistic regression's largest standardised weight and provides the tree's first split (above 8%; Gini importance 0.45). Recent shocks, staple-food inflation and perishables inflation rank high in at least two measures. Permutation importance [17], computed on the validation folds, is led by perishables inflation, recent shocks, the four-week SPI change and the rupee. In an unpenalised logit with week-clustered errors, each 1% of depreciation raises the odds of a shock next week by 11% (odds ratio 1.11, *p* = 0.015), and a fiscal-year start multiplies them by 5.3 (*p* = 0.013). That estimate rests on only five fiscal-year starts (14 of their 25 quintile rows were followed by a shock), so its 95% interval is wide (1.4–19.5). The fiscal-year start matters greatly but rarely (2% of rows), so permutation importance barely registers it. Quintile dummies are near zero in every measure: once the signals are included, the groups do not differ in baseline shock risk."),
   table("Leading feature drivers.", ["Feature", "LR relative weight", "Odds ratio (p)", "Tree Gini", "Permutation ΔAUC"], [
     ["Rupee change, past 8 weeks (per 1%)", "**1.00**", "1.11 (0.015)", "**0.45**", "0.018"],
     ["Shock weeks in past 4 weeks (per week)", "0.91", "1.23 (0.334)", "0.00", "0.021"],
@@ -293,7 +293,7 @@ add(
 add(
   H2("F. Hypothesis Tests H1–H3"),
   P("Table 23 summarises the three tests promised in Milestone 2, each at the 5% level."),
-  P("**H1 (early warning).** In sample, the six lead signals are jointly significant: Wald χ^{2}(6) = 22.4, *p* = 0.001, with standard errors clustered by week. The unclustered likelihood-ratio statistic (χ^{2} = 94) overstates the evidence, because it treats the five quintile rows of a week as independent. The rupee's eight-week change (odds ratio 1.09 per 1%, *p* = 0.027) and the fiscal-year start (5.2, *p* = 0.015) are individually significant. Out of sample, the signals raised the pooled AUC from 0.51 to 0.57 in the validation years. In the test period the gain was negligible: 0.554 to 0.561, with a one-sided DeLong [9], [17] *p* = 0.42 and a week-block bootstrap interval from −0.08 to +0.10. H1 is supported in turbulent periods but not in the calm test period: the early warning is regime-dependent."),
+  P("**H1 (early warning).** In sample, the six lead signals are jointly significant: Wald χ^{2}(6) = 22.4, *p* = 0.001, with standard errors clustered by week. The unclustered likelihood-ratio statistic (χ^{2} = 94) overstates the evidence, because it treats the five quintile rows of a week as independent. The rupee's eight-week change (odds ratio 1.09 per 1%, *p* = 0.027) and the fiscal-year start (5.2, *p* = 0.015) are individually significant. Out of sample, the signals raised the pooled AUC from 0.51 to 0.57 in the validation years. In the test period the gain was negligible: 0.554 to 0.561. Milestone 2 planned a DeLong test [9] for this comparison, but it treats the 455 test rows as independent, whereas the five quintile rows of a week move together. We therefore resampled whole test weeks 2,000 times: the 95% interval for the gain runs from −0.08 to +0.10, and 45% of resamples show no gain (one-sided *p* = 0.45). H1 is supported in turbulent periods but not in the calm test period: the early warning is regime-dependent."),
   P("**H2 (exchange-rate pass-through).** Regressing the Q5 − Q1 difference in eight-week-ahead inflation on the eight-week depreciation estimates the differential pass-through directly, with Newey–West errors [6]. Pass-through is real and similar for every quintile: about 0.21% per 1% depreciation over eight weeks for both Q1 and Q5. The difference (0.04, SE 0.06, one-sided *p* = 0.27) is not significant at any horizon (4, 8, 13 weeks), with or without controls, or on the full sample. We fail to reject H0, so the exchange-rate signal is equally relevant for every quintile."),
   P("**H3 (rotating burden).** A 1% weekly rise in food prices widens the Q1 − Q5 inflation gap by 0.12 percentage points (one-sided *p* = 0.003). Energy as a whole, however, does not narrow it (+0.04; *p* = 0.92 for β < 0). An exploratory split (Fig. 13) shows why:"),
   BUL("**Motor fuel** (−0.07, *p* < 0.001) and **LPG and firewood** (−0.03, *p* = 0.02) hit richer households harder."),
@@ -301,7 +301,7 @@ add(
   P("The split raises R^{2} from 0.16 to 0.38. The burden therefore rotates between motor-fuel shocks, heavier on the rich, and food shocks, heavier on the poor, with utility tariffs probably on the poor side. Perishable and tariff shocks are also the ones the baselines miss. Because the split was chosen after seeing the H3 result, it is a hypothesis for Milestone 4 rather than a confirmed finding."),
   table("Hypothesis tests (training period unless stated; 5% level).", ["Hypothesis", "Test", "Estimate", "p", "Decision"], [
     ["H1 in sample: signals β = 0", "Wald, week-clustered, χ^{2}(6)", "22.4", "0.001", "reject H0"],
-    ["H1 out of sample: AUC gain > 0", "DeLong, test 2025–26", "+0.007", "0.42", "fail to reject"],
+    ["H1 out of sample: AUC gain > 0", "Week-block bootstrap, test 2025–26", "+0.007", "0.45", "fail to reject"],
     ["H2: β^{FX}_{Q5} > β^{FX}_{Q1} (8 weeks)", "HAC difference regression", "δ = 0.04", "0.27", "fail to reject"],
     ["H3: β_{food} > 0", "HAC t-test", "0.12", "0.003", "reject H0"],
     ["H3: β_{energy} < 0", "HAC t-test", "+0.04", "0.92", "fail to reject"],
@@ -321,7 +321,7 @@ add(
   H2("H. Limitations and Roadmap for Milestone 4"),
   P("The baselines have seven main limitations:"),
   BUL("**Underfitting:** they fit a weak signal poorly, and no cross-validated AUC reaches 0.7."),
-  BUL("**Calibration:** their probabilities are poorly calibrated under prior shift."),
+  BUL("**Calibration:** their probabilities are poorly calibrated, and a threshold learned in one regime does not transfer to another."),
   BUL("**Selection criterion:** pooled AUC partly rewards telling crisis years from calm ones, which flattered the tree."),
   BUL("**A small test set:** only 13 distinct shock weeks, so the test metrics are imprecise."),
   BUL("**Missing information:** there is no lead information on tariff decisions or supply shocks."),
@@ -329,9 +329,9 @@ add(
   BUL("**Data vintage:** revised SPI values are used, whereas a real-time forecaster would see first releases."),
   P("Milestone 4 will address these limitations in five steps:"),
   BUL("**Ensembles:** add random forests and gradient boosting under the same validation, selection and threshold protocol, and test quintile-specific against pooled models with signal × quintile interactions (H4)."),
-  BUL("**Calibration and selection:** calibrate probabilities (Platt, isotonic), report their reliability, and report within-year AUC alongside pooled AUC."),
-  BUL("**New features:** add an administered-price calendar (NEPRA and OGRA notification dates), a first-month-of-the-fiscal-year window and a regime feature (rolling shock rate)."),
-  BUL("**Fairness audit (H5):** compare Brier scores and miss rates for Q1 against Q5 with the Diebold–Mariano test [10]; check equal-opportunity (recall) parity; and set quintile-specific thresholds with welfare weights, since a missed shock costs a Q1 household more."),
+  BUL("**Calibration and selection:** adjust the probabilities so that they match the observed shock rates, and report within-year AUC alongside pooled AUC."),
+  BUL("**New features:** add an administered-price calendar (NEPRA and OGRA notification dates), a first-month-of-the-fiscal-year window and a rolling shock rate that follows changes in how common shocks are."),
+  BUL("**Fairness audit (H5):** compare Brier scores and miss rates for Q1 against Q5 with the Diebold–Mariano test [10], as planned in Milestone 2; check whether recall is equal across quintiles; and set quintile-specific thresholds that give a missed Q1 shock a larger cost, since it hurts a Q1 household more."),
   BUL("**Ethics:** evaluate the risks of public warnings (self-fulfilling hoarding), the transparency of the alarm rule, and the exclusion of rural households."),
   P("Milestone 5 will then retrain the models week by week on new releases, to measure how quickly the thresholds adapt."),
 );
@@ -348,17 +348,13 @@ const REFS = [
   "Ò. Jordà, \"Estimation and inference of impulse responses by local projections,\" *American Economic Review*, vol. 95, no. 1, pp. 161–182, 2005.",
   "E. R. DeLong, D. M. DeLong, and D. L. Clarke-Pearson, \"Comparing the areas under two or more correlated receiver operating characteristic curves,\" *Biometrics*, vol. 44, no. 3, pp. 837–845, 1988.",
   "F. X. Diebold and R. S. Mariano, \"Comparing predictive accuracy,\" *Journal of Business & Economic Statistics*, vol. 13, no. 3, pp. 253–263, 1995.",
-  "Food and Agriculture Organization of the United Nations, *Mongolia: Impact of Early Warning Early Action. Protecting the livelihoods of herders from a dzud winter*. Rome: FAO, 2018.",
-  "Benazir Income Support Programme, \"Benazir Kafaalat: quarterly payment increased to Rs 13,500,\" https://bisp.gov.pk/ (accessed Oct. 2026).",
   "F. Pedregosa *et al.*, \"Scikit-learn: Machine learning in Python,\" *Journal of Machine Learning Research*, vol. 12, pp. 2825–2830, 2011.",
   "C. Bergmeir and J. M. Benítez, \"On the use of cross-validation for time series predictor evaluation,\" *Information Sciences*, vol. 191, pp. 192–213, 2012.",
-  "C. Elkan, \"The foundations of cost-sensitive learning,\" in *Proc. 17th Int. Joint Conf. Artificial Intelligence (IJCAI)*, 2001, pp. 973–978.",
-  "T. Saito and M. Rehmsmeier, \"The precision-recall plot is more informative than the ROC plot when evaluating binary classifiers on imbalanced datasets,\" *PLoS ONE*, vol. 10, no. 3, e0118432, 2015.",
-  "X. Sun and W. Xu, \"Fast implementation of DeLong's algorithm for comparing the areas under correlated receiver operating characteristic curves,\" *IEEE Signal Processing Letters*, vol. 21, no. 11, pp. 1389–1393, 2014.",
-  "L. Breiman, \"Random forests,\" *Machine Learning*, vol. 45, no. 1, pp. 5–32, 2001.",
   "T. Hastie, R. Tibshirani, and J. Friedman, *The Elements of Statistical Learning*, 2nd ed. New York: Springer, 2009.",
-  "J. G. Moreno-Torres, T. Raeder, R. Alaiz-Rodríguez, N. V. Chawla, and F. Herrera, \"A unifying view on dataset shift in classification,\" *Pattern Recognition*, vol. 45, no. 1, pp. 521–530, 2012.",
-  "R. M. Dawes, \"The robust beauty of improper linear models in decision making,\" *American Psychologist*, vol. 34, no. 7, pp. 571–582, 1979.",
+  "T. Saito and M. Rehmsmeier, \"The precision-recall plot is more informative than the ROC plot when evaluating binary classifiers on imbalanced datasets,\" *PLoS ONE*, vol. 10, no. 3, e0118432, 2015.",
+  "Benazir Income Support Programme, \"Benazir Kafaalat: quarterly payment increased to Rs 13,500,\" https://bisp.gov.pk/ (accessed Oct. 2026).",
+  "Food and Agriculture Organization of the United Nations, *Mongolia: Impact of Early Warning Early Action. Protecting the livelihoods of herders from a dzud winter*. Rome: FAO, 2018.",
+  "L. Breiman, \"Random forests,\" *Machine Learning*, vol. 45, no. 1, pp. 5–32, 2001.",
 ];
 add(H1("References"));
 REFS.forEach((r, i) => body.push(new Paragraph({

@@ -35,7 +35,6 @@ import joblib
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
-from scipy import stats
 from sklearn.base import BaseEstimator, ClassifierMixin, clone
 from sklearn.compose import ColumnTransformer
 from sklearn.dummy import DummyClassifier
@@ -166,8 +165,7 @@ def make_models():
 
     Logistic regression: every feature standardised (z-scores), so the L1/L2 penalty treats all
     features alike and the coefficients are standardised coefficients. The saga solver is used
-    because it supports both penalties and, unlike liblinear, does not shrink the intercept
-    (a shrunken intercept pulls every probability towards 0.5).
+    because it fits both penalties of the grid (chosen with l1_ratio).
     KNN: distances need comparable scales. Continuous features are scaled (z-score or Min-Max,
     chosen by CV); 0/1 flags pass through unchanged, so a rare flag such as the fiscal-year start
     (z of about 7 when on) does not swamp the distance.
@@ -355,51 +353,13 @@ def save_models(fitted, card, out_dir=None):
     return out_dir
 
 
-# ---------------------------------------------------------------- comparing AUCs
-def _midrank(x):
-    order = np.argsort(x)
-    z = x[order]
-    n = len(x)
-    ranks = np.zeros(n)
-    i = 0
-    while i < n:
-        j = i
-        while j < n and z[j] == z[i]:
-            j += 1
-        ranks[i:j] = 0.5 * (i + j - 1) + 1      # average rank for ties
-        i = j
-    out = np.empty(n)
-    out[order] = ranks
-    return out
-
-
-def delong_test(y, p_a, p_b):
-    """DeLong et al. (1988) test of AUC(a) = AUC(b) for two scores on the same rows.
-
-    Uses the fast midrank algorithm of Sun & Xu (2014). Returns both AUCs, the difference, z, the
-    one-sided p-value for AUC(a) > AUC(b) and the two-sided p-value. Assumes rows are independent,
-    which overstates the evidence here because the five quintile rows of a week move together;
-    week_block_bootstrap() below is the robustness check.
-    """
-    y = np.asarray(y).astype(int)
-    pos, neg = y == 1, y == 0
-    m, n = pos.sum(), neg.sum()
-    aucs, v_pos, v_neg = [], [], []
-    for p in (np.asarray(p_a, float), np.asarray(p_b, float)):
-        r_all, r_pos, r_neg = _midrank(p), _midrank(p[pos]), _midrank(p[neg])
-        v_pos.append((r_all[pos] - r_pos) / n)       # share of negatives ranked below each positive
-        v_neg.append(1 - (r_all[neg] - r_neg) / m)   # share of positives ranked above each negative
-        aucs.append(v_pos[-1].mean())
-    s = np.cov(np.vstack(v_pos)) / m + np.cov(np.vstack(v_neg)) / n
-    diff = aucs[0] - aucs[1]
-    z = diff / np.sqrt(s[0, 0] + s[1, 1] - 2 * s[0, 1])
-    return {"AUC a": aucs[0], "AUC b": aucs[1], "difference": diff, "z": z,
-            "p one-sided (a > b)": stats.norm.sf(z), "p two-sided": 2 * stats.norm.sf(abs(z))}
-
-
+# ---------------------------------------------------------------- uncertainty: week-block bootstrap
 def week_block_bootstrap(y, scores, weeks, n_boot=2000, seed=SEED):
-    """Resample whole weeks (all five quintile rows together) with replacement and recompute the
-    AUC of each score. Returns a DataFrame with one row per resample and one column per score.
+    """Bootstrap sampling (sampling with replacement) of whole weeks: the five quintile rows of a
+    week are drawn together, because they share the same signals and usually the same outcome, so
+    they are one block of evidence rather than five. Recomputes the AUC of each score on every
+    resample, which gives confidence intervals for an AUC and for the difference between two AUCs.
+    Returns a DataFrame with one row per resample and one column per score.
     Resamples without both classes are skipped."""
     rng = np.random.default_rng(seed)
     y = np.asarray(y).astype(int)
