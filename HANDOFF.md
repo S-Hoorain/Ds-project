@@ -1,10 +1,9 @@
 # HANDOFF
 
 **Last updated:** 2026-10-25 (session 8)
-**Session summary:** Checked that the notebooks and code match the lecture-scoped M3 report (they did; one unused
-import removed), and removed every Claude/tooling reference from the deliverables: notebooks now find the project root
-via `requirements.txt`, and the script reference doc no longer lists the handoff hook or session files. All four
-notebooks re-ran cleanly with byte-identical outputs.
+**Session summary:** Checked that the notebooks and code match the lecture-scoped M3 report, removed every
+Claude/tooling reference from the deliverables, removed the interactive scikit-learn pipeline diagram from notebook 03,
+and documented what the decision labels (D, F, B, H-) mean. No result changed.
 
 M3 was due **2026-10-24**; its submission status was not recorded this session.
 
@@ -40,20 +39,29 @@ all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in
     sample now uses the week-block bootstrap (gain +0.007, 95% CI −0.08 to +0.10, p = 0.45). Lecture ties added (Units
     04, 06, 08–11). Manuscript 12 pages, 3,349 body words; viva guide §5.8 "Methods beyond the lecture slides", 29
     questions.
-- **Session 8 (2026-10-25): consistency and clean-up.**
-  - Notebooks 03/04 and `baseline.py` already matched the trimmed report (no DeLong, oracle or dropped jargon left).
-    Removed the unused `statsmodels` import from notebook 03.
-  - All four notebooks found the project root by looking for `CLAUDE.md`; they now look for `requirements.txt`.
-  - `tools/build_reference_doc.js`: removed the handoff-hook entry, the CLAUDE.md/HANDOFF/log/.claudeignore rows and
-    the hook sentence; `DS4SG_Script_and_Data_Reference.docx` rebuilt (TOC updated in Word; text otherwise identical).
-  - Grep of all tracked deliverables (notebooks incl. outputs, src, tools, docx/PDF text and metadata, README, data
-    dictionaries, reports) finds no Claude/handoff/AI mention.
-  - Re-ran notebooks 01–04 top to bottom: all pass; all 80 output files (data, tables, figures, models) byte-identical.
+- **Session 8 (2026-10-25): consistency and clean-up** (commit `ffa0165` pushed; a second commit is local).
+  - Notebooks 03/04 and `baseline.py` already matched the trimmed report. Removed the unused `statsmodels` import from
+    notebook 03.
+  - All four notebooks found the project root via `CLAUDE.md`; they now use `requirements.txt`.
+  - `tools/build_reference_doc.js` and `DS4SG_Script_and_Data_Reference.docx`: handoff-hook entry and the
+    CLAUDE.md/HANDOFF/log/.claudeignore rows removed (TOC updated in Word; text otherwise identical).
+  - Notebook 03 §4: removed `models["KNN"]`, whose output was scikit-learn's interactive pipeline diagram (the only
+    such diagram in any notebook); the grid printout stays.
+  - Grep of all tracked deliverables finds no Claude/handoff/AI mention. Notebooks 01–04 re-run cleanly; all 80 output
+    files byte-identical.
 
 ## 3. Where we are now
 - **M3 deliverables are complete, audited, lecture-scoped and free of tooling references.**
 - **Methods kept from beyond the slides:** expanding-window CV, permutation importance, standard errors clustered by
   week; carried from the M2 plan: logit LR test, OLS with HAC errors, Brier score, Diebold–Mariano (M4 plan only).
+- **Decision labels are our own bookkeeping IDs, not course terms.** They were added when each script was written so
+  that code, notebooks and the viva guide can point at the same choice. They do not appear in either submitted
+  manuscript PDF. Where each set is defined:
+  - D1–D5 (data cleaning): docstring of `src/cleaning/build_master.py`; counts in `cleaning_report.txt`.
+  - F1–F4 (features): docstring of `src/features/build_features.py`.
+  - B1–B8 (M3 modelling): docstring of `src/models/baseline.py`; B1–B19 in the M3 viva guide §6 and §5 below.
+  - H-1, H-2 (hypothesis tests): notebook 04 markdown (training-period sample; difference regression).
+  - Figures are also numbered B1–B10 (and E1–E5); "Figure B1" is not "decision B1".
 - **Repo-level session files stay** (CLAUDE.md, HANDOFF.md, logs/, .claude/, .claudeignore): the repo is for the team
   only; the instructor sees only the submitted reports and notebooks (user, 2026-10-25).
 - The submitted M2 notebook copies in `milestones/M2_data_eda_hypotheses/` (untracked) still use the old root marker;
@@ -73,7 +81,6 @@ all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in
   - The test has 13 distinct shock weeks.
   - Pooled AUC partly rewards telling crisis years from calm ones (flattered the tree).
   - Edge-case drivers use Combined-index item impacts (no Q2–Q5 item weights exist).
-- The session-8 commit is local (not pushed).
 
 ## 4. What's next
 1. **M3 (due 2026-10-24):** confirm it was submitted (PDF, notebooks 03 and 04, `src/models/baseline.py`,
@@ -82,7 +89,8 @@ all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in
 2. **Viva prep (5 minutes, V-factor):**
    - every member studies the reference doc §5.8 (methods beyond the slides), §6 (decisions), §7 (numbers) and §8
      (Q&A, 29 questions);
-   - be ready for "why was the tree best in CV but worst on test?" and "why a bootstrap instead of DeLong?";
+   - be ready for "why was the tree best in CV but worst on test?", "why a bootstrap instead of DeLong?" and "what do
+     decision B1/B8 mean?";
    - re-run notebook 03.
 3. **M4 (Week 12, Nov 2–6): final model, fairness and ethics.** Keep new methods within the lectures/syllabus where
    possible (ensembles are Week 12, fairness Week 15).
@@ -101,17 +109,23 @@ all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in
    - write the abstract, introduction and literature review for the final paper.
 
 ## 5. Decisions & rationale
-- **Data (M2):**
-  - The sample is 5 Sep 2019 – 1 Oct 2026, base 2015-16. Missing weeks were filled from official previous-week
-    values; revised values use the latest vintage. Outliers are kept (they are the shocks).
-  - A shock is a weekly rise of ≥ 1%. Signals are known at the end of week t, or are calendar facts. The event
-    calendar overrides file is the single source of truth.
+- **Data (M2), labels as in `build_master.py` / `build_features.py`:**
+  - D1: each report's printed date is authoritative; off-day releases are aligned to the nearest Thursday.
+  - D2: a missing week is filled from the next report's official "previous week" index (flagged, not imputed).
+  - D3: `spi_prev_week(t)` is checked against `spi(t−1)`; PBS revisions use the revised figure.
+  - D4: daily PKR/USD is averaged over the SPI week (Fri–Thu), after dropping known one-day bad ticks.
+  - D5: a fuel-revision week is one where average petrol or diesel moved by more than 1%.
+  - F1: a shock is a weekly SPI rise of ≥ 1%. F2: fuel-review calendar (1st and 16th of the month). F3: momentum items
+    are chosen on training weeks only. F4: component inflation is Combined-weighted, the same for every group.
+  - The sample is 5 Sep 2019 – 1 Oct 2026, base 2015-16; revised values use the latest vintage. Outliers are kept
+    (they are the shocks). Signals are known at the end of week t, or are calendar facts. The event calendar
+    overrides file is the single source of truth.
 - **Lecture scope (user, 2026-10-22):** methods should come from the lecture slides, syllabus or rubric; only a few
   meaningful outside methods, each with a one-line reason (reference doc §5.8). Kept: expanding-window CV (shuffled
   K-fold leaks, +0.05–0.14 AUC), permutation importance (KNN has no coefficients), week-clustered SEs (sister rows;
   LR χ² 94 vs 22.4). M2-plan items (LR test, HAC, Brier, Diebold–Mariano) stay because M2 committed to them.
 - **No tooling references in deliverables (user, 2026-10-25):** notebooks, code, reports and team docs never mention
-  the session files; notebooks locate the project root via `requirements.txt`.
+  the session files; notebooks locate the project root via `requirements.txt`; no interactive estimator diagrams.
 - **M3 modelling** (IDs as in `baseline.py` and the reference doc):
   - B1: Q1–Q5 rows only. Combined is excluded as a near-duplicate average.
   - B2: chronological split (train ≤ 2024, test 2025–26; 74.8/25.2), fixed in M2. A stratified random split was
@@ -136,7 +150,7 @@ all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in
     come from an unpenalised logit with week-clustered SEs.
   - B13: H1 is tested with a week-clustered Wald test in sample and a week-block bootstrap out of sample (the DeLong
     test planned in M2 was replaced: it assumes independent rows).
-  - B14: H2 uses a difference regression on the training period, with windows ending by 2024.
+  - B14: H2 uses a difference regression on the training period, with windows ending by 2024 (notebook 04: H-1, H-2).
   - B15: H3 is tested as pre-stated, with the component split labelled exploratory.
   - B16: the test is used once; no re-tuning after seeing it (the audit respected this).
   - B17: a shock's driver is the largest *upward* PBS item impact (Combined index).
@@ -147,6 +161,7 @@ all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in
 
 ## 6. Open questions
 - Was M3 submitted on time (due 2026-10-24)?
+- Keep the decision labels in the notebooks and code, or replace them with plain descriptions?
 - Does the team accept FN:FP = 5:1 as the headline cost ratio? This is a value judgement and the SDP members should
   sign off. The sensitivity analysis shows no ratio makes the baselines clearly valuable in 2025–26.
 - M4 selection criterion: pooled AUC, within-year AUC, or both (e.g. within-year AUC plus a calibration check)? It must
@@ -171,4 +186,4 @@ all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in
 - **Project reference:** `DS4SG_Script_and_Data_Reference.docx` (M1–M2 pipeline; built by `tools/build_reference_doc.js`).
 - **M2:** `notebooks/01_data_preparation.ipynb`, `notebooks/02_eda.ipynb`, `tools/build_manuscript_m2.js`.
 - **Data:** `data/processed/master_features.csv` + `FEATURES_DICTIONARY.md`; `master_model_ready.csv` +
-  `DATA_DICTIONARY.md`; `items_weekly_panel.csv`.
+  `DATA_DICTIONARY.md`; `items_weekly_panel.csv`; `cleaning_report.txt`.
