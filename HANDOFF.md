@@ -3,9 +3,11 @@
 **Last updated:** 2026-10-25 (session 8)
 **Session summary:** Checked that the notebooks and code match the lecture-scoped M3 report, removed every
 Claude/tooling reference from the deliverables, removed the interactive scikit-learn pipeline diagram from notebook 03,
-and documented what the decision labels (D, F, B, H-) mean. No result changed.
+and replaced the decision labels in notebooks 03–04 with plain wording (labels stay in scripts and reference docs).
+No result changed.
 
-M3 was due **2026-10-24**; its submission status was not recorded this session.
+M3 was due **2026-10-24**; its submission status was not recorded this session. **Only the report (PDF) and the
+notebooks are submitted, never the scripts** (user, 2026-10-25).
 
 ## 1. Project overview
 CS/SDP 312/314 project. Using the PBS weekly Sensitive Price Indicator (SPI, base 2015-16, 370 weeks, Sep 2019 – Oct 2026),
@@ -39,7 +41,7 @@ all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in
     sample now uses the week-block bootstrap (gain +0.007, 95% CI −0.08 to +0.10, p = 0.45). Lecture ties added (Units
     04, 06, 08–11). Manuscript 12 pages, 3,349 body words; viva guide §5.8 "Methods beyond the lecture slides", 29
     questions.
-- **Session 8 (2026-10-25): consistency and clean-up** (commit `ffa0165` pushed; a second commit is local).
+- **Session 8 (2026-10-25): consistency and clean-up** (`ffa0165` pushed; later commits local).
   - Notebooks 03/04 and `baseline.py` already matched the trimmed report. Removed the unused `statsmodels` import from
     notebook 03.
   - All four notebooks found the project root via `CLAUDE.md`; they now use `requirements.txt`.
@@ -47,21 +49,28 @@ all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in
     CLAUDE.md/HANDOFF/log/.claudeignore rows removed (TOC updated in Word; text otherwise identical).
   - Notebook 03 §4: removed `models["KNN"]`, whose output was scikit-learn's interactive pipeline diagram (the only
     such diagram in any notebook); the grid printout stays.
+  - Notebooks 03–04: decision labels replaced by plain wording (15 places: "(decision B2)" → nothing, "(B7)" → "(§6)",
+    "M2 decisions F1–F4" → "the M2 feature design", "decision H-1/H-2" → nothing, etc.). Notebooks 01–02, including
+    the notebook 01 decision table (D1–D5, P1–P7), are left as they are (user).
   - Grep of all tracked deliverables finds no Claude/handoff/AI mention. Notebooks 01–04 re-run cleanly; all 80 output
     files byte-identical.
 
 ## 3. Where we are now
-- **M3 deliverables are complete, audited, lecture-scoped and free of tooling references.**
+- **M3 deliverables are complete, audited, lecture-scoped and free of tooling references and decision labels.**
 - **Methods kept from beyond the slides:** expanding-window CV, permutation importance, standard errors clustered by
   week; carried from the M2 plan: logit LR test, OLS with HAC errors, Brier score, Diebold–Mariano (M4 plan only).
-- **Decision labels are our own bookkeeping IDs, not course terms.** They were added when each script was written so
-  that code, notebooks and the viva guide can point at the same choice. They do not appear in either submitted
-  manuscript PDF. Where each set is defined:
-  - D1–D5 (data cleaning): docstring of `src/cleaning/build_master.py`; counts in `cleaning_report.txt`.
-  - F1–F4 (features): docstring of `src/features/build_features.py`.
-  - B1–B8 (M3 modelling): docstring of `src/models/baseline.py`; B1–B19 in the M3 viva guide §6 and §5 below.
-  - H-1, H-2 (hypothesis tests): notebook 04 markdown (training-period sample; difference regression).
-  - Figures are also numbered B1–B10 (and E1–E5); "Figure B1" is not "decision B1".
+- **Decision labels are our own bookkeeping IDs, not course terms**, added when each script was written. They are
+  not in the submitted manuscripts or the M3 notebooks; in a viva, explain the choice, not the label. Where each set
+  is defined:
+  - D1–D5 (data cleaning): `src/cleaning/build_master.py` docstring, notebook 01 §4 table, script reference doc.
+  - P1–P7 (data preparation): notebook 01 §4 table only.
+  - F1–F4 (features): `src/features/build_features.py` docstring.
+  - B1–B8 (M3 modelling): `src/models/baseline.py` docstring; B1–B19 in the M3 viva guide §6 and §5 below.
+  - Former notebook 04 labels: H-1 = H2/H3 estimated on the training period only; H-2 = H2 tested with a Q5 − Q1
+    difference regression (both covered by B14 in the viva guide).
+  - Figures are also numbered B1–B10 (and E1–E5, P1); "Figure B1" is not "decision B1".
+- **Notebooks 03–04 import from `src/`** (`models/baseline.py`, `utils/plot_style.py`, `features/build_features.py`),
+  so they only run inside the project folder; scripts are not submitted.
 - **Repo-level session files stay** (CLAUDE.md, HANDOFF.md, logs/, .claude/, .claudeignore): the repo is for the team
   only; the instructor sees only the submitted reports and notebooks (user, 2026-10-25).
 - The submitted M2 notebook copies in `milestones/M2_data_eda_hypotheses/` (untracked) still use the old root marker;
@@ -83,17 +92,16 @@ all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in
   - Edge-case drivers use Combined-index item impacts (no Q2–Q5 item weights exist).
 
 ## 4. What's next
-1. **M3 (due 2026-10-24):** confirm it was submitted (PDF, notebooks 03 and 04, `src/models/baseline.py`,
-   `src/models/train_baselines.py`, plus `models/m3_baselines/` if artifacts were uploaded). Late penalty: 20% within
+1. **M3 (due 2026-10-24):** confirm it was submitted (the PDF plus notebooks 03 and 04). Late penalty: 20% within
    24 h; not accepted after.
 2. **Viva prep (5 minutes, V-factor):**
    - every member studies the reference doc §5.8 (methods beyond the slides), §6 (decisions), §7 (numbers) and §8
      (Q&A, 29 questions);
-   - be ready for "why was the tree best in CV but worst on test?", "why a bootstrap instead of DeLong?" and "what do
-     decision B1/B8 mean?";
+   - be ready for "why was the tree best in CV but worst on test?" and "why a bootstrap instead of DeLong?";
    - re-run notebook 03.
 3. **M4 (Week 12, Nov 2–6): final model, fairness and ethics.** Keep new methods within the lectures/syllabus where
-   possible (ensembles are Week 12, fairness Week 15).
+   possible (ensembles are Week 12, fairness Week 15). Write the M4 notebook in plain wording (no decision labels, no
+   tooling references, no estimator diagrams).
    - Ensembles (random forest, gradient boosting) under the same protocol. Report within-year AUC next to pooled AUC
      and decide the selection criterion before looking at the test.
    - H4: quintile-specific vs pooled models (signal × group interactions, LR test).
@@ -124,8 +132,9 @@ all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in
   meaningful outside methods, each with a one-line reason (reference doc §5.8). Kept: expanding-window CV (shuffled
   K-fold leaks, +0.05–0.14 AUC), permutation importance (KNN has no coefficients), week-clustered SEs (sister rows;
   LR χ² 94 vs 22.4). M2-plan items (LR test, HAC, Brier, Diebold–Mariano) stay because M2 committed to them.
-- **No tooling references in deliverables (user, 2026-10-25):** notebooks, code, reports and team docs never mention
-  the session files; notebooks locate the project root via `requirements.txt`; no interactive estimator diagrams.
+- **Submitted work is plain (user, 2026-10-25):** notebooks, the report and team docs never mention the session files;
+  notebooks locate the project root via `requirements.txt`; no interactive estimator diagrams; the current
+  milestone's notebooks use no decision labels (labels live in scripts and reference docs).
 - **M3 modelling** (IDs as in `baseline.py` and the reference doc):
   - B1: Q1–Q5 rows only. Combined is excluded as a near-duplicate average.
   - B2: chronological split (train ≤ 2024, test 2025–26; 74.8/25.2), fixed in M2. A stratified random split was
@@ -150,7 +159,7 @@ all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in
     come from an unpenalised logit with week-clustered SEs.
   - B13: H1 is tested with a week-clustered Wald test in sample and a week-block bootstrap out of sample (the DeLong
     test planned in M2 was replaced: it assumes independent rows).
-  - B14: H2 uses a difference regression on the training period, with windows ending by 2024 (notebook 04: H-1, H-2).
+  - B14: H2 uses a difference regression on the training period, with windows ending by 2024.
   - B15: H3 is tested as pre-stated, with the component split labelled exploratory.
   - B16: the test is used once; no re-tuning after seeing it (the audit respected this).
   - B17: a shock's driver is the largest *upward* PBS item impact (Combined index).
@@ -161,7 +170,7 @@ all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in
 
 ## 6. Open questions
 - Was M3 submitted on time (due 2026-10-24)?
-- Keep the decision labels in the notebooks and code, or replace them with plain descriptions?
+- Since only notebooks are submitted, can the grader run notebooks 03–04 without `src/`? (They import project code.)
 - Does the team accept FN:FP = 5:1 as the headline cost ratio? This is a value judgement and the SDP members should
   sign off. The sensitivity analysis shows no ratio makes the baselines clearly valuable in 2025–26.
 - M4 selection criterion: pooled AUC, within-year AUC, or both (e.g. within-year AUC plus a calibration check)? It must
