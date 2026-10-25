@@ -1,12 +1,12 @@
 # HANDOFF
 
-**Last updated:** 2026-10-22 (session 7)
-**Session summary:** Full audit of Milestone 3 (code, data, results, insights), then a lecture-scope pass after the
-user added the Unit 08–11 slides: methods from beyond the lectures were cut down to a few meaningful ones, the hand-coded
-DeLong test was replaced by the week-block bootstrap, and jargon was replaced by plain words. No model, threshold or
-result changed.
+**Last updated:** 2026-10-25 (session 8)
+**Session summary:** Checked that the notebooks and code match the lecture-scoped M3 report (they did; one unused
+import removed), and removed every Claude/tooling reference from the deliverables: notebooks now find the project root
+via `requirements.txt`, and the script reference doc no longer lists the handoff hook or session files. All four
+notebooks re-ran cleanly with byte-identical outputs.
 
-M3 is due **2026-10-24**.
+M3 was due **2026-10-24**; its submission status was not recorded this session.
 
 ## 1. Project overview
 CS/SDP 312/314 project. Using the PBS weekly Sensitive Price Indicator (SPI, base 2015-16, 370 weeks, Sep 2019 – Oct 2026),
@@ -32,42 +32,40 @@ all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in
   - Models in `models/m3_baselines/`; figures `figB1`–`figB10`; **23** tables `reports/tables/m3_*.csv`.
   - Manuscript Sections IV–V (`tools/build_manuscript_m3.js` → docx → PDF); viva guide `DS4SG_M3_Reference.docx`
     (`tools/build_m3_reference_doc.js`).
-- **Session 7 (2026-10-22), part 1: audit** (commits `1092762`, `b464a62`; pushed to origin).
-  - **Verified correct:** target and feature timing (no week t+1 leakage), disjoint folds, byte-identical re-runs of
-    both notebooks (tables, figures, models), script = notebook, independent recomputation of all metrics and costs.
-  - **Interpretation fixes:** shock persistence measured against ordinary weeks (4.2% vs 1.9%); fiscal-year OR 5.3
-    rests on 5 fiscal years (CI 1.4–19.5) and July shocks mostly fall after its first week; the 20:1 "never beat
-    never-alert" claim; manuscript V-C contradiction with Table 20; permutation leaders; utility tariffs not significant
-    (p = 0.10); KNN dip range; sister rows 82%; Fig B4 legend; Table 22 momentum row.
-- **Session 7, part 2: lecture-scope pass** (user request: few methods from beyond the lecture slides, only meaningful
-  ones). Slides now cover Units 01–11 (Unit 08–09 trees, 10 accuracy measures, 11 KNN); the syllabus also covers CV
-  (Week 7), logistic regression (Week 9), regression (Week 10).
-  - **Removed:** the year-level "oracle" diagnostic (the pooled-AUC caveat is now shown with the tree's own yearly AUCs:
-    pooled 0.652 beats three of its four years); the hand-coded DeLong test (`_midrank`, `delong_test`, Sun & Xu); the
-    Bayes-threshold formula (and Elkan ref); "prior shift" (and Moreno-Torres ref); "improper linear model" (Dawes ref);
-    "bias–variance" wording; saga/liblinear intercept explanation; Platt/isotonic, "equal opportunity", "welfare
-    weights" in the M4 plan (now plain words).
-  - **H1 out of sample** now uses the week-block bootstrap only (gain +0.007, 95% CI −0.08 to +0.10, p = 0.45); the
-    manuscript and notebook say why the DeLong test planned in M2 [9] was replaced (assumes independent rows).
-    `m3_h1_tests.csv` lost its DeLong row; every other table, figure and model is byte-identical.
-  - **Lecture ties added:** Euclidean distance and KNN limitations (Unit 11), Gini (Units 08–09), metrics, threshold
-    sweep and PR-AUC homework (Unit 10), bootstrap and cluster sampling (Unit 04), CIs (Unit 06).
-  - Manuscript references renumbered [11]–[17] in order of first citation; body 3,349 words, 12 pages; PDF re-exported.
-  - Viva guide: new §5.8 "Methods beyond the lecture slides" and two viva questions (27 → 29); 29 pages.
+- **Session 7 (2026-10-22): audit and lecture-scope pass** (commits `1092762`, `b464a62`, `7d341d7`; all pushed).
+  - Audit: target/feature timing, folds, reproducibility and every metric verified; interpretation fixes (shock
+    persistence vs ordinary weeks, fiscal-year OR on 5 years, utility tariffs not significant, etc.).
+  - Lecture scope: removed the year-level oracle, the hand-coded DeLong test, the Bayes-threshold formula and jargon
+    (prior shift, improper linear model, bias–variance, Platt/isotonic, equal opportunity, welfare weights); H1 out of
+    sample now uses the week-block bootstrap (gain +0.007, 95% CI −0.08 to +0.10, p = 0.45). Lecture ties added (Units
+    04, 06, 08–11). Manuscript 12 pages, 3,349 body words; viva guide §5.8 "Methods beyond the lecture slides", 29
+    questions.
+- **Session 8 (2026-10-25): consistency and clean-up.**
+  - Notebooks 03/04 and `baseline.py` already matched the trimmed report (no DeLong, oracle or dropped jargon left).
+    Removed the unused `statsmodels` import from notebook 03.
+  - All four notebooks found the project root by looking for `CLAUDE.md`; they now look for `requirements.txt`.
+  - `tools/build_reference_doc.js`: removed the handoff-hook entry, the CLAUDE.md/HANDOFF/log/.claudeignore rows and
+    the hook sentence; `DS4SG_Script_and_Data_Reference.docx` rebuilt (TOC updated in Word; text otherwise identical).
+  - Grep of all tracked deliverables (notebooks incl. outputs, src, tools, docx/PDF text and metadata, README, data
+    dictionaries, reports) finds no Claude/handoff/AI mention.
+  - Re-ran notebooks 01–04 top to bottom: all pass; all 80 output files (data, tables, figures, models) byte-identical.
 
 ## 3. Where we are now
-- **M3 deliverables are complete, audited and lecture-scoped.** The team still needs a read-through.
-- **Methods kept from beyond the slides** (see decisions below): expanding-window CV, permutation importance, standard
-  errors clustered by week; carried from the M2 plan: logit LR test, OLS with HAC errors, Brier score, Diebold–Mariano
-  (M4 plan only).
-- **Rebuilding the viva guide:** `NODE_PATH=<folder with node_modules/docx> node tools/build_m3_reference_doc.js
-  DS4SG_M3_Reference.docx` (the docx package is not in the project: `npm install docx` in any folder). Close the file
-  in Word first, or the write fails with EBUSY.
+- **M3 deliverables are complete, audited, lecture-scoped and free of tooling references.**
+- **Methods kept from beyond the slides:** expanding-window CV, permutation importance, standard errors clustered by
+  week; carried from the M2 plan: logit LR test, OLS with HAC errors, Brier score, Diebold–Mariano (M4 plan only).
+- **Repo-level session files stay** (CLAUDE.md, HANDOFF.md, logs/, .claude/, .claudeignore): the repo is for the team
+  only; the instructor sees only the submitted reports and notebooks (user, 2026-10-25).
+- The submitted M2 notebook copies in `milestones/M2_data_eda_hypotheses/` (untracked) still use the old root marker;
+  they are left as submitted.
+- **Rebuilding docs:** `NODE_PATH=<folder with node_modules/docx> node tools/build_m3_reference_doc.js
+  DS4SG_M3_Reference.docx` (same pattern for `build_reference_doc.js`; `npm install docx` in any folder). Close the
+  file in Word first (EBUSY). A docx-js TOC has no page numbers until Word updates it.
 - **Notebooks are the source** (the scratchpad builders are gone): edit them directly.
 - **Word automation (COM):**
   - Works via a NEW hidden instance, exporting to a folder outside the project.
   - A start can fail with CO_E_SERVER_EXEC_FAILURE and leave a window-less WINWORD behind; stop only that new PID and
-    retry (the second try worked).
+    retry.
   - In PowerShell use `$w.Quit()`, not `$w.Quit(0)`. Never touch the user's own Word process.
 - **Known caveats (disclosed):**
   - The momentum basket was chosen on all training years (it sees later CV folds, never the test).
@@ -75,16 +73,12 @@ all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in
   - The test has 13 distinct shock weeks.
   - Pooled AUC partly rewards telling crisis years from calm ones (flattered the tree).
   - Edge-case drivers use Combined-index item impacts (no Q2–Q5 item weights exist).
-- The lecture-scope commit is local (not pushed).
+- The session-8 commit is local (not pushed).
 
 ## 4. What's next
-1. **By 2026-10-24 (M3 due):**
-   - the team reads the PDF and the notebooks; to fix the manuscript, edit `tools/build_manuscript_m3.js`, rebuild,
-     re-check `python tools/word_count_body.py manuscript/M3_manuscript_sections_IV_V.docx`, and re-export the PDF;
-   - submit the PDF, `notebooks/03_baseline_models.ipynb`, `notebooks/04_hypothesis_tests.ipynb`,
-     `src/models/baseline.py` and `src/models/train_baselines.py` (plus `models/m3_baselines/` if artifacts are
-     uploaded);
-   - late penalty: 20% within 24 h.
+1. **M3 (due 2026-10-24):** confirm it was submitted (PDF, notebooks 03 and 04, `src/models/baseline.py`,
+   `src/models/train_baselines.py`, plus `models/m3_baselines/` if artifacts were uploaded). Late penalty: 20% within
+   24 h; not accepted after.
 2. **Viva prep (5 minutes, V-factor):**
    - every member studies the reference doc §5.8 (methods beyond the slides), §6 (decisions), §7 (numbers) and §8
      (Q&A, 29 questions);
@@ -116,6 +110,8 @@ all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in
   meaningful outside methods, each with a one-line reason (reference doc §5.8). Kept: expanding-window CV (shuffled
   K-fold leaks, +0.05–0.14 AUC), permutation importance (KNN has no coefficients), week-clustered SEs (sister rows;
   LR χ² 94 vs 22.4). M2-plan items (LR test, HAC, Brier, Diebold–Mariano) stay because M2 committed to them.
+- **No tooling references in deliverables (user, 2026-10-25):** notebooks, code, reports and team docs never mention
+  the session files; notebooks locate the project root via `requirements.txt`.
 - **M3 modelling** (IDs as in `baseline.py` and the reference doc):
   - B1: Q1–Q5 rows only. Combined is excluded as a near-duplicate average.
   - B2: chronological split (train ≤ 2024, test 2025–26; 74.8/25.2), fixed in M2. A stratified random split was
@@ -150,6 +146,7 @@ all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in
   Roman, no header or footer, three-rule tables. Every number traces to the notebooks.
 
 ## 6. Open questions
+- Was M3 submitted on time (due 2026-10-24)?
 - Does the team accept FN:FP = 5:1 as the headline cost ratio? This is a value judgement and the SDP members should
   sign off. The sensitivity analysis shows no ratio makes the baselines clearly valuable in 2025–26.
 - M4 selection criterion: pooled AUC, within-year AUC, or both (e.g. within-year AUC plus a calibration check)? It must
@@ -171,7 +168,7 @@ all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in
 - **M3 manuscript:** `tools/build_manuscript_m3.js` → `manuscript/M3_manuscript_sections_IV_V.docx` →
   `milestones/M3_baseline_model/M3_manuscript_sections_IV_V.pdf`.
 - **Viva guide:** `DS4SG_M3_Reference.docx` (built by `tools/build_m3_reference_doc.js`).
-- **Project reference:** `DS4SG_Script_and_Data_Reference.docx` (M1–M2 pipeline).
+- **Project reference:** `DS4SG_Script_and_Data_Reference.docx` (M1–M2 pipeline; built by `tools/build_reference_doc.js`).
 - **M2:** `notebooks/01_data_preparation.ipynb`, `notebooks/02_eda.ipynb`, `tools/build_manuscript_m2.js`.
 - **Data:** `data/processed/master_features.csv` + `FEATURES_DICTIONARY.md`; `master_model_ready.csv` +
   `DATA_DICTIONARY.md`; `items_weekly_panel.csv`.

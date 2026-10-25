@@ -173,12 +173,6 @@ const SUPPORT = [
     purpose: "Shared figure style for every notebook: fixed group colours, quiet grids, dark text, and 300-dpi export, so all manuscript figures look consistent.",
     reads: ["No data"], writes: ["No data (sets matplotlib defaults)"], used: "Imported by `notebooks/01_data_preparation.ipynb` and `notebooks/02_eda.ipynb`.",
   },
-  {
-    path: ".claude/hooks/log_handoff.py", lang: "Python script (Claude Code hook)",
-    purpose: "Runs automatically whenever `HANDOFF.md` is written. It appends a timestamped snapshot to the handoff log, skips identical versions, and rejects (does not log) a handoff longer than 400 lines.",
-    reads: ["`HANDOFF.md`"], writes: ["Appends to `logs/HANDOFF_LOG.md`", "`logs/.handoff_last_hash`"],
-    used: "Configured in `.claude/settings.json` (PostToolUse hook on Write/Edit). It can also be run by hand: `python .claude/hooks/log_handoff.py`.",
-  },
 ];
 
 // Data files: [path, layer, contents, origin, purpose, producedBy, usedBy, git]
@@ -384,15 +378,10 @@ const TABLES = [
 ];
 
 const DOCS = [
-  ["`CLAUDE.md`", "Project instructions: overview, chosen narrative, data facts, repository layout, conventions, milestone dates, session protocol.", "Edited by hand", "Committed"],
-  ["`HANDOFF.md`", "Current state of the project (done, now, next, decisions, open questions). Rewritten every session; maximum 400 lines.", "Edited by hand", "Committed"],
-  ["`logs/HANDOFF_LOG.md`", "Append-only history of every version of HANDOFF.md.", "`.claude/hooks/log_handoff.py`", "Committed"],
-  ["`logs/.handoff_last_hash`", "Hash of the last logged handoff (prevents duplicate entries).", "`.claude/hooks/log_handoff.py`", "Not in git"],
   ["`logs/spi_download_run.log`, `logs/sbp_mps_run.log`, `logs/insights_run.log`", "Console output of the SPI downloader, the SBP scraper and the insights script (saved when output was redirected).", "The respective scripts", "Not in git"],
   ["`README.md`", "Human-facing overview and setup instructions (virtual environment, notebook kernel).", "Edited by hand", "Committed"],
   ["`requirements.txt`", "Python packages needed by the scripts and notebooks.", "Edited by hand", "Committed"],
   ["`.gitignore`", "What git does not track: raw data (except catalogue and manifest), interim data, course materials, logs, the virtual environment.", "Edited by hand", "Committed"],
-  ["`.claudeignore`, `.claude/settings.json`", "Files Claude should not read without permission (handoff log, raw data); the handoff-log hook configuration.", "Edited by hand", "Committed"],
   ["`manuscript/02_data_collection_audit.md`", "Draft of manuscript §II.1 / M2 §2.1: how the data were collected, coverage, parsing, supporting sources.", "Written from the pipeline results", "Committed"],
   ["`reports/quintile_insights.md`", "Quintile findings and the three candidate narratives (the chosen one: early warning + rotating burden).", "Written from `quintile_insights.py` output", "Committed"],
   ["`milestones/M1_proposal/Milestone1.docx`", "Submitted Milestone 1 proposal.", "Team", "Committed"],
@@ -563,7 +552,7 @@ const doc = new Document({
         H1("7. Cross-reference matrix: data files x scripts"),
         P("**R** = the script reads the file; **W** = the script writes it; **R/W** = both (green = read only; orange = written). Scripts in run order: catalogue, download, parse, FX, event calendar, SBP decisions, master dataset, notebook 01 (preparation), features, quintile insights, notebook 02 (EDA). Paths are under `data/` unless they start with `reports/`.", { size: 18 }),
         matrixTable,
-        P("Code dependencies (not data): notebook 01 imports `nearest_thursday()` from `build_master.py`; both notebooks import `src/utils/plot_style.py`. `.claude/hooks/log_handoff.py` reads `HANDOFF.md` and writes `logs/HANDOFF_LOG.md` and `logs/.handoff_last_hash`.", { size: 18, before: 160 }),
+        P("Code dependencies (not data): notebook 01 imports `nearest_thursday()` from `build_master.py`; both notebooks import `src/utils/plot_style.py`.", { size: 18, before: 160 }),
       ],
     },
   ],
