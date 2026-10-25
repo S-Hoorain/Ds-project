@@ -225,12 +225,12 @@ const NB03 = [
   ["§1 Data and split", "Loads data, prints split sizes and ratio (74.8/25.2), class balance by group (17.2% vs 7.7% shocks).", "`m3_class_balance.csv`"],
   ["§2 Validation framework", "Builds the 4 yearly folds, asserts no week is on both sides, draws Figure B1, leakage checklist.", "`m3_cv_folds.csv`, figB1"],
   ["§3 Naive benchmarks", "Majority class and persistence, scored out-of-fold.", "—"],
-  ["§4 Models and tuning", "Justification table; grid search of the three pipelines; selected settings; validation curves.", "`m3_cv_grid_*.csv`, `m3_cv_summary.csv`, figB2"],
+  ["§4 Models and tuning", "Justification table; grid search of the three pipelines; selected settings; validation curves; check of C values below the grid (plateau).", "`m3_cv_grid_*.csv`, `m3_cv_summary.csv`, figB2"],
   ["§5 Why time-aware CV matters", "Re-scores the tuned models with shuffled K-fold (rows; whole weeks) vs our design.", "`m3_cv_design_comparison.csv`"],
-  ["§6 Test-period evaluation", "Thresholds from out-of-fold cost; full metric tables for validation years and test; bootstrap CIs; ROC/PR curves; metrics by quintile.", "`m3_oof_metrics.csv`, `m3_test_metrics.csv`, `m3_predictions.csv`, `m3_test_auc_bootstrap.csv`, `m3_test_metrics_by_group.csv`, figB3"],
+  ["§6 Test-period evaluation", "Thresholds from out-of-fold cost; full metric tables for validation years and test; bootstrap CIs and paired KNN differences; ROC/PR curves; metrics by quintile.", "`m3_oof_metrics.csv`, `m3_test_metrics.csv`, `m3_predictions.csv`, `m3_test_auc_bootstrap.csv`, `m3_test_metrics_by_group.csv`, figB3"],
   ["§7 Asymmetric costs", "FP vs FN consequences; Q1 shock size and persistence; cost-ratio sensitivity; cost curves.", "`m3_cost_sensitivity.csv`, figB4"],
   ["§8 Confusion matrices and edge cases", "Confusion matrices; every test shock week with its driver and which models caught it; false-alarm profile; week-by-week forecasts for Q1 and Q5.", "`m3_test_shock_weeks.csv`, `m3_false_alarm_profile.csv`, figB5, figB6"],
-  ["§9 Feature importance", "LR standardised coefficients; unpenalised odds ratios; tree Gini; permutation importance; tree rules.", "`m3_feature_importance.csv`, `m3_odds_ratios.csv`, figB7, figB8"],
+  ["§9 Feature importance", "LR standardised coefficients; unpenalised odds ratios; tree Gini; permutation importance; top-5 drivers with a policy implication each; tree rules.", "`m3_feature_importance.csv`, `m3_odds_ratios.csv`, `m3_top5_drivers.csv`, figB7, figB8"],
   ["§10 H1 test", "In-sample LR and week-clustered Wald tests; out-of-sample AUC comparison with the week-block bootstrap (replacing the DeLong test planned in M2).", "`m3_h1_tests.csv`, `m3_h1_signal_odds_ratios.csv`"],
   ["§11 Save artifacts", "Saves the three fitted pipelines and the model card.", "`models/m3_baselines/*`"],
   ["§12 Summary", "Findings, policy takeaways, limitations, M4 roadmap.", "—"],
@@ -238,7 +238,7 @@ const NB03 = [
 
 const NB04 = [
   ["§1 H2 pass-through", "`passthrough(h)`: per-quintile regressions of the next-h-week SPI change on the 8-week rupee change (+ controls), and the Q5 − Q1 difference regression; robustness over horizons 4/8/13, with/without controls, training vs full sample.", "`m3_h2_passthrough_by_quintile.csv`, `m3_h2_difference_tests.csv`, figB9"],
-  ["§2 H3 rotating burden", "`gap_regression()`: Q1 − Q5 weekly gap on food and energy inflation (+ controls, period dummies); exploratory split into five components.", "`m3_h3_gap_regression.csv`, `m3_h3_components_exploratory.csv`, figB10"],
+  ["§2 H3 rotating burden", "`gap_regression()`: Q1 − Q5 weekly gap on food and energy inflation (+ controls, period dummies); caveat that the gap is built from basket weights (descriptive, not causal); exploratory split into five components.", "`m3_h3_gap_regression.csv`, `m3_h3_components_exploratory.csv`, figB10"],
   ["§3 Summary", "Decision table for H2 and H3.", "—"],
 ];
 
@@ -269,6 +269,7 @@ const TABLES = [
   ["`m3_cost_sensitivity.csv`", "Thresholds and relative costs for FN:FP = 1, 2, 3, 5, 10, 20.", "nb03 §7"],
   ["`m3_test_shock_weeks.csv`, `m3_false_alarm_profile.csv`", "Every test shock week with driver and catches; signals present in false-alarm weeks.", "nb03 §8"],
   ["`m3_feature_importance.csv`, `m3_odds_ratios.csv`", "All importance measures; unpenalised odds ratios with clustered CIs.", "nb03 §9"],
+  ["`m3_top5_drivers.csv`", "The five leading drivers by mean permutation importance, with Gini importance and odds ratios.", "nb03 §9"],
   ["`m3_h1_tests.csv`, `m3_h1_signal_odds_ratios.csv`", "H1 test statistics and p-values; odds ratios of the six signals.", "nb03 §10"],
   ["`m3_h2_*.csv`, `m3_h3_*.csv`", "Pass-through estimates and difference tests; gap regressions.", "nb04"],
 ];
@@ -423,7 +424,7 @@ const DECISIONS = [
   {
     id: "B11", title: "Grid ranges, extended where the best value sat on an edge; saga solver for LR",
     simple: "We tried wide ranges of settings and widened them when the best setting landed at the edge of the range.",
-    detail: "LR C was extended down to 10^−4; the curve is flat for C ≤ 0.01 (all within 0.013), so the edge choice is a plateau, not a missed optimum. KNN k stops at 250 because the smallest training fold has about 310 rows. Tree leaf size extended to 160. The saga solver is used because it fits both the L1 and the L2 penalty of the grid.",
+    detail: "LR C was extended down to 10^−4; the curve is flat for C ≤ 0.01 (all within 0.013), so the edge choice is a plateau, not a missed optimum. A check below the grid (nb03 §4) confirms it: C = 0.00003 and 0.00001 change the pooled and the within-year AUC by at most 0.001. A stronger penalty only shrinks the coefficients further without changing their direction, so the ranking (all that AUC measures) stays the same, while the probabilities are squeezed towards 0.5 (0.495–0.511 at C = 0.00001), too narrow for the 0.01-step threshold search. KNN k stops at 250 because the smallest training fold has about 310 rows. Tree leaf size extended to 160. The saga solver is used because it fits both the L1 and the L2 penalty of the grid.",
     alt: "Random search (unnecessary for small grids).",
     where: "`make_models()`",
   },
@@ -451,7 +452,7 @@ const DECISIONS = [
   {
     id: "B15", title: "H3 tested as pre-stated; the component split reported as exploratory",
     simple: "We tested exactly the hypothesis written in M2 first. When energy did not behave as expected, we looked deeper, but we label that deeper look as a new idea, not a proven result.",
-    detail: "β_food = 0.12 (p = 0.003) supports the food part; β_energy = +0.04 (p = 0.92 for < 0) does not support the energy part. Splitting energy shows motor fuel (−0.07) and LPG (−0.03) narrow the gap, while utility tariffs point the other way (+0.03, p = 0.10, not significant; the 'for Q1' tariff slabs weigh heavily in Q1's basket). Because the split was chosen after seeing the result, it is a hypothesis for M4 (avoids p-hacking).",
+    detail: "β_food = 0.12 (p = 0.003) supports the food part; β_energy = +0.04 (p = 0.92 for < 0) does not support the energy part. Splitting energy shows motor fuel (−0.07) and LPG (−0.03) narrow the gap, while utility tariffs point the other way (+0.03, p = 0.10, not significant; the 'for Q1' tariff slabs weigh heavily in Q1's basket). Because the split was chosen after seeing the result, it is a hypothesis for M4 (avoids p-hacking). Caveat: the Q1 − Q5 gap is built from the same item price changes weighted by each basket (food ≈ 57% of Q1's estimated basket vs 43% of Q5's; motor fuel ≈ 3% vs 11%), so the regression partly recovers known weight differences. The coefficients are descriptive, not causal.",
     alt: "Replacing H3 after the fact (would be HARKing: hypothesising after results are known).",
     where: "nb04 §2",
   },
@@ -492,11 +493,13 @@ const NUMBERS = [
   ["Shock rate", "17.2% train (232 rows) / 7.7% test (35 rows, 13 distinct weeks)"],
   ["Validation years", "2021 (13% shocks), 2022 (33%), 2023 (20%), 2024 (12%)"],
   ["Selected LR", "C = 0.0001, L2, balanced; pooled CV AUC 0.643; mean 0.651 ± 0.053; threshold 0.50"],
+  ["LR below the grid", "C = 0.00003: pooled 0.644, mean 0.652; C = 0.00001: pooled 0.643, mean 0.652, probabilities 0.495–0.511 (plateau)"],
   ["Selected KNN", "k = 100, uniform, z-score; pooled 0.643; mean 0.672 ± 0.080; threshold 0.12"],
   ["Selected tree", "depth 4, leaf ≥ 40, unweighted; pooled 0.652; mean 0.578 ± 0.082; threshold 0.16"],
   ["Benchmarks (CV)", "persistence pooled 0.584; majority 0.467 pooled (0.500 per fold)"],
   ["Shuffled K-fold inflation", "+0.05 (LR) to +0.14 (tree): 0.70–0.73 vs 0.58–0.67"],
   ["Test AUC [95% CI]", "KNN 0.68 [0.47, 0.83]; LR 0.57 [0.35, 0.76]; tree 0.54 [0.43, 0.67]; persistence 0.47"],
+  ["KNN vs others (paired, test)", "KNN − LR +0.11 [+0.02, +0.22]; KNN − tree +0.14 [−0.04, +0.29]: better than LR, not clearly better than the tree"],
   ["Test recall / false alarms", "KNN 20/35, 133 FP; tree 10/35, 91 FP; LR 6/35, 37 FP"],
   ["Test accuracy", "majority 92.3% (catches nothing); KNN 67.5%; LR 85.5%; tree 74.5%"],
   ["Brier (test)", "KNN 0.070, tree 0.078, majority 0.080, LR 0.238"],
@@ -505,6 +508,7 @@ const NUMBERS = [
   ["Q1 shock size", "median 1.6%, mean 2.0%; not reversed: 4.2% above the pre-shock week 8 weeks later (ordinary week: 1.9%); Rs 355/month ≈ 8% of Kafaalat"],
   ["Within-year AUC (CV)", "mean fold AUC: KNN 0.672, LR 0.651, tree 0.578, persistence 0.569 (pooled favours the tree: 0.652)"],
   ["Top drivers", "rupee 8-week change (LR weight 1.00, Gini 0.45, OR 1.11 per 1%); fiscal-year start OR 5.3 (5 fiscal years, 14 of 25 rows shocked; CI 1.4–19.5)"],
+  ["Top 5 drivers (permutation ΔAUC)", "perishables inflation 0.023; recent shocks 0.021; 4-week SPI change 0.020; rupee 8-week change 0.018; motor-fuel inflation 0.011"],
   ["July in the test", "4 of 13 shock weeks (14 of 35 shock rows); only 1 in the week containing 1 July"],
   ["H1", "in sample Wald χ²(6) = 22.4, p = 0.001 (LR χ² = 94); test AUC 0.554 → 0.561, week-block bootstrap 95% CI −0.08 to +0.10, p = 0.45"],
   ["H2", "pass-through ≈ 0.21 (Q1) vs 0.22 (Q5) per 1% over 8 weeks; δ = 0.04, p = 0.27"],
@@ -521,8 +525,10 @@ const VIVA = [
   ["What is 'pooled' AUC?", "One AUC over the out-of-fold predictions of all four years together. Because the system uses one threshold for all years, probabilities must mean the same in every year; pooled AUC checks that, the per-fold average does not. Its weakness: it also rewards telling crisis years from calm ones (the tree's pooled AUC beats three of its four yearly AUCs)."],
   ["Your tree had the best CV score but the worst test score. Why?", "Pooled AUC rewards regime tracking, and the tree's first split (rupee down > 8% in 8 weeks) recognises the 2022–23 crisis. Within years its AUC is only 0.578, about persistence (0.569). The test period is one calm regime, so only within-year ranking counts there, and the within-year order (KNN > LR > tree) is exactly the test order. We did not re-select after seeing this, because that would leak the test into model choice; M4 will report both views."],
   ["Explain the C you chose.", "C is the inverse of the penalty strength. C = 0.0001 means a very strong L2 penalty: coefficients are shrunk heavily. Weaker penalties fit training weeks better (AUC 0.86) but validate worse (0.56): overfitting. The curve is flat for C ≤ 0.01."],
+  ["C = 0.0001 is the smallest value in your grid. Would a stronger penalty do better?", "No. We checked C = 0.00003 and 0.00001 on the same folds: both AUCs change by at most 0.001. A stronger penalty only shrinks the coefficients further without changing their direction, so the ranking cannot improve, and the probabilities get squeezed towards 0.5 (0.495–0.511 at C = 0.00001), too narrow for choosing a threshold. The optimum at the edge is a plateau."],
   ["Why k = 100 for KNN?", "Small k overfits (k = 5: training AUC 0.98, validation 0.56). Around 100 neighbours the validation AUC peaks (0.64) and then declines as the forecast becomes too smooth."],
   ["Why does KNN need scaling and the tree not?", "KNN uses distances, so a feature measured in large units would dominate. A tree only asks 'is x above a cut-off?', which no rescaling changes."],
+  ["Is KNN your best model?", "It had the highest test AUC (0.68), but we do not call it the best. Compared on the same resampled test weeks it beat logistic regression (+0.11, 95% CI +0.02 to +0.22) but not clearly the tree (+0.14, −0.04 to +0.29), and the test has only 13 shock weeks. Overlapping single-model intervals alone would not settle it; the paired difference is the right comparison."],
   ["What does a confusion matrix show for KNN?", "Test: 20 shocks caught (TP), 15 missed (FN), 133 false alarms (FP), 287 calm weeks correctly left alone (TN)."],
   ["Precision is only 0.13. Is the model useless?", "Precision depends on how common shocks are. In 2025–26 only 7.7% of rows were shocks, so most alarms are false even with decent ranking (AUC 0.68). In 2021–24 precision was 0.26–0.38."],
   ["Why is a false negative worse than a false positive here?", "A miss leaves poor households to absorb a price step that is not given back (8 weeks later Q1 prices are 4.2% above the pre-shock week, against 1.9% around an ordinary week), with irreversible coping; a false alarm is a top-up that still reaches poor families. We weight a miss as 5 false alarms and test 1–20."],
@@ -537,6 +543,8 @@ const VIVA = [
   ["Which methods did you use that were not in the lecture slides, and why?", "Three, each because the course method alone would give a wrong or incomplete answer: expanding-window CV (shuffled K-fold leaks the future, inflating AUC by 0.05–0.14), permutation importance (KNN has no coefficients or Gini importance) and standard errors clustered by week (the five quintile rows of a week are not independent). The LR test, HAC errors and the Brier score were already in our M2 plan."],
   ["Why cluster standard errors by week?", "The five quintile rows of a week share the same signals, so they are not independent; the plain LR test (χ² = 94) overstates the evidence about four-fold."],
   ["What did H2 and H3 find?", "H2: pass-through is about the same for Q1 and Q5 (p = 0.27). H3: food widens the gap against the poor (p = 0.003); energy as a whole does not narrow it. The exploratory split shows why: motor fuel and LPG hit the rich harder, while utility tariffs lean towards the poor (not significant, p = 0.10)."],
+  ["Isn't the H3 result built in by construction?", "Partly, yes. The Q1 − Q5 gap is made from the same item price changes weighted by each basket, and food weighs more in Q1's (about 57% vs 43%), so a food price rise widens the gap partly by construction. We therefore read the H3 coefficients as descriptive (how the gap moves with each component), not causal."],
+  ["Which five drivers lead, and what do they mean for policy?", "By permutation importance: perishables inflation (track perishable prices), recent shocks (keep top-ups on standby after a first shock), the 4-week SPI change (watch build-ups), the rupee's 8-week change (readiness review after a fall of several percent) and motor-fuel inflation (fuel reviews are on known dates). Importance shows what the models use, not cause and effect."],
   ["What are the systematic errors?", "First waves of a new shock, administered utility tariffs and perishable supply spikes are missed; false alarms follow past shocks."],
   ["What are the main limitations?", "Weak signal (underfitting), uncalibrated probabilities, a small test set (13 shock weeks), no data on tariff decisions, urban-only SPI (rural poor invisible), revised data vintage."],
   ["What will you do in M4?", "Ensembles (random forest, gradient boosting) under the same protocol; calibration; a tariff-notification calendar; fairness audit of Q1 vs Q5 (Brier scores and miss rates with the Diebold–Mariano test planned in M2; equal recall across quintiles); ethics of public warnings."],
@@ -568,7 +576,7 @@ body.push(new Paragraph({ children: [new TextRun({ text: "Milestone 3 Reference 
 body.push(P("Baseline models, evaluation and initial findings: files, concepts and decisions", { size: 28, color: MUTED, after: 120 }));
 body.push(P("Early-warning system for essential-price shocks across income quintiles in Pakistan", { size: 24, color: MUTED, after: 120 }));
 body.push(P("CS/SDP 312/314 Data Science for Social Good · Team: Syeda Hoorain Imran, Muhammad Munib Sattar, Sarah Khalid", { size: 22, color: MUTED, after: 120 }));
-body.push(P("Version: 22 October 2026 (Milestone 3 due 24 October 2026)", { size: 22, color: MUTED, after: 600 }));
+body.push(P("Version: 25 October 2026 (Milestone 3 due 24 October 2026)", { size: 22, color: MUTED, after: 600 }));
 body.push(P("This document is the companion to Milestone 3. It lists every file the milestone created or used, what each one does and the concepts behind it, and explains every important modelling decision twice: once in plain words and once in technical detail. It ends with a cheat sheet of key numbers and a list of likely viva questions with short answers. The project-wide script and data reference (`DS4SG_Script_and_Data_Reference.docx`) still covers the data pipeline of Milestones 1–2.", { size: 22 }));
 body.push(pageBreak());
 
@@ -595,7 +603,7 @@ body.push(H2("2.1 What we built, in one paragraph"));
 body.push(P("We built and honestly evaluated the first versions of an early-warning classifier. Standing at the end of a week, it predicts whether next week will be a price-shock week (SPI up by at least 1%) for each income quintile. Three baseline models (logistic regression, KNN, a shallow decision tree) were compared with two naive benchmarks. They were tuned with cross-validation that respects time, judged with all standard metrics and with a cost analysis in which missing a shock is five times worse than a false alarm, and explained with three feature-importance measures. We also ran the three hypothesis tests promised in Milestone 2."));
 body.push(H2("2.2 Headline results"));
 body.push(BUL("In the 2021–24 validation years all three models beat both benchmarks on pooled AUC (0.64–0.65 vs 0.58 for persistence) and cut error costs by a third compared with never alerting. Much of the pooled score comes from telling crisis years from calm years, though: within years, KNN (0.67) and LR (0.65) beat persistence (0.57) and the tree (0.58) barely does."));
-body.push(BUL("In the calm 2025–26 test period, KNN ranked shocks best (AUC 0.68), but at 5:1 no model beat 'never alert' on cost: the shock rate halved (17% → 8%), so thresholds learned in crisis years over-alert."));
+body.push(BUL("In the calm 2025–26 test period, KNN had the highest AUC (0.68; clearly above LR, not clearly above the tree), but at 5:1 no model beat 'never alert' on cost: the shock rate halved (17% → 8%), so thresholds learned in crisis years over-alert."));
 body.push(BUL("Drivers: rupee depreciation and recent price momentum; the fiscal-year start multiplies shock odds about five-fold (from only five fiscal years)."));
 body.push(BUL("Misses: first waves of new shocks, utility-tariff hikes and perishable spikes. False alarms follow past shocks."));
 body.push(BUL("H1 is supported in sample but not in the test period; H2 is not supported (pass-through is equal); H3 holds for food. Motor fuel hits the rich harder; utility tariffs lean towards the poor but are not significant."));
