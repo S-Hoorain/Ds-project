@@ -1,4 +1,5 @@
-// Builds "DS4SG_M3_Reference.docx": the Milestone 3 reference and viva guide (files, concepts, decisions, numbers).
+// Builds "DS4SG_M3_Reference.docx": the Milestone 3 reference (files, run order, concepts, limitations).
+// The viva preparation for Milestones 2 and 3 (decisions, numbers, questions) is in tools/build_viva_guide.js.
 // Usage (from a folder where the npm package "docx" is installed, or with NODE_PATH pointing at its node_modules):
 //   node tools/build_m3_reference_doc.js DS4SG_M3_Reference.docx
 // The contents list is static (clickable links to bookmarked headings), so no field update is needed in Word.
@@ -140,6 +141,15 @@ const FILES = [
     concepts: "reproducibility, separation of code and narrative, model artifacts.",
   },
   {
+    path: "src/models/sensitivity_checks.py", type: "Python script (command line)",
+    what: "Checks, after the M3 submission, whether other reasonable values of the numbers we fixed by judgement would have changed the results: the 1% shock threshold, the 1% fuel-revision cut-off, the EDA signal cut-offs, window lengths, the momentum-item rule, HAC lags, the random seed and the bootstrap size, plus two settings left at their defaults (Gini impurity, Euclidean distance).",
+    why: "Prepares honest answers to 'did you try other values?' for the M2 and M3 viva. The results are reported in the viva guide (Section 9) and change no submitted result.",
+    reads: ["`data/processed/master_features.csv`", "`data/processed/items_weekly_panel.csv`", "`data/external/islamic_events.csv`"],
+    writes: ["nothing (prints only)"],
+    run: "`python src/models/sensitivity_checks.py` (about 4 minutes).",
+    concepts: "sensitivity analysis, robustness checks, choosing with hindsight.",
+  },
+  {
     path: "notebooks/03_baseline_models.ipynb", type: "Jupyter notebook (kernel 'DS4SG (.venv)')",
     what: "The main M3 deliverable. Twelve sections walk through the data split, the validation design, the benchmarks, model justification and tuning, a leakage demonstration, test-period metrics, asymmetric costs, confusion matrices and misclassified weeks, feature importance, the formal H1 test, saved artifacts, and the summary, policy takeaways and M4 roadmap. Every result is printed, plotted and interpreted in markdown.",
     why: "The rubric's executable notebook: all data splits, CV runs, model fits and metrics, documented for the SDP members of the team.",
@@ -171,8 +181,16 @@ const FILES = [
     why: "Building the manuscript from code keeps every number traceable to the notebooks and makes re-runs easy.",
     reads: ["`manuscript/figures/figB*.png`"],
     writes: ["`manuscript/M3_manuscript_sections_IV_V.docx` (then exported to `milestones/M3_baseline_model/M3_manuscript_sections_IV_V.pdf`)"],
-    run: "`node tools/build_manuscript_m3.js manuscript/M3_manuscript_sections_IV_V.docx` (needs the npm package `docx`); word count: `python tools/word_count_body.py manuscript/M3_manuscript_sections_IV_V.docx` (3,349 body words).",
+    run: "`node tools/build_manuscript_m3.js manuscript/M3_manuscript_sections_IV_V.docx` (needs the npm package `docx`); word count: `python tools/word_count_body.py manuscript/M3_manuscript_sections_IV_V.docx` (3,529 body words).",
     concepts: "IEEE-style manuscript, reproducible documents.",
+  },
+  {
+    path: "tools/build_viva_guide.js", type: "Node.js script (docx-js)",
+    what: "Builds `DS4SG_Viva_Guide_M2_M3.docx`, the viva preparation guide for Milestones 2 and 3: the numbers we chose and the alternatives checked, the methods used and not used, every decision explained simply and in detail, key numbers, a question bank and the after-submission checks.",
+    why: "The instructor examines M2 and M3 together, mostly with open questions about decisions.",
+    reads: [], writes: ["`DS4SG_Viva_Guide_M2_M3.docx`"],
+    run: "`node tools/build_viva_guide.js DS4SG_Viva_Guide_M2_M3.docx` (needs the npm package `docx`).",
+    concepts: "",
   },
   {
     path: "tools/prepare_manuscript_figures.py", type: "Python script",
@@ -349,209 +367,6 @@ const BEYOND = [
   ["Diebold–Mariano test (M4 plan only, from M2)", "It will test H5 (are Q1's forecast errors larger than Q5's?) in Milestone 4.", "A t-test on the weekly difference between two groups' losses, with standard errors that allow for autocorrelation."],
 ];
 
-// ---------------------------------------------------------------- decisions
-const DECISIONS = [
-  {
-    id: "B1", title: "Model the five quintiles only; leave out the Combined index",
-    simple: "The national (Combined) index is basically an average of the five quintiles, so including it would repeat the same week's information.",
-    detail: "Combined is a weighted average of Q1–Q5. Adding it would give each week six nearly duplicated rows and weight the middle quintiles more. The research question is about quintiles, so rows are quintile-weeks (5 per week; 1,805 rows after deletion).",
-    alt: "Separate models per quintile (too few shocks per group: about 41–51 in training) — left for M4 (H4).",
-    where: "`load_model_data()` (`GROUPS`)",
-  },
-  {
-    id: "B2", title: "Chronological train/test split, fixed in M2: train ≤ 2024, test 2025–26",
-    simple: "We train on the past and test on the most recent period, like a real forecaster. We do not shuffle.",
-    detail: "Train = 270 weeks (31 Oct 2019–26 Dec 2024, 1,350 rows); test = 91 weeks (2 Jan 2025–24 Sep 2026, 455 rows): 74.8/25.2 by weeks. The boundary was stated in the M2 manuscript before any model existed, so it cannot have been chosen to flatter results. Stratified random splitting was rejected: it would train on 2025 to predict 2022 and split the five sister rows of a week (which share all week-level features) across train and test.",
-    alt: "70/30 or 80/20 random stratified split (rubric example) — invalid for time series. Imbalance is handled by B6 instead.",
-    where: "`TRAIN_END`, `load_model_data()`, nb03 §1",
-  },
-  {
-    id: "B3", title: "Expanding-window CV with one calendar year per fold (K = 4), whole weeks together, no gap",
-    simple: "To tune the models we pretend to be in 2021, 2022, 2023 and 2024 in turn: train on everything before that year and test on that year.",
-    detail: "Fold k validates on year 2020 + k and trains on all earlier weeks. Calendar years guarantee each block has one fiscal-year start, one Ramadan and one Eid ul-Adha (equal 45-week blocks would not). A week's five rows stay together. No gap is needed because the target is one week ahead (gap = horizon − 1 = 0). The first fold trains on 62 weeks; validation shock rates are 13%, 33%, 20% and 12%, so folds cover calm and crisis years.",
-    alt: "Shuffled stratified K-fold (§5 shows it inflates AUC by 0.05–0.14); sklearn TimeSeriesSplit with equal blocks (first fold only 45 weeks, uneven calendar coverage).",
-    where: "`time_series_folds()`, `VAL_YEARS`, Figure B1",
-  },
-  {
-    id: "B4", title: "Scale inside each model's pipeline; z-score for LR; scale only continuous features for KNN; no scaling for the tree",
-    simple: "Scaling is learned from the training part of each fold only, so the validation data never leak in. Each model gets the scaling it needs.",
-    detail: "LR: all 18 features z-scored so the penalty treats them alike and coefficients are standardised. KNN: continuous features scaled (z-score or Min-Max, chosen by CV: z-score won 0.64 vs 0.53); 0/1 flags left as 0/1 so a rare flag (fiscal-year start, z ≈ 7 when on) does not dominate distances. Tree: splits are thresholds, so scaling changes nothing. The M2 `*_z`/`*_mm` columns were scaled on all of 2019–24 and would leak later folds into earlier ones, so they are not used.",
-    alt: "Pre-scaled M2 columns (leak inside CV).",
-    where: "`make_models()`",
-  },
-  {
-    id: "B5", title: "Select hyperparameters by ROC-AUC of the pooled out-of-fold predictions",
-    simple: "We choose the setting whose predictions, put together across all four validation years, rank shock weeks best — because one alarm threshold must work in every year.",
-    detail: "ROC-AUC is threshold-free and unaffected by the shock rate, and it is the metric of hypothesis H1. Pooling matters: an unweighted LR scored 0.65 averaged over folds but only 0.53 pooled, because its probability level followed each fold's base rate. The majority class shows the same effect (0.5 per fold, 0.467 pooled). Mean ± SD of per-fold AUCs is still reported for the rubric's 'variance across folds'. Caveat found in the audit: pooled AUC also rewards telling crisis years from calm ones. The tree's pooled AUC (0.652) beats three of its four yearly AUCs (0.49–0.67), which can only come from differences between years. Within years (mean fold AUC) the order is KNN 0.672 > LR 0.651 > tree 0.578 ≈ persistence 0.569, and that is the order the test reproduced. We kept the planned rule, because switching after seeing the test would leak test information into model choice; M4 reports both.",
-    alt: "Mean per-fold AUC (standard GridSearchCV): ignores whether probability levels are comparable across years, but measures within-year ranking cleanly (M4 will report it alongside). Accuracy: rewards never alerting.",
-    where: "`grid_search_time_cv()`",
-  },
-  {
-    id: "B6", title: "Handle class imbalance without resampling",
-    simple: "Shocks are rare (17% of training rows). Instead of creating fake shock rows, we let the models weight shocks more if that helps, choose the alarm cut-off by cost, and use metrics that are fair to rare events.",
-    detail: "Class weights (none vs balanced) are a tuning option for LR (balanced won) and the tree (unweighted won). KNN has no weights; its threshold adapts. Metrics: recall, specificity, F1, ROC-AUC, PR-AUC. Oversampling methods such as SMOTE create synthetic rows by interpolating neighbours, which in a time series mixes weeks and can leak information across folds.",
-    alt: "SMOTE / random oversampling; undersampling calm weeks (throws data away).",
-    where: "grids in `make_models()`, `best_threshold()`",
-  },
-  {
-    id: "B7", title: "Alarm threshold minimises expected cost with a missed shock = 5 false alarms; ratios 1–20 tested",
-    simple: "Missing a real shock hurts poor families much more than a false alarm costs the government, so we count a miss as five times worse and pick the cut-off that minimises total cost.",
-    detail: "Evidence: a Q1 shock is not given back (8 weeks later Q1 prices are 4.2% above the pre-shock week, against 1.9% around an ordinary week, and after the shock they keep rising at the usual pace, 2.1% vs 2.0%), a typical shock is up to Rs 355/month at the Q1 ceiling (≈ 8% of the Rs 4,500/month Kafaalat value), coping is irreversible, and FAO found ≈ US$7 return per US$1 of early action. A false alarm is a transfer to poor households, not a pure loss, so 5:1 sits between parity and 7:1. Thresholds are chosen on 2021–24 out-of-fold predictions (not the test): LR 0.50, KNN 0.12, tree 0.16.",
-    alt: "Default 0.5; maximising F1; a different ratio (all reported in the sensitivity table).",
-    where: "`COST_FN`, `best_threshold()`, nb03 §7, Figure B4",
-  },
-  {
-    id: "B8", title: "Listwise deletion of rows with a missing feature or target",
-    simple: "The very first weeks cannot have an 8-week exchange-rate change, and the very last week has no 'next week'. We simply drop those 9 weeks.",
-    detail: "45 rows (9 weeks × 5 groups) dropped, as promised in M2 Table 2. These gaps are structural (not random), and imputing them would invent price movements, the very thing we forecast.",
-    alt: "Mean imputation (would create fake signals).",
-    where: "`load_model_data()`",
-  },
-  {
-    id: "B9", title: "Baselines: logistic regression, KNN and a shallow decision tree; benchmarks: majority class and persistence",
-    simple: "Three simple models that think differently (a weighted sum, 'similar past weeks', and yes/no rules), plus two no-brain benchmarks every model must beat.",
-    detail: "LR is the model form of H1 (odds ratios, testable coefficients) and regularises well in small samples. KNN is an analogue forecast with no assumed shape. The tree gives auditable alarm rules and captures thresholds/interactions. All three are syllabus methods (KNN Week 7, LR Week 9; trees lead into the Week 12 ensembles in M4). Majority class sets the accuracy floor; persistence is the standard naive time-series forecast.",
-    alt: "Ridge/Lasso regression on the continuous change (we forecast a binary alarm); neural networks (not baselines).",
-    where: "`make_models()`, `make_benchmarks()`",
-  },
-  {
-    id: "B10", title: "Eighteen features in four blocks, one pooled model with quintile dummies (Q5 = reference)",
-    simple: "The model sees the group's own recent inflation, the early-warning signals from M2, momentum in the volatile components, and a few controls.",
-    detail: "Own history (2), the six H1 signals, perishables/utilities/motor-fuel momentum (3), policy rate, Ramadan, Eid ul-Adha, and grp_Q1–Q4. Only the 8-week FX change is used (the 4- and 13-week versions are highly correlated with it, M2 §III-F). Dummies let the baseline shock risk differ by quintile; they turned out near zero.",
-    alt: "All 35 M2 features (redundant, more noise for KNN); separate models per quintile (M4, H4).",
-    where: "`FEATURES` and blocks in `baseline.py`",
-  },
-  {
-    id: "B11", title: "Grid ranges, extended where the best value sat on an edge; saga solver for LR",
-    simple: "We tried wide ranges of settings and widened them when the best setting landed at the edge of the range.",
-    detail: "LR C was extended down to 10^−4; the curve is flat for C ≤ 0.01 (all within 0.013), so the edge choice is a plateau, not a missed optimum. A check below the grid (nb03 §4) confirms it: C = 0.00003 and 0.00001 change the pooled and the within-year AUC by at most 0.001. A stronger penalty only shrinks the coefficients further without changing their direction, so the ranking (all that AUC measures) stays the same, while the probabilities are squeezed towards 0.5 (0.495–0.511 at C = 0.00001), too narrow for the 0.01-step threshold search. KNN k stops at 250 because the smallest training fold has about 310 rows. Tree leaf size extended to 160. The saga solver is used because it fits both the L1 and the L2 penalty of the grid.",
-    alt: "Random search (unnecessary for small grids).",
-    where: "`make_models()`",
-  },
-  {
-    id: "B12", title: "Three feature-importance measures; permutation importance on validation folds; odds ratios from an unpenalised logit",
-    simple: "Different models 'see' features differently, so we use three ways of measuring importance and look for agreement.",
-    detail: "Standardised LR coefficients (comparable because z-scored), tree Gini importance, and permutation importance for all three models (works for KNN). Permutation importance uses the 2021–24 validation folds so the test period is not used to judge features. The tuned LR is so shrunk that its raw coefficients are tiny, so we show them relative to the largest and take odds ratios in natural units from an unpenalised logit with week-clustered CIs.",
-    alt: "Permutation importance on the test (only 35 shock rows from 13 weeks: unstable).",
-    where: "nb03 §9, `cv_permutation_importance()`",
-  },
-  {
-    id: "B13", title: "H1: week-clustered Wald test in sample; week-block bootstrap out of sample (replacing the DeLong test)",
-    simple: "The five quintile rows of a week are not five independent pieces of evidence, so our tests treat each week as one block.",
-    detail: "Plain LR test χ²(6) = 94 vs clustered Wald χ²(6) = 22.4 (p = 0.001): clustering cuts the evidence about four-fold but H0 is still rejected in sample. Out of sample, M2 had planned the DeLong test, but DeLong also assumes independent rows. We resample whole test weeks instead (bootstrap and cluster sampling, Unit 04): the 95% interval for the AUC gain is −0.08 to +0.10, and 45% of resamples show no gain (p = 0.45).",
-    alt: "Only the plain LR test (overstates evidence); the DeLong test (assumes independent rows and is hard to check by hand).",
-    where: "nb03 §10, `fit_logit()`, `week_block_bootstrap()`",
-  },
-  {
-    id: "B14", title: "H2 tested with a Q5 − Q1 difference regression on the training period, HAC errors",
-    simple: "Both groups face the same exchange rate each week, so we look at the difference between their price rises and ask whether it grows when the rupee falls.",
-    detail: "Slope of (8-week-ahead SPI change Q5 − Q1) on the 8-week rupee change = β_Q5 − β_Q1, with one HAC standard error. Training weeks only, and only windows ending by 31 Dec 2024, so no 2025 price enters. Robust across 4/8/13-week horizons, with/without controls, full sample.",
-    alt: "Stacked panel with interactions (equivalent but needs panel-HAC errors).",
-    where: "nb04 §1",
-  },
-  {
-    id: "B15", title: "H3 tested as pre-stated; the component split reported as exploratory",
-    simple: "We tested exactly the hypothesis written in M2 first. When energy did not behave as expected, we looked deeper, but we label that deeper look as a new idea, not a proven result.",
-    detail: "β_food = 0.12 (p = 0.003) supports the food part; β_energy = +0.04 (p = 0.92 for < 0) does not support the energy part. Splitting energy shows motor fuel (−0.07) and LPG (−0.03) narrow the gap, while utility tariffs point the other way (+0.03, p = 0.10, not significant; the 'for Q1' tariff slabs weigh heavily in Q1's basket). Because the split was chosen after seeing the result, it is a hypothesis for M4 (avoids p-hacking). Caveat: the Q1 − Q5 gap is built from the same item price changes weighted by each basket (food ≈ 57% of Q1's estimated basket vs 43% of Q5's; motor fuel ≈ 3% vs 11%), so the regression partly recovers known weight differences. The coefficients are descriptive, not causal.",
-    alt: "Replacing H3 after the fact (would be HARKing: hypothesising after results are known).",
-    where: "nb04 §2",
-  },
-  {
-    id: "B16", title: "The test period is used once; results reported honestly",
-    simple: "We looked at the test results only after all choices were fixed, and we report that the models did not beat 'never alert' in 2025–26 instead of re-tuning until they did.",
-    detail: "All tuning, thresholds and the cost ratio come from 2019–24 data; the cost evidence also uses training weeks only. The calm test period (the shock rate halved) is a real finding: thresholds learned in crisis years over-alert in calm years. Adjusting thresholds to the test would be leakage.",
-    alt: "Re-tuning on the test set (invalid).",
-    where: "nb03 §6–§7",
-  },
-  {
-    id: "B17", title: "The driver of a shock = the items with the largest upward PBS impact that week",
-    simple: "To explain a missed shock we name the items that pushed prices up most that week.",
-    detail: "Uses PBS item impacts (percentage points of the Combined SPI change); for unpublished weeks, weight × % change. Largest positive impact, not largest absolute: in July 2026 petrol fell 20% while tomatoes rose 125% — the tomatoes caused the shock.",
-    alt: "Largest absolute impact (mislabels falls as drivers).",
-    where: "nb03 §8",
-  },
-  {
-    id: "B18", title: "Disclosed limitation: momentum items were chosen on all training years",
-    simple: "One feature was designed in M2 using all of 2019–24; inside cross-validation it has a tiny peek at later folds (never at the test).",
-    detail: "The seven 'momentum' items behind `momentum_spikes_4w` were picked on weeks up to 2024. Within CV that is a mild look-ahead; its permutation importance is small, so the effect is minor. Fixing it fully would mean re-selecting items inside every fold (planned if the feature is kept in M4).",
-    alt: "Re-select inside folds (more code; small expected effect).",
-    where: "nb03 §2 checklist",
-  },
-  {
-    id: "B19", title: "Reproducibility: shared module, fixed seed, script = notebook",
-    simple: "Anyone can re-run everything and get the same numbers.",
-    detail: "Seed 42 for the tree, solver and bootstrap; data paths relative to the project root; the script and the notebook call the same functions and their predictions match exactly; models saved with the scikit-learn version in the model card.",
-    alt: "",
-    where: "`SEED`, `train_baselines.py`, `model_card.json`",
-  },
-];
-
-// ---------------------------------------------------------------- numbers
-const NUMBERS = [
-  ["Rows after deletion", "1,805 quintile-weeks (45 rows / 9 weeks dropped)"],
-  ["Train / test", "270 weeks (1,350 rows) / 91 weeks (455 rows); 74.8% / 25.2%"],
-  ["Shock rate", "17.2% train (232 rows) / 7.7% test (35 rows, 13 distinct weeks)"],
-  ["Validation years", "2021 (13% shocks), 2022 (33%), 2023 (20%), 2024 (12%)"],
-  ["Selected LR", "C = 0.0001, L2, balanced; pooled CV AUC 0.643; mean 0.651 ± 0.053; threshold 0.50"],
-  ["LR below the grid", "C = 0.00003: pooled 0.644, mean 0.652; C = 0.00001: pooled 0.643, mean 0.652, probabilities 0.495–0.511 (plateau)"],
-  ["Selected KNN", "k = 100, uniform, z-score; pooled 0.643; mean 0.672 ± 0.080; threshold 0.12"],
-  ["Selected tree", "depth 4, leaf ≥ 40, unweighted; pooled 0.652; mean 0.578 ± 0.082; threshold 0.16"],
-  ["Benchmarks (CV)", "persistence pooled 0.584; majority 0.467 pooled (0.500 per fold)"],
-  ["Shuffled K-fold inflation", "+0.05 (LR) to +0.14 (tree): 0.70–0.73 vs 0.58–0.67"],
-  ["Test AUC [95% CI]", "KNN 0.68 [0.47, 0.83]; LR 0.57 [0.35, 0.76]; tree 0.54 [0.43, 0.67]; persistence 0.47"],
-  ["KNN vs others (paired, test)", "KNN − LR +0.11 [+0.02, +0.22]; KNN − tree +0.14 [−0.04, +0.29]: better than LR, not clearly better than the tree"],
-  ["Test recall / false alarms", "KNN 20/35, 133 FP; tree 10/35, 91 FP; LR 6/35, 37 FP"],
-  ["Test accuracy", "majority 92.3% (catches nothing); KNN 67.5%; LR 85.5%; tree 74.5%"],
-  ["Brier (test)", "KNN 0.070, tree 0.078, majority 0.080, LR 0.238"],
-  ["Cost 2021–24 (5:1)", "33–39% below never-alert; 18–26% below always-alert"],
-  ["Cost test (5:1)", "4–23% above never-alert (LR 1.04, KNN 1.19, tree 1.23)"],
-  ["Q1 shock size", "median 1.6%, mean 2.0%; not reversed: 4.2% above the pre-shock week 8 weeks later (ordinary week: 1.9%); Rs 355/month ≈ 8% of Kafaalat"],
-  ["Within-year AUC (CV)", "mean fold AUC: KNN 0.672, LR 0.651, tree 0.578, persistence 0.569 (pooled favours the tree: 0.652)"],
-  ["Top drivers", "rupee 8-week change (LR weight 1.00, Gini 0.45, OR 1.11 per 1%); fiscal-year start OR 5.3 (5 fiscal years, 14 of 25 rows shocked; CI 1.4–19.5)"],
-  ["Top 5 drivers (permutation ΔAUC)", "perishables inflation 0.023; recent shocks 0.021; 4-week SPI change 0.020; rupee 8-week change 0.018; motor-fuel inflation 0.011"],
-  ["July in the test", "4 of 13 shock weeks (14 of 35 shock rows); only 1 in the week containing 1 July"],
-  ["H1", "in sample Wald χ²(6) = 22.4, p = 0.001 (LR χ² = 94); test AUC 0.554 → 0.561, week-block bootstrap 95% CI −0.08 to +0.10, p = 0.45"],
-  ["H2", "pass-through ≈ 0.21 (Q1) vs 0.22 (Q5) per 1% over 8 weeks; δ = 0.04, p = 0.27"],
-  ["H3", "β_food = 0.12 (p = 0.003); β_energy = +0.04 (p = 0.92); split R² 0.16 → 0.38"],
-];
-
-// ---------------------------------------------------------------- viva questions
-const VIVA = [
-  ["Why didn't you use a random 80/20 stratified split?", "Our data are a time series. A random split would train on later weeks to predict earlier ones and put sister quintile rows of the same week on both sides. We split by date (train ≤ 2024, test 2025–26, about 75/25), fixed in M2 before modelling, and handle imbalance with class weights, a cost-based threshold and imbalance-aware metrics."],
-  ["How does your cross-validation avoid leakage?", "Expanding window: each fold trains only on weeks before its validation year; whole weeks stay together; scaling is fitted inside the pipeline on the training part only; the test period is never used for tuning or thresholds."],
-  ["Why K = 4?", "One fold per calendar year 2021–2024, so each validation block has exactly one fiscal-year start, Ramadan and Eid. 2020 cannot be a validation year because its training window would hold only 9 weeks (Oct–Dec 2019)."],
-  ["What would shuffled K-fold have shown?", "AUCs of 0.70–0.73 instead of 0.58–0.67: inflated by sister rows of the same week and by learning from the future."],
-  ["Why ROC-AUC for tuning and not accuracy?", "Accuracy rewards never raising an alarm (92% in the test). AUC measures ranking, is threshold-free and is not affected by the shock rate."],
-  ["What is 'pooled' AUC?", "One AUC over the out-of-fold predictions of all four years together. Because the system uses one threshold for all years, probabilities must mean the same in every year; pooled AUC checks that, the per-fold average does not. Its weakness: it also rewards telling crisis years from calm ones (the tree's pooled AUC beats three of its four yearly AUCs)."],
-  ["Your tree had the best CV score but the worst test score. Why?", "Pooled AUC rewards regime tracking, and the tree's first split (rupee down > 8% in 8 weeks) recognises the 2022–23 crisis. Within years its AUC is only 0.578, about persistence (0.569). The test period is one calm regime, so only within-year ranking counts there, and the within-year order (KNN > LR > tree) is exactly the test order. We did not re-select after seeing this, because that would leak the test into model choice; M4 will report both views."],
-  ["Explain the C you chose.", "C is the inverse of the penalty strength. C = 0.0001 means a very strong L2 penalty: coefficients are shrunk heavily. Weaker penalties fit training weeks better (AUC 0.86) but validate worse (0.56): overfitting. The curve is flat for C ≤ 0.01."],
-  ["C = 0.0001 is the smallest value in your grid. Would a stronger penalty do better?", "No. We checked C = 0.00003 and 0.00001 on the same folds: both AUCs change by at most 0.001. A stronger penalty only shrinks the coefficients further without changing their direction, so the ranking cannot improve, and the probabilities get squeezed towards 0.5 (0.495–0.511 at C = 0.00001), too narrow for choosing a threshold. The optimum at the edge is a plateau."],
-  ["Why k = 100 for KNN?", "Small k overfits (k = 5: training AUC 0.98, validation 0.56). Around 100 neighbours the validation AUC peaks (0.64) and then declines as the forecast becomes too smooth."],
-  ["Why does KNN need scaling and the tree not?", "KNN uses distances, so a feature measured in large units would dominate. A tree only asks 'is x above a cut-off?', which no rescaling changes."],
-  ["Is KNN your best model?", "It had the highest test AUC (0.68), but we do not call it the best. Compared on the same resampled test weeks it beat logistic regression (+0.11, 95% CI +0.02 to +0.22) but not clearly the tree (+0.14, −0.04 to +0.29), and the test has only 13 shock weeks. Overlapping single-model intervals alone would not settle it; the paired difference is the right comparison."],
-  ["What does a confusion matrix show for KNN?", "Test: 20 shocks caught (TP), 15 missed (FN), 133 false alarms (FP), 287 calm weeks correctly left alone (TN)."],
-  ["Precision is only 0.13. Is the model useless?", "Precision depends on how common shocks are. In 2025–26 only 7.7% of rows were shocks, so most alarms are false even with decent ranking (AUC 0.68). In 2021–24 precision was 0.26–0.38."],
-  ["Why is a false negative worse than a false positive here?", "A miss leaves poor households to absorb a price step that is not given back (8 weeks later Q1 prices are 4.2% above the pre-shock week, against 1.9% around an ordinary week), with irreversible coping; a false alarm is a top-up that still reaches poor families. We weight a miss as 5 false alarms and test 1–20."],
-  ["How did you choose the threshold?", "The value that minimises 1 × FP + 5 × FN on the 2021–24 out-of-fold predictions; then applied unchanged to the test."],
-  ["Why did no model beat 'never alert' in the test?", "The shock rate halved. Thresholds learned when shocks were common over-alert when they are rare. The ranking still works (KNN AUC 0.68), so recalibration/retraining (M4–M5) is the fix. (At 5:1. At 20:1 the models do beat never-alert, but only by alerting almost every week, i.e. by matching the always-alert policy.)"],
-  ["Which features matter most?", "The 8-week rupee depreciation (largest LR weight, the tree's first split, odds ratio 1.11 per 1%), recent shocks and food-price momentum. The fiscal-year start multiplies the odds by about 5 but is rare, and that estimate rests on only five fiscal years (CI 1.4–19.5)."],
-  ["Is 'front-load support before 1 July' still justified?", "Yes for the timing, not for the one-week flag. In 2019–24, 14 of the 25 rows flagged as fiscal-year starts were followed by a shock (56% vs 17%). In 2025–26, 4 of the 13 shock weeks fell in July, but three came after its first week. M4 will try a first-month-of-the-fiscal-year window."],
-  ["What is permutation importance?", "Shuffle one feature in the validation data and measure how much the AUC falls. Works for any model, including KNN."],
-  ["What is an odds ratio?", "exp(coefficient): how many times the odds of a shock multiply for a one-unit rise. 1.11 for the rupee means +11% odds per 1% depreciation."],
-  ["Was H1 supported?", "In sample yes (clustered Wald p = 0.001). Out of sample in 2025–26 no (week-block bootstrap p = 0.45). The early warning works in turbulent periods but not in a calm one."],
-  ["M2 promised a DeLong test for H1. Why did you use a bootstrap?", "DeLong treats the 455 test rows as independent, but the five quintile rows of a week share the same signals and move together. Resampling whole weeks with replacement (bootstrap and cluster sampling, Unit 04) keeps them together, gives a 95% interval (−0.08 to +0.10) and a p-value (0.45), and is easy to check by hand."],
-  ["Which methods did you use that were not in the lecture slides, and why?", "Three, each because the course method alone would give a wrong or incomplete answer: expanding-window CV (shuffled K-fold leaks the future, inflating AUC by 0.05–0.14), permutation importance (KNN has no coefficients or Gini importance) and standard errors clustered by week (the five quintile rows of a week are not independent). The LR test, HAC errors and the Brier score were already in our M2 plan."],
-  ["Why cluster standard errors by week?", "The five quintile rows of a week share the same signals, so they are not independent; the plain LR test (χ² = 94) overstates the evidence about four-fold."],
-  ["What did H2 and H3 find?", "H2: pass-through is about the same for Q1 and Q5 (p = 0.27). H3: food widens the gap against the poor (p = 0.003); energy as a whole does not narrow it. The exploratory split shows why: motor fuel and LPG hit the rich harder, while utility tariffs lean towards the poor (not significant, p = 0.10)."],
-  ["Isn't the H3 result built in by construction?", "Partly, yes. The Q1 − Q5 gap is made from the same item price changes weighted by each basket, and food weighs more in Q1's (about 57% vs 43%), so a food price rise widens the gap partly by construction. We therefore read the H3 coefficients as descriptive (how the gap moves with each component), not causal."],
-  ["Which five drivers lead, and what do they mean for policy?", "By permutation importance: perishables inflation (track perishable prices), recent shocks (keep top-ups on standby after a first shock), the 4-week SPI change (watch build-ups), the rupee's 8-week change (readiness review after a fall of several percent) and motor-fuel inflation (fuel reviews are on known dates). Importance shows what the models use, not cause and effect."],
-  ["What are the systematic errors?", "First waves of a new shock, administered utility tariffs and perishable supply spikes are missed; false alarms follow past shocks."],
-  ["What are the main limitations?", "Weak signal (underfitting), uncalibrated probabilities, a small test set (13 shock weeks), no data on tariff decisions, urban-only SPI (rural poor invisible), revised data vintage."],
-  ["What will you do in M4?", "Ensembles (random forest, gradient boosting) under the same protocol; calibration; a tariff-notification calendar; fairness audit of Q1 vs Q5 (Brier scores and miss rates with the Diebold–Mariano test planned in M2; equal recall across quintiles); ethics of public warnings."],
-  ["Can you show the code that prevents leakage?", "`time_series_folds()` (folds by year, asserted in nb03 §2), the scaler inside each `Pipeline` in `make_models()`, and `best_threshold()` applied to out-of-fold predictions only."],
-  ["How do you know the notebook is reproducible?", "Fixed seed 42; `python src/models/train_baselines.py` gives exactly the same test predictions as the notebook; fitted models and the model card are saved."],
-];
-
 // ---------------------------------------------------------------- matrix (files x steps)
 const MCOLS = ["build_ features", "train_ baselines", "nb03", "nb04", "prepare_ figures", "build_ manuscript_m3"];
 const M = [
@@ -572,12 +387,12 @@ const M = [
 const body = [];
 
 // Cover
-body.push(new Paragraph({ children: [new TextRun({ text: "Milestone 3 Reference and Viva Guide", font: FONT, size: 52, bold: true, color: ACCENT })], spacing: { after: 200 } }));
+body.push(new Paragraph({ children: [new TextRun({ text: "Milestone 3 Reference", font: FONT, size: 52, bold: true, color: ACCENT })], spacing: { after: 200 } }));
 body.push(P("Baseline models, evaluation and initial findings: files, concepts and decisions", { size: 28, color: MUTED, after: 120 }));
 body.push(P("Early-warning system for essential-price shocks across income quintiles in Pakistan", { size: 24, color: MUTED, after: 120 }));
 body.push(P("CS/SDP 312/314 Data Science for Social Good · Team: Syeda Hoorain Imran, Muhammad Munib Sattar, Sarah Khalid", { size: 22, color: MUTED, after: 120 }));
-body.push(P("Version: 25 October 2026 (Milestone 3 due 24 October 2026)", { size: 22, color: MUTED, after: 600 }));
-body.push(P("This document is the companion to Milestone 3. It lists every file the milestone created or used, what each one does and the concepts behind it, and explains every important modelling decision twice: once in plain words and once in technical detail. It ends with a cheat sheet of key numbers and a list of likely viva questions with short answers. The project-wide script and data reference (`DS4SG_Script_and_Data_Reference.docx`) still covers the data pipeline of Milestones 1–2.", { size: 22 }));
+body.push(P("Version: 26 October 2026 (Milestone 3 due 24 October 2026)", { size: 22, color: MUTED, after: 600 }));
+body.push(P("This document is the companion to Milestone 3. It lists every file the milestone created or used, what each one does and the concepts behind it, and the limitations that lead into Milestone 4. The viva preparation for Milestones 2 and 3 together (every decision with the alternatives we checked, the key numbers and a question bank) is in `DS4SG_Viva_Guide_M2_M3.docx`. The project-wide script and data reference (`DS4SG_Script_and_Data_Reference.docx`) covers the data pipeline of Milestones 1–2.", { size: 22 }));
 body.push(pageBreak());
 
 // TOC
@@ -587,12 +402,11 @@ body.push(pageBreak());
 
 // 1. How to use
 body.push(H1("1. How to use this document"));
-body.push(P("The M3 grade is the rubric score multiplied by a viva factor V between 0 and 1. In a 5-minute viva the examiner checks code understanding, algorithmic understanding and analytical rigour. Full marks (V = 1.00) need a confident defence of the modelling choices, the cross-validation set-up and the trade-off between the two kinds of error. Hesitating on hyperparameters or validation details costs 15%; being unable to explain the CV splits, feature importance or metric trade-offs costs 30%."));
-body.push(P("Suggested preparation:", { before: 80 }));
+body.push(P("This is the reference for Milestone 3: what was built (Section 2), how to run it (Section 3), every file and function (Section 4), the concepts behind them in plain words and in detail (Section 5), and the limitations that lead into Milestone 4 (Section 6)."));
+body.push(P("**For the viva**, use `DS4SG_Viva_Guide_M2_M3.docx`. It covers Milestones 2 and 3 together: every decision (D1–D5, P1–P7, F1–F4 and B1–B20, the IDs used in the rubric map below and in the code) with the reason, the other values or methods we checked and why we did not use them, plus the key numbers and a question bank.", { before: 80 }));
+body.push(P("Suggested use alongside the viva guide:", { before: 80 }));
 body.push(NUM("Run `notebooks/03_baseline_models.ipynb` top to bottom yourself and read each interpretation cell."));
-body.push(NUM("Learn the cheat-sheet numbers (Section 7)."));
-body.push(NUM("For each decision in Section 6, say the simple version out loud, then the detailed one."));
-body.push(NUM("Quiz each other with the viva questions (Section 8). Any team member may be asked anything."));
+body.push(NUM("Look up any unfamiliar term in Section 5."));
 body.push(NUM("Change one thing and see what moves, e.g. set `COST_FN = 10` in `baseline.py`, or validate on 2022–2024 only."));
 body.push(P("Paths are relative to the project folder. Code names appear in `monospace`.", { before: 80 }));
 
@@ -654,28 +468,9 @@ body.push(P("Almost everything in Milestone 3 comes from the lecture slides, the
 body.push(grid(["Method", "Why we needed it", "One-line explanation"], BEYOND, [2300, 3600, 3126], { size: 17, firstBold: true }));
 body.push(P("Dropped in this version: the DeLong test planned in M2 (replaced by the week-block bootstrap, which is built from bootstrap and cluster sampling in Unit 04).", { before: 80 }));
 
-// 6. Decisions
+// 6. Limitations and roadmap
 body.push(pageBreak());
-body.push(H1("6. Decisions made in Milestone 3 (for the viva)"));
-body.push(P("Decision IDs B1–B8 match the docstring of `src/models/baseline.py`; B9–B19 cover the remaining choices. For each one: the **simple** version (green) is what you say first; the **detailed** version (grey) is what you add if the examiner pushes. 'Alternatives' lists what we rejected and why. M2 decisions (D1–D5 data cleaning, F1–F4 features) are in the project reference document and the M2 manuscript."));
-for (const d of DECISIONS) {
-  body.push(H3(`${d.id} · ${d.title}`));
-  body.push(card([["In simple terms", d.simple, SIMPLE_FILL], ["In detail", d.detail, DETAIL_FILL], ["Alternatives considered", d.alt], ["Where in the code", d.where]], 2100));
-  body.push(spacer());
-}
-
-// 7. Numbers
-body.push(pageBreak());
-body.push(H1("7. Key numbers cheat sheet"));
-body.push(grid(["Quantity", "Value"], NUMBERS, [2800, 6226], { size: 18, firstBold: true }));
-
-// 8. Viva questions
-body.push(pageBreak());
-body.push(H1("8. Likely viva questions with short answers"));
-body.push(grid(["Question", "Short answer"], VIVA, [3000, 6026], { size: 18, firstBold: true, cantSplit: true }));
-
-// 9. Limitations and roadmap
-body.push(H1("9. Limitations and the road to Milestone 4"));
+body.push(H1("6. Limitations and the road to Milestone 4"));
 body.push(BUL("**Underfitting and a weak signal:** no cross-validated AUC reaches 0.7; the best LR is shrunk almost to a constant."));
 body.push(BUL("**Calibration and a changing shock rate:** class weights and shrinkage distort probabilities; thresholds do not transfer from crisis to calm years."));
 body.push(BUL("**Selection criterion:** pooled AUC partly rewards telling crisis years from calm ones, which flattered the tree; M4 reports within-year AUC alongside it."));
@@ -685,7 +480,7 @@ body.push(BUL("**Potential bias:** urban-only SPI (17 cities); 2015-16 quintile 
 body.push(BUL("**M4 plan:** ensembles (random forest, gradient boosting) under the same protocol; quintile-specific models and the H4 interaction test; calibration of the probabilities; within-year AUC reported next to pooled AUC; a tariff-notification calendar, a first-month-of-the-fiscal-year window and a regime feature; fairness audit (H5: Brier scores and miss rates Q1 vs Q5 with the Diebold–Mariano test planned in M2, equal recall across quintiles, quintile-specific thresholds); ethics of public warnings."));
 
 // ================================================================ DOCUMENT
-const matrixHeading = H1("10. Cross-reference matrix: files × steps");
+const matrixHeading = H1("7. Cross-reference matrix: files × steps");
 body.splice(TOC_AT, 0, ...HEADINGS.map((h) => new Paragraph({
   children: [new InternalHyperlink({ anchor: h.id, children: [new TextRun({ text: h.text, font: FONT, size: h.level === 1 ? 22 : 20, bold: h.level === 1, color: h.level === 1 ? ACCENT : INK })] })],
   indent: { left: h.level === 1 ? 0 : 400 }, spacing: { before: h.level === 1 ? 120 : 0, after: 40 },
@@ -714,11 +509,11 @@ const STYLES = {
     { id: "Heading3", name: "Heading 3", basedOn: "Normal", next: "Normal", quickFormat: true, run: { size: 22, bold: true, font: FONT, color: ACCENT }, paragraph: { spacing: { before: 160, after: 80 }, outlineLevel: 2 } },
   ],
 };
-const header = new Header({ children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: "DS4SG · Milestone 3 Reference and Viva Guide", font: FONT, size: 16, color: MUTED })] })] });
+const header = new Header({ children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: "DS4SG · Milestone 3 Reference", font: FONT, size: 16, color: MUTED })] })] });
 const footer = new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ children: ["Page ", PageNumber.CURRENT, " of ", PageNumber.TOTAL_PAGES], font: FONT, size: 16, color: MUTED })] })] });
 
 const doc = new Document({
-  creator: "DS4SG team", title: "Milestone 3 Reference and Viva Guide", styles: STYLES,
+  creator: "DS4SG team", title: "Milestone 3 Reference", styles: STYLES,
   numbering: { config: [
     { reference: "bullets", levels: [{ level: 0, format: LevelFormat.BULLET, text: "•", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 540, hanging: 270 } } } }, { level: 1, format: LevelFormat.BULLET, text: "–", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 1080, hanging: 270 } } } }] },
     { reference: "steps", levels: [{ level: 0, format: LevelFormat.DECIMAL, text: "%1.", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 540, hanging: 300 } } } }] },

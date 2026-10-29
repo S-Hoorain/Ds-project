@@ -20,3 +20,5 @@ python -m ipykernel install --user --name ds4sg --display-name "DS4SG (.venv)"  
 ## Reference
 
 See DS4SG_Script_and_Data_Reference.docx for explanations for each script and data file.
+DS4SG_M3_Reference.docx describes the Milestone 3 files and concepts, and DS4SG_Viva_Guide_M2_M3.docx prepares the viva
+for Milestones 2 and 3 (every decision, the alternatives checked, key numbers and likely questions).

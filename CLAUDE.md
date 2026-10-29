@@ -106,7 +106,7 @@ publishable-style research paper, written incrementally across milestones.
 Each milestone folder holds its rubric, which is the grading spec; check deliverables against it.
 M3 (`milestones/M3_baseline_model/M3_rubric.md`) weights: baseline models + CV framework 35%,
 metrics + asymmetric error costs 30%, feature importance + insights 20%, report + code 15%, all
-scaled by a viva factor V ∈ [0, 1]. The viva study guide is `DS4SG_M3_Reference.docx` (root).
+scaled by a viva factor V ∈ [0, 1]. The viva study guide for M2 and M3 (examined together) is `DS4SG_Viva_Guide_M2_M3.docx` (root; `tools/build_viva_guide.js`).
 
 ### Course conventions to follow (from the lecture slides in `course/lecture_slides/`)
 - **Outliers (Unit 05):** use both rules.

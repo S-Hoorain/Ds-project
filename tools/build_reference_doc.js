@@ -429,7 +429,7 @@ body.push(new Paragraph({ children: [], spacing: { before: 2400 } }));
 body.push(new Paragraph({ children: [new TextRun({ text: "Script & Data File Reference", font: FONT, size: 52, bold: true, color: ACCENT })], spacing: { after: 200 } }));
 body.push(P("Early-warning system for essential-price shocks across income quintiles in Pakistan", { size: 28, color: MUTED, after: 120 }));
 body.push(P("CS/SDP 312/314 Data Science for Social Good · Team: Syeda Hoorain Imran, Muhammad Munib Sattar, Sarah Khalid", { size: 22, color: MUTED, after: 120 }));
-body.push(P("Version: 4 October 2026 (state of the repository after commit `b10d72c`)", { size: 22, color: MUTED, after: 600 }));
+body.push(P("Version: 26 October 2026 (the Milestone 1–2 pipeline as built at commit `b10d72c`)", { size: 22, color: MUTED, after: 600 }));
 body.push(P("This document lists every script and every data file in the project. For each one it explains what it contains, what it is for, where it came from, and which scripts produce and use it. A cross-reference matrix at the end connects every data file to every script.", { size: 22 }));
 body.push(new Paragraph({ children: [new PageBreak()] }));
 
@@ -452,6 +452,7 @@ body.push(BUL("**Purpose:** why the project needs it."));
 body.push(BUL("**Produced by / Used by:** the scripts that write and read it."));
 body.push(BUL("**In git:** whether the file is version-controlled. Raw report files are too large and are rebuilt by the scrapers; interim files are rebuilt by the parser."));
 body.push(P("Paths are relative to the project folder. In the cross-reference matrix (Section 7), R means the script reads the file and W means it writes it.", { before: 120 }));
+body.push(P("**For the viva:** the reasons behind the Milestone 2 choices (cleaning decisions D1–D5, preparation decisions P1–P7, feature decisions F1–F4 and the EDA and hypothesis choices), the other values and methods we checked, and a question bank are in `DS4SG_Viva_Guide_M2_M3.docx`, together with Milestone 3. Milestone 3's files are described in `DS4SG_M3_Reference.docx`.", { before: 120 }));
 
 // 2. Pipeline overview
 body.push(H1("2. Pipeline overview: run order and data flow"));
