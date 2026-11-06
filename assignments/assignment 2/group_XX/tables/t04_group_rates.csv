@@ -1,0 +1,32 @@
+,,Stays,Rate (%)
+discharge_group,Care facility,12741,15.312769798288988
+discharge_group,Expired,1311,0.0
+discharge_group,Home,48178,9.255261737722611
+discharge_group,Home with care,10414,12.656039946226233
+discharge_group,Hospice,630,5.555555555555555
+discharge_group,Hospital transfer,1757,16.505406943653956
+discharge_group,Left against advice,488,13.934426229508196
+discharge_group,Long-term care hospital,329,7.29483282674772
+discharge_group,Outpatient referral,24,8.333333333333332
+discharge_group,Psychiatric hospital,101,35.64356435643564
+discharge_group,Rehab facility,1568,28.380102040816325
+discharge_group,Unknown,3740,11.363636363636363
+diag_1_group,Circulatory,24301,11.555080037858524
+diag_1_group,Diabetes,6997,12.519651279119623
+diag_1_group,Digestive,7519,10.706210932304828
+diag_1_group,Genitourinary,4130,10.750605326876514
+diag_1_group,Injury,5559,12.196438208310848
+diag_1_group,Missing,17,23.52941176470588
+diag_1_group,Musculoskeletal,3962,9.464916708732964
+diag_1_group,Neoplasms,2708,9.342688330871491
+diag_1_group,Other,14591,11.548214652868207
+diag_1_group,Respiratory,11497,9.785161346438201
+admission_source,Emergency room,45921,11.702706822586615
+admission_source,Other,17,5.88235294117647
+admission_source,Referral,24624,10.408544509421702
+admission_source,Transfer,5022,9.996017522899244
+admission_source,Unknown,5697,10.76004914867474
+A1Cresult,>7,3044,10.249671484888305
+A1Cresult,>8,6581,9.937699437775414
+A1Cresult,Norm,3995,9.486858573216521
+A1Cresult,Not tested,67661,11.392087022065887

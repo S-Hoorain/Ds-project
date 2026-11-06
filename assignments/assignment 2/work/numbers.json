@@ -1,0 +1,1114 @@
+{
+ "t01_target": [
+  {
+   "readmitted": "NO",
+   "Stays": 43913,
+   "Share (%)": 54.0261561743,
+   "Class": 0
+  },
+  {
+   "readmitted": ">30",
+   "Stays": 28315,
+   "Share (%)": 34.8359395185,
+   "Class": 0
+  },
+  {
+   "readmitted": "<30",
+   "Stays": 9053,
+   "Share (%)": 11.1379043073,
+   "Class": 1
+  }
+ ],
+ "t02_missing": [
+  {
+   "Unnamed: 0": "weight",
+   "\"?\" values": 78716,
+   "Blank cells": 0,
+   "Missing (%)": 96.8442809513
+  },
+  {
+   "Unnamed: 0": "max_glu_serum",
+   "\"?\" values": 0,
+   "Blank cells": 77006,
+   "Missing (%)": 94.7404682521
+  },
+  {
+   "Unnamed: 0": "A1Cresult",
+   "\"?\" values": 0,
+   "Blank cells": 67661,
+   "Missing (%)": 83.2433163962
+  },
+  {
+   "Unnamed: 0": "medical_specialty",
+   "\"?\" values": 39866,
+   "Blank cells": 0,
+   "Missing (%)": 49.0471327863
+  },
+  {
+   "Unnamed: 0": "payer_code",
+   "\"?\" values": 32172,
+   "Blank cells": 0,
+   "Missing (%)": 39.5812059399
+  },
+  {
+   "Unnamed: 0": "race",
+   "\"?\" values": 1860,
+   "Blank cells": 0,
+   "Missing (%)": 2.2883576728
+  },
+  {
+   "Unnamed: 0": "diag_3",
+   "\"?\" values": 1118,
+   "Blank cells": 0,
+   "Missing (%)": 1.3754752033
+  },
+  {
+   "Unnamed: 0": "diag_2",
+   "\"?\" values": 286,
+   "Blank cells": 0,
+   "Missing (%)": 0.3518657497
+  },
+  {
+   "Unnamed: 0": "diag_1",
+   "\"?\" values": 17,
+   "Blank cells": 0,
+   "Missing (%)": 0.020915097
+  }
+ ],
+ "t03_repeat_patients": [
+  {
+   "Stays by the same patient": "1",
+   "Stays (rows)": 43838,
+   "Early readmission rate (%)": 4.0125005703
+  },
+  {
+   "Stays by the same patient": "2",
+   "Stays (rows)": 16692,
+   "Early readmission rate (%)": 15.067098011
+  },
+  {
+   "Stays by the same patient": "3",
+   "Stays (rows)": 7905,
+   "Early readmission rate (%)": 18.9373814042
+  },
+  {
+   "Stays by the same patient": "4",
+   "Stays (rows)": 4580,
+   "Early readmission rate (%)": 21.0262008734
+  },
+  {
+   "Stays by the same patient": "5+",
+   "Stays (rows)": 8266,
+   "Early readmission rate (%)": 28.0546818292
+  }
+ ],
+ "t04_group_rates": [
+  {
+   "Unnamed: 0": "discharge_group",
+   "Unnamed: 1": "Care facility",
+   "Stays": 12741,
+   "Rate (%)": 15.3127697983
+  },
+  {
+   "Unnamed: 0": "discharge_group",
+   "Unnamed: 1": "Expired",
+   "Stays": 1311,
+   "Rate (%)": 0.0
+  },
+  {
+   "Unnamed: 0": "discharge_group",
+   "Unnamed: 1": "Home",
+   "Stays": 48178,
+   "Rate (%)": 9.2552617377
+  },
+  {
+   "Unnamed: 0": "discharge_group",
+   "Unnamed: 1": "Home with care",
+   "Stays": 10414,
+   "Rate (%)": 12.6560399462
+  },
+  {
+   "Unnamed: 0": "discharge_group",
+   "Unnamed: 1": "Hospice",
+   "Stays": 630,
+   "Rate (%)": 5.5555555556
+  },
+  {
+   "Unnamed: 0": "discharge_group",
+   "Unnamed: 1": "Hospital transfer",
+   "Stays": 1757,
+   "Rate (%)": 16.5054069437
+  },
+  {
+   "Unnamed: 0": "discharge_group",
+   "Unnamed: 1": "Left against advice",
+   "Stays": 488,
+   "Rate (%)": 13.9344262295
+  },
+  {
+   "Unnamed: 0": "discharge_group",
+   "Unnamed: 1": "Long-term care hospital",
+   "Stays": 329,
+   "Rate (%)": 7.2948328267
+  },
+  {
+   "Unnamed: 0": "discharge_group",
+   "Unnamed: 1": "Outpatient referral",
+   "Stays": 24,
+   "Rate (%)": 8.3333333333
+  },
+  {
+   "Unnamed: 0": "discharge_group",
+   "Unnamed: 1": "Psychiatric hospital",
+   "Stays": 101,
+   "Rate (%)": 35.6435643564
+  },
+  {
+   "Unnamed: 0": "discharge_group",
+   "Unnamed: 1": "Rehab facility",
+   "Stays": 1568,
+   "Rate (%)": 28.3801020408
+  },
+  {
+   "Unnamed: 0": "discharge_group",
+   "Unnamed: 1": "Unknown",
+   "Stays": 3740,
+   "Rate (%)": 11.3636363636
+  },
+  {
+   "Unnamed: 0": "diag_1_group",
+   "Unnamed: 1": "Circulatory",
+   "Stays": 24301,
+   "Rate (%)": 11.5550800379
+  },
+  {
+   "Unnamed: 0": "diag_1_group",
+   "Unnamed: 1": "Diabetes",
+   "Stays": 6997,
+   "Rate (%)": 12.5196512791
+  },
+  {
+   "Unnamed: 0": "diag_1_group",
+   "Unnamed: 1": "Digestive",
+   "Stays": 7519,
+   "Rate (%)": 10.7062109323
+  },
+  {
+   "Unnamed: 0": "diag_1_group",
+   "Unnamed: 1": "Genitourinary",
+   "Stays": 4130,
+   "Rate (%)": 10.7506053269
+  },
+  {
+   "Unnamed: 0": "diag_1_group",
+   "Unnamed: 1": "Injury",
+   "Stays": 5559,
+   "Rate (%)": 12.1964382083
+  },
+  {
+   "Unnamed: 0": "diag_1_group",
+   "Unnamed: 1": "Missing",
+   "Stays": 17,
+   "Rate (%)": 23.5294117647
+  },
+  {
+   "Unnamed: 0": "diag_1_group",
+   "Unnamed: 1": "Musculoskeletal",
+   "Stays": 3962,
+   "Rate (%)": 9.4649167087
+  },
+  {
+   "Unnamed: 0": "diag_1_group",
+   "Unnamed: 1": "Neoplasms",
+   "Stays": 2708,
+   "Rate (%)": 9.3426883309
+  },
+  {
+   "Unnamed: 0": "diag_1_group",
+   "Unnamed: 1": "Other",
+   "Stays": 14591,
+   "Rate (%)": 11.5482146529
+  },
+  {
+   "Unnamed: 0": "diag_1_group",
+   "Unnamed: 1": "Respiratory",
+   "Stays": 11497,
+   "Rate (%)": 9.7851613464
+  },
+  {
+   "Unnamed: 0": "admission_source",
+   "Unnamed: 1": "Emergency room",
+   "Stays": 45921,
+   "Rate (%)": 11.7027068226
+  },
+  {
+   "Unnamed: 0": "admission_source",
+   "Unnamed: 1": "Other",
+   "Stays": 17,
+   "Rate (%)": 5.8823529412
+  },
+  {
+   "Unnamed: 0": "admission_source",
+   "Unnamed: 1": "Referral",
+   "Stays": 24624,
+   "Rate (%)": 10.4085445094
+  },
+  {
+   "Unnamed: 0": "admission_source",
+   "Unnamed: 1": "Transfer",
+   "Stays": 5022,
+   "Rate (%)": 9.9960175229
+  },
+  {
+   "Unnamed: 0": "admission_source",
+   "Unnamed: 1": "Unknown",
+   "Stays": 5697,
+   "Rate (%)": 10.7600491487
+  },
+  {
+   "Unnamed: 0": "A1Cresult",
+   "Unnamed: 1": ">7",
+   "Stays": 3044,
+   "Rate (%)": 10.2496714849
+  },
+  {
+   "Unnamed: 0": "A1Cresult",
+   "Unnamed: 1": ">8",
+   "Stays": 6581,
+   "Rate (%)": 9.9376994378
+  },
+  {
+   "Unnamed: 0": "A1Cresult",
+   "Unnamed: 1": "Norm",
+   "Stays": 3995,
+   "Rate (%)": 9.4868585732
+  },
+  {
+   "Unnamed: 0": "A1Cresult",
+   "Unnamed: 1": "Not tested",
+   "Stays": 67661,
+   "Rate (%)": 11.3920870221
+  }
+ ],
+ "t05_split": [
+  {
+   "Unnamed: 0": "Training (80% of patients)",
+   "Stays": 65064,
+   "Patients": 45776,
+   "Early readmission rate (%)": 11.0936923644
+  },
+  {
+   "Unnamed: 0": "Holdout test (20% of patients)",
+   "Stays": 16217,
+   "Patients": 11438,
+   "Early readmission rate (%)": 11.3152864278
+  }
+ ],
+ "t06_model_comparison": [
+  {
+   "Model (grouped 5-fold CV on training patients)": "No-skill baseline",
+   "AP": 0.1109348549,
+   "AP sd": 0.0015984629,
+   "AUC": 0.5,
+   "Brier": 0.0986297532,
+   "Best setting": null
+  },
+  {
+   "Model (grouped 5-fold CV on training patients)": "Prior-inpatient-visits rule",
+   "AP": 0.1640378374,
+   "AP sd": 0.0104870808,
+   "AUC": 0.6016955402,
+   "Brier": 0.0962579627,
+   "Best setting": null
+  },
+  {
+   "Model (grouped 5-fold CV on training patients)": "Logistic regression",
+   "AP": 0.2059322149,
+   "AP sd": 0.0098028696,
+   "AUC": 0.6666382169,
+   "Brier": 0.0947697462,
+   "Best setting": "{'C': 1.0}"
+  },
+  {
+   "Model (grouped 5-fold CV on training patients)": "Decision tree",
+   "AP": 0.2008643636,
+   "AP sd": 0.0066894756,
+   "AUC": 0.6547532839,
+   "Brier": 0.0951733868,
+   "Best setting": "{'criterion': 'entropy', 'max_depth': 8, 'min_samples_leaf': 50}"
+  },
+  {
+   "Model (grouped 5-fold CV on training patients)": "K-nearest neighbours",
+   "AP": 0.1865851679,
+   "AP sd": 0.0072997967,
+   "AUC": 0.6412325615,
+   "Brier": 0.0959803721,
+   "Best setting": "{'n_neighbors': 400, 'weights': 'uniform'}"
+  },
+  {
+   "Model (grouped 5-fold CV on training patients)": "Random forest",
+   "AP": 0.2197116072,
+   "AP sd": 0.0077173317,
+   "AUC": 0.675347214,
+   "Brier": 0.0943426371,
+   "Best setting": "{'max_depth': 15, 'min_samples_leaf': 10}"
+  },
+  {
+   "Model (grouped 5-fold CV on training patients)": "Gradient boosting",
+   "AP": 0.2281789368,
+   "AP sd": 0.0057911456,
+   "AUC": 0.6787487069,
+   "Brier": 0.0936293472,
+   "Best setting": "{'learning_rate': 0.05, 'max_iter': 100, 'max_leaf_nodes': 31, 'min_samples_leaf': 50}"
+  }
+ ],
+ "t07_leakage_check": [
+  {
+   "Model": "1-nearest neighbour",
+   "AP | Grouped by patient": 0.1160933221,
+   "AP | Random rows (leaky)": 0.1184540208,
+   "AUC | Grouped by patient": 0.5195817599,
+   "AUC | Random rows (leaky)": 0.5265553892
+  },
+  {
+   "Model": "Fully grown decision tree",
+   "AP | Grouped by patient": 0.1191500155,
+   "AP | Random rows (leaky)": 0.1203292375,
+   "AUC | Grouped by patient": 0.5292840657,
+   "AUC | Random rows (leaky)": 0.5327453283
+  },
+  {
+   "Model": "Gradient boosting (chosen setting)",
+   "AP | Grouped by patient": 0.2281789368,
+   "AP | Random rows (leaky)": 0.2289562035,
+   "AUC | Grouped by patient": 0.6787487069,
+   "AUC | Random rows (leaky)": 0.6791242189
+  }
+ ],
+ "t08_cleaning_choices": [
+  {
+   "Unnamed: 0": "Our cleaned features",
+   "CV AP": 0.2281789368,
+   "CV AUC": 0.6787487069,
+   "AP change": 0.0
+  },
+  {
+   "Unnamed: 0": "Race added as an input",
+   "CV AP": 0.2286432162,
+   "CV AUC": 0.6792608853,
+   "AP change": 0.0004642794
+  },
+  {
+   "Unnamed: 0": "Raw 26 discharge codes instead of 12 groups",
+   "CV AP": 0.2284235553,
+   "CV AUC": 0.6789780978,
+   "AP change": 0.0002446185
+  },
+  {
+   "Unnamed: 0": "3-digit diagnosis codes instead of 9 groups",
+   "CV AP": 0.2250880556,
+   "CV AUC": 0.6756555801,
+   "AP change": -0.0030908813
+  },
+  {
+   "Unnamed: 0": "payer_code left out",
+   "CV AP": 0.226461714,
+   "CV AUC": 0.676758558,
+   "AP change": -0.0017172228
+  }
+ ],
+ "t09_lr_odds_ratios": [
+  {
+   "Unnamed: 0": "discharge_group_Psychiatric hospital",
+   "Odds ratio": 4.8783134573
+  },
+  {
+   "Unnamed: 0": "discharge_group_Rehab facility",
+   "Odds ratio": 3.9059601403
+  },
+  {
+   "Unnamed: 0": "discharge_group_Hospital transfer",
+   "Odds ratio": 1.7660786914
+  },
+  {
+   "Unnamed: 0": "specialty_Oncology/Hematology",
+   "Odds ratio": 1.6246908925
+  },
+  {
+   "Unnamed: 0": "discharge_group_Care facility",
+   "Odds ratio": 1.6142407047
+  },
+  {
+   "Unnamed: 0": "discharge_group_Left against advice",
+   "Odds ratio": 1.391260153
+  },
+  {
+   "Unnamed: 0": "log_number_inpatient",
+   "Odds ratio": 1.3431651434
+  },
+  {
+   "Unnamed: 0": "diag_2_group_Neoplasms",
+   "Odds ratio": 1.2808788169
+  },
+  {
+   "Unnamed: 0": "discharge_group_Expired",
+   "Odds ratio": 0.0288650708
+  },
+  {
+   "Unnamed: 0": "discharge_group_Hospice",
+   "Odds ratio": 0.4096443755
+  },
+  {
+   "Unnamed: 0": "specialty_Pediatrics",
+   "Odds ratio": 0.547740717
+  },
+  {
+   "Unnamed: 0": "discharge_group_Long-term care hospital",
+   "Odds ratio": 0.5595165357
+  },
+  {
+   "Unnamed: 0": "specialty_Obstetrics/Gynecology",
+   "Odds ratio": 0.6297888526
+  },
+  {
+   "Unnamed: 0": "payer_code_OT",
+   "Odds ratio": 0.6853751978
+  }
+ ],
+ "t10_permutation_importance": [
+  {
+   "Unnamed: 0": "discharge_group",
+   "Drop in AP (mean)": 0.0609333923,
+   "SD": 0.0026112238
+  },
+  {
+   "Unnamed: 0": "log_number_inpatient",
+   "Drop in AP (mean)": 0.0576445817,
+   "SD": 0.0017487656
+  },
+  {
+   "Unnamed: 0": "log_total_visits",
+   "Drop in AP (mean)": 0.0097449351,
+   "SD": 0.0010182846
+  },
+  {
+   "Unnamed: 0": "diag_1_group",
+   "Drop in AP (mean)": 0.0094562319,
+   "SD": 0.0015689994
+  },
+  {
+   "Unnamed: 0": "payer_code",
+   "Drop in AP (mean)": 0.0080218126,
+   "SD": 0.0012813467
+  },
+  {
+   "Unnamed: 0": "specialty",
+   "Drop in AP (mean)": 0.0073921065,
+   "SD": 0.000821554
+  },
+  {
+   "Unnamed: 0": "number_diagnoses",
+   "Drop in AP (mean)": 0.0047959379,
+   "SD": 0.0012718436
+  },
+  {
+   "Unnamed: 0": "admission_type",
+   "Drop in AP (mean)": 0.0035502499,
+   "SD": 0.0009616191
+  },
+  {
+   "Unnamed: 0": "log_number_emergency",
+   "Drop in AP (mean)": 0.0021485011,
+   "SD": 0.0003084786
+  },
+  {
+   "Unnamed: 0": "admission_source",
+   "Drop in AP (mean)": 0.0020770283,
+   "SD": 0.000533208
+  },
+  {
+   "Unnamed: 0": "diag_2_group",
+   "Drop in AP (mean)": 0.0018612351,
+   "SD": 0.0012010572
+  },
+  {
+   "Unnamed: 0": "insulin",
+   "Drop in AP (mean)": 0.00110164,
+   "SD": 0.0009130976
+  },
+  {
+   "Unnamed: 0": "num_medications",
+   "Drop in AP (mean)": 0.0010611999,
+   "SD": 0.0007226529
+  },
+  {
+   "Unnamed: 0": "age_years",
+   "Drop in AP (mean)": 0.0006840879,
+   "SD": 0.0003811494
+  },
+  {
+   "Unnamed: 0": "n_dose_changes",
+   "Drop in AP (mean)": 0.0005991408,
+   "SD": 0.0003365318
+  },
+  {
+   "Unnamed: 0": "n_diabetes_drugs",
+   "Drop in AP (mean)": 0.0005146207,
+   "SD": 0.0003783784
+  },
+  {
+   "Unnamed: 0": "A1Cresult",
+   "Drop in AP (mean)": 0.0003987431,
+   "SD": 0.0006201568
+  },
+  {
+   "Unnamed: 0": "diag_3_group",
+   "Drop in AP (mean)": 0.0001418619,
+   "SD": 0.0006415051
+  },
+  {
+   "Unnamed: 0": "max_glu_serum",
+   "Drop in AP (mean)": 4.44235e-05,
+   "SD": 0.0001281469
+  },
+  {
+   "Unnamed: 0": "on_diabetes_med",
+   "Drop in AP (mean)": 0.0,
+   "SD": 0.0
+  },
+  {
+   "Unnamed: 0": "gender",
+   "Drop in AP (mean)": -4.13389e-05,
+   "SD": 0.0001055539
+  },
+  {
+   "Unnamed: 0": "med_change",
+   "Drop in AP (mean)": -7.98109e-05,
+   "SD": 0.0001736153
+  },
+  {
+   "Unnamed: 0": "num_procedures",
+   "Drop in AP (mean)": -0.0001176316,
+   "SD": 0.0005490045
+  },
+  {
+   "Unnamed: 0": "log_number_outpatient",
+   "Drop in AP (mean)": -0.0001737189,
+   "SD": 0.0001656085
+  },
+  {
+   "Unnamed: 0": "num_lab_procedures",
+   "Drop in AP (mean)": -0.0002364979,
+   "SD": 0.0010591181
+  },
+  {
+   "Unnamed: 0": "metformin",
+   "Drop in AP (mean)": -0.0005703016,
+   "SD": 0.000365396
+  },
+  {
+   "Unnamed: 0": "time_in_hospital",
+   "Drop in AP (mean)": -0.0006655518,
+   "SD": 0.0006171321
+  }
+ ],
+ "t11_calibration": [
+  {
+   "Unnamed: 0": "Group 1",
+   "Mean predicted (%)": 3.6529058231,
+   "Observed rate (%)": 3.3041340095,
+   "Stays": 6507
+  },
+  {
+   "Unnamed: 0": "Group 2",
+   "Mean predicted (%)": 5.6865152238,
+   "Observed rate (%)": 5.4872425453,
+   "Stays": 6506
+  },
+  {
+   "Unnamed: 0": "Group 3",
+   "Mean predicted (%)": 6.6725528827,
+   "Observed rate (%)": 6.5324316016,
+   "Stays": 6506
+  },
+  {
+   "Unnamed: 0": "Group 4",
+   "Mean predicted (%)": 7.6161271394,
+   "Observed rate (%)": 7.3920393422,
+   "Stays": 6507
+  },
+  {
+   "Unnamed: 0": "Group 5",
+   "Mean predicted (%)": 8.7099717707,
+   "Observed rate (%)": 8.4691054411,
+   "Stays": 6506
+  },
+  {
+   "Unnamed: 0": "Group 6",
+   "Mean predicted (%)": 10.0524637824,
+   "Observed rate (%)": 9.8217030433,
+   "Stays": 6506
+  },
+  {
+   "Unnamed: 0": "Group 7",
+   "Mean predicted (%)": 11.6702044789,
+   "Observed rate (%)": 11.9409866298,
+   "Stays": 6507
+  },
+  {
+   "Unnamed: 0": "Group 8",
+   "Mean predicted (%)": 13.6653029125,
+   "Observed rate (%)": 14.2637565324,
+   "Stays": 6506
+  },
+  {
+   "Unnamed: 0": "Group 9",
+   "Mean predicted (%)": 16.8743514953,
+   "Observed rate (%)": 16.769136182,
+   "Stays": 6506
+  },
+  {
+   "Unnamed: 0": "Group 10",
+   "Mean predicted (%)": 25.9924591958,
+   "Observed rate (%)": 26.9555862917,
+   "Stays": 6507
+  }
+ ],
+ "t12_thresholds": [
+  {
+   "Threshold": 0.05,
+   "Flagged (%)": 90.7660150006,
+   "Precision": 0.1190056895,
+   "Recall": 0.9736769188,
+   "F1": 0.2120892054,
+   "False alarm rate": 0.8994226048,
+   "Cost per 100 stays": 82.0084839543
+  },
+  {
+   "Threshold": 0.08,
+   "Flagged (%)": 61.1413377597,
+   "Precision": 0.1457982454,
+   "Recall": 0.8035466888,
+   "F1": 0.246813762,
+   "False alarm rate": 0.5874390623,
+   "Cost per 100 stays": 67.4827861798
+  },
+  {
+   "Threshold": 0.1,
+   "Flagged (%)": 45.2769580721,
+   "Precision": 0.1657897417,
+   "Recall": 0.676641729,
+   "F1": 0.2663249448,
+   "False alarm rate": 0.4248349065,
+   "Cost per 100 stays": 62.8811631624
+  },
+  {
+   "Threshold": 0.12,
+   "Flagged (%)": 33.1104758392,
+   "Precision": 0.1876247505,
+   "Recall": 0.5599889166,
+   "F1": 0.2810750669,
+   "False alarm rate": 0.3025446876,
+   "Cost per 100 stays": 61.0675642444
+  },
+  {
+   "Threshold": 0.14,
+   "Flagged (%)": 23.3462436985,
+   "Precision": 0.2086240948,
+   "Recall": 0.4390412857,
+   "F1": 0.2828454124,
+   "False alarm rate": 0.2078103931,
+   "Cost per 100 stays": 62.0373785811
+  },
+  {
+   "Threshold": 0.16,
+   "Flagged (%)": 16.9848149514,
+   "Precision": 0.230657859,
+   "Recall": 0.3531449155,
+   "F1": 0.2790519459,
+   "False alarm rate": 0.1469764547,
+   "Cost per 100 stays": 63.2992130825
+  },
+  {
+   "Threshold": 0.18,
+   "Flagged (%)": 12.2464035411,
+   "Precision": 0.2555220884,
+   "Recall": 0.2820725963,
+   "F1": 0.2681417095,
+   "False alarm rate": 0.1025481451,
+   "Cost per 100 stays": 64.868437231
+  },
+  {
+   "Threshold": 0.2,
+   "Flagged (%)": 8.6407229805,
+   "Precision": 0.2824617574,
+   "Recall": 0.2200055417,
+   "F1": 0.2473520249,
+   "False alarm rate": 0.0697368876,
+   "Cost per 100 stays": 66.7711791467
+  },
+  {
+   "Threshold": 0.25,
+   "Flagged (%)": 3.9391983278,
+   "Precision": 0.3417869684,
+   "Recall": 0.1213632585,
+   "F1": 0.1791227891,
+   "False alarm rate": 0.0291636414,
+   "Cost per 100 stays": 70.8241116439
+  },
+  {
+   "Threshold": 0.3,
+   "Flagged (%)": 2.1133038239,
+   "Precision": 0.4072727273,
+   "Recall": 0.0775838182,
+   "F1": 0.1303386477,
+   "False alarm rate": 0.0140891332,
+   "Cost per 100 stays": 72.8836222796
+  },
+  {
+   "Threshold": 0.4,
+   "Flagged (%)": 0.6193901389,
+   "Precision": 0.5012406948,
+   "Recall": 0.0279855916,
+   "F1": 0.0530114158,
+   "False alarm rate": 0.0034747433,
+   "Cost per 100 stays": 75.7915283413
+  },
+  {
+   "Threshold": 0.5,
+   "Flagged (%)": 0.110660273,
+   "Precision": 0.625,
+   "Recall": 0.006234414,
+   "F1": 0.012345679,
+   "False alarm rate": 0.0004667566,
+   "Cost per 100 stays": 77.2132054592
+  }
+ ],
+ "t13_holdout": [
+  {
+   "Model (holdout test patients)": "Logistic regression",
+   "AP": 0.2068495377,
+   "AUC": 0.6687150188,
+   "Brier": 0.0963835851,
+   "CV AP (training)": 0.2059322149
+  },
+  {
+   "Model (holdout test patients)": "Decision tree",
+   "AP": 0.208657284,
+   "AUC": 0.6604926988,
+   "Brier": 0.0963647753,
+   "CV AP (training)": 0.2008643636
+  },
+  {
+   "Model (holdout test patients)": "K-nearest neighbours",
+   "AP": 0.2027272197,
+   "AUC": 0.6481313874,
+   "Brier": 0.0972197636,
+   "CV AP (training)": 0.1865851679
+  },
+  {
+   "Model (holdout test patients)": "Random forest",
+   "AP": 0.2307000844,
+   "AUC": 0.6759243408,
+   "Brier": 0.095726831,
+   "CV AP (training)": 0.2197116072
+  },
+  {
+   "Model (holdout test patients)": "Gradient boosting",
+   "AP": 0.2397687341,
+   "AUC": 0.6809732647,
+   "Brier": 0.094780055,
+   "CV AP (training)": 0.2281789368
+  }
+ ],
+ "t14_final_holdout_metrics": [
+  {
+   "Unnamed: 0": "Average precision",
+   "Holdout value": 0.2397687341
+  },
+  {
+   "Unnamed: 0": "ROC-AUC",
+   "Holdout value": 0.6809732647
+  },
+  {
+   "Unnamed: 0": "Brier score",
+   "Holdout value": 0.094780055
+  },
+  {
+   "Unnamed: 0": "Threshold",
+   "Holdout value": 0.12
+  },
+  {
+   "Unnamed: 0": "Precision",
+   "Holdout value": 0.1892850476
+  },
+  {
+   "Unnamed: 0": "Recall",
+   "Holdout value": 0.5525885559
+  },
+  {
+   "Unnamed: 0": "F1",
+   "Holdout value": 0.2819799778
+  },
+  {
+   "Unnamed: 0": "Flagged (%)",
+   "Holdout value": 33.0332367269
+  }
+ ],
+ "t15_confusion_matrix": [
+  {
+   "Unnamed: 0": "Actually readmitted <30",
+   "Flagged": 1014,
+   "Not flagged": 821
+  },
+  {
+   "Unnamed: 0": "Not readmitted <30",
+   "Flagged": 4343,
+   "Not flagged": 10039
+  }
+ ],
+ "t16_subgroups": [
+  {
+   "Variable": "All",
+   "Group": "All",
+   "Stays": 16217,
+   "Readmitted <30": 1835,
+   "Rate (%)": 11.3152864278,
+   "Mean predicted (%)": 11.0697908481,
+   "AUC": 0.6809732647,
+   "AP": 0.2397687341,
+   "Recall": 0.5525885559,
+   "False alarm rate": 0.3019746906,
+   "Precision": 0.1892850476
+  },
+  {
+   "Variable": "Age",
+   "Group": "60-79",
+   "Stays": 7728,
+   "Readmitted <30": 888,
+   "Rate (%)": 11.4906832298,
+   "Mean predicted (%)": 11.3023647569,
+   "AUC": 0.6613266227,
+   "AP": 0.219328065,
+   "Recall": 0.5349099099,
+   "False alarm rate": 0.3150584795,
+   "Precision": 0.180608365
+  },
+  {
+   "Variable": "Age",
+   "Group": "40-59",
+   "Stays": 4409,
+   "Readmitted <30": 476,
+   "Rate (%)": 10.7960988886,
+   "Mean predicted (%)": 10.3282006309,
+   "AUC": 0.7192469665,
+   "AP": 0.2831088983,
+   "Recall": 0.5525210084,
+   "False alarm rate": 0.2273073989,
+   "Precision": 0.2273120138
+  },
+  {
+   "Variable": "Age",
+   "Group": "80 and over",
+   "Stays": 3107,
+   "Readmitted <30": 374,
+   "Rate (%)": 12.0373350499,
+   "Mean predicted (%)": 11.9040825211,
+   "AUC": 0.6471370905,
+   "AP": 0.2288989439,
+   "Recall": 0.5909090909,
+   "False alarm rate": 0.4035858031,
+   "Precision": 0.166918429
+  },
+  {
+   "Variable": "Age",
+   "Group": "Under 40",
+   "Stays": 973,
+   "Readmitted <30": 97,
+   "Rate (%)": 9.9691675231,
+   "Mean predicted (%)": 9.9189130184,
+   "AUC": 0.7152120699,
+   "AP": 0.2789582315,
+   "Recall": 0.5670103093,
+   "False alarm rate": 0.2180365297,
+   "Precision": 0.2235772358
+  },
+  {
+   "Variable": "Gender",
+   "Group": "Female",
+   "Stays": 8620,
+   "Readmitted <30": 999,
+   "Rate (%)": 11.5893271462,
+   "Mean predicted (%)": 11.2219585907,
+   "AUC": 0.6751995402,
+   "AP": 0.2394996644,
+   "Recall": 0.5675675676,
+   "False alarm rate": 0.319118226,
+   "Precision": 0.189063021
+  },
+  {
+   "Variable": "Gender",
+   "Group": "Male",
+   "Stays": 7597,
+   "Readmitted <30": 836,
+   "Rate (%)": 11.0043438199,
+   "Mean predicted (%)": 10.897132438,
+   "AUC": 0.6871446072,
+   "AP": 0.2398238877,
+   "Recall": 0.5346889952,
+   "False alarm rate": 0.2826504955,
+   "Precision": 0.18956743
+  },
+  {
+   "Variable": "Race",
+   "Group": "Caucasian",
+   "Stays": 12167,
+   "Readmitted <30": 1361,
+   "Rate (%)": 11.1859949042,
+   "Mean predicted (%)": 11.1421287798,
+   "AUC": 0.681467782,
+   "AP": 0.2394551548,
+   "Recall": 0.5576781778,
+   "False alarm rate": 0.3075143439,
+   "Precision": 0.1859382656
+  },
+  {
+   "Variable": "Race",
+   "Group": "AfricanAmerican",
+   "Stays": 3001,
+   "Readmitted <30": 367,
+   "Rate (%)": 12.2292569144,
+   "Mean predicted (%)": 11.2725105412,
+   "AUC": 0.6694131862,
+   "AP": 0.2402751706,
+   "Recall": 0.5476839237,
+   "False alarm rate": 0.3139711465,
+   "Precision": 0.1955252918
+  },
+  {
+   "Variable": "Race",
+   "Group": "Unknown",
+   "Stays": 374,
+   "Readmitted <30": 31,
+   "Rate (%)": 8.2887700535,
+   "Mean predicted (%)": 8.6156574607,
+   "AUC": 0.669331327,
+   "AP": 0.2309198582,
+   "Recall": 0.4516129032,
+   "False alarm rate": 0.1807580175,
+   "Precision": 0.1842105263
+  },
+  {
+   "Variable": "Race",
+   "Group": "Hispanic",
+   "Stays": 335,
+   "Readmitted <30": 44,
+   "Rate (%)": 13.1343283582,
+   "Mean predicted (%)": 10.2573421316,
+   "AUC": 0.7264917213,
+   "AP": 0.4502086071,
+   "Recall": 0.5227272727,
+   "False alarm rate": 0.206185567,
+   "Precision": 0.2771084337
+  },
+  {
+   "Variable": "Race",
+   "Group": "Other",
+   "Stays": 251,
+   "Readmitted <30": 26,
+   "Rate (%)": 10.3585657371,
+   "Mean predicted (%)": 10.5042554294,
+   "AUC": 0.6781196581,
+   "AP": 0.192684646,
+   "Recall": 0.5,
+   "False alarm rate": 0.2711111111,
+   "Precision": 0.1756756757
+  },
+  {
+   "Variable": "Race",
+   "Group": "Asian",
+   "Stays": 89,
+   "Readmitted <30": 6,
+   "Rate (%)": 6.7415730337,
+   "Mean predicted (%)": 9.3110063791,
+   "AUC": 0.8012048193,
+   "AP": 0.3717833093,
+   "Recall": 0.6666666667,
+   "False alarm rate": 0.1204819277,
+   "Precision": 0.2857142857
+  }
+ ],
+ "t17_race_input_check": [
+  {
+   "Group": "Caucasian",
+   "Model": "Without race (submitted)",
+   "Stays": 12167,
+   "Observed rate (%)": 11.1859949042,
+   "Mean predicted (%)": 11.1421287798,
+   "Recall": 0.5576781778
+  },
+  {
+   "Group": "Caucasian",
+   "Model": "With race",
+   "Stays": 12167,
+   "Observed rate (%)": 11.1859949042,
+   "Mean predicted (%)": 11.189488957,
+   "Recall": 0.5591476855
+  },
+  {
+   "Group": "AfricanAmerican",
+   "Model": "Without race (submitted)",
+   "Stays": 3001,
+   "Observed rate (%)": 12.2292569144,
+   "Mean predicted (%)": 11.2725105412,
+   "Recall": 0.5476839237
+  },
+  {
+   "Group": "AfricanAmerican",
+   "Model": "With race",
+   "Stays": 3001,
+   "Observed rate (%)": 12.2292569144,
+   "Mean predicted (%)": 11.1248356232,
+   "Recall": 0.5558583106
+  },
+  {
+   "Group": "Hispanic",
+   "Model": "Without race (submitted)",
+   "Stays": 335,
+   "Observed rate (%)": 13.1343283582,
+   "Mean predicted (%)": 10.2573421316,
+   "Recall": 0.5227272727
+  },
+  {
+   "Group": "Hispanic",
+   "Model": "With race",
+   "Stays": 335,
+   "Observed rate (%)": 13.1343283582,
+   "Mean predicted (%)": 10.1014648375,
+   "Recall": 0.5227272727
+  }
+ ],
+ "threshold": 0.12,
+ "printed": {
+  "bal_ap": 0.203,
+  "bal_auc": 0.6675,
+  "bal_brier": 0.2263,
+  "bal_mean": 0.462,
+  "real_rate": 0.111,
+  "lr_oof_ap": 0.2045,
+  "lr_oof_auc": 0.6666,
+  "lr_oof_brier": 0.0948,
+  "gb_oof_ap": 0.2272,
+  "gb_oof_auc": 0.6786,
+  "gb_oof_brier": 0.0936,
+  "f1_best_threshold": 0.13,
+  "cost3_threshold": 0.27,
+  "cost5_threshold": 0.17,
+  "cost7_threshold": 0.12,
+  "cost10_threshold": 0.09,
+  "hold_ap_norace": 0.2398,
+  "hold_ap_race": 0.2413,
+  "onehot_columns": 119,
+  "n_features": 27
+ }
+}

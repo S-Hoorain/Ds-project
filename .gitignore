@@ -37,3 +37,8 @@ desktop.ini
 
 # Run logs
 logs/*.log
+
+# Assignment packages from the instructor (data, templates) and built submission zips (kept locally)
+assignments/**/Package/
+assignments/**/Package.zip
+assignments/**/group_*.zip
