@@ -1,153 +1,138 @@
 # HANDOFF
 
-**Last updated:** 2026-10-29 (session 9; committed and pushed)
-**Session summary:** The instructor will examine M2 and M3 together in one viva, mostly with open "why" questions. Built
-one combined viva guide (`DS4SG_Viva_Guide_M2_M3.docx`) and a sensitivity-check script for the numbers we had fixed by
-judgement. No submitted result, model or notebook changed.
+**Last updated:** 2026-11-10 (session 10; committed, not pushed)
+**Session summary:** Milestone 4 built end to end: notebooks 05 (advanced models) and 06 (fairness audit, mitigation,
+FATEN, living lab), `src/models/advanced.py`, manuscript Sections VI–VIII (PDF in `milestones/M4_advanced_model/`), the
+M4 reference doc and the viva guide extended to M2–M4. M4 was due 10 Nov; the class asked for an extension.
 
-M3 was due **2026-10-24**; its submission status is still not recorded. **Only the report (PDF) and the notebooks are
-submitted, never the scripts**, but the notebooks need `src/`, `data/processed/`, `reports/` and `requirements.txt`
-next to them to run (user and team, 2026-10-25).
+M3 was submitted (files in `milestones/M3_baseline_model/`; the submitted PDF matches our build except layout and one
+word, "a larger cost" → "a higher cost"). **Only the report (PDF) and the notebooks are submitted**, never the scripts.
 
 ## 1. Project overview
 CS/SDP 312/314 project. Using the PBS weekly Sensitive Price Indicator (SPI, base 2015-16, 370 weeks, Sep 2019 – Oct 2026),
 we build **an early-warning system for essential-price shocks for each consumption quintile** (Q1 poorest … Q5 richest)
 and test whether it works as well for the poor as for the rich. SDGs 1, 2 and 10; the policy angle is timing BISP
-top-ups.
-
-Lens: the burden of inflation rotates. M3 refined it: **motor-fuel shocks hit Q5 harder; food shocks (perishables above
-all) hit Q1 harder.** Utility tariffs lean towards Q1 but are not significant in the M3 gap regression (p = 0.10).
+top-ups. Lens: the burden rotates (motor fuel hits Q5, food and perishables hit Q1). M4 adds the fairness view: the
+model ranks Q1's weeks worse because Q1's shocks are more often perishable-driven, the shock type with no lead signal.
 
 ## 2. Done so far
-- **Sessions 1–3:** scaffolding, handoff hook, git; SPI archive scraped (370/370 weeks); SBP decisions, FX, Ramadan/Eid
-  calendar; notebook 01 → `master_model_ready.csv`, `items_weekly_panel.csv`, `DATA_DICTIONARY.md`; collection audit.
-- **Session 4:** quintile insights; narrative chosen; `build_features.py` → `master_features.csv` (2,220 × 105);
-  notebook 02 (EDA, Figures E1–E5, hypotheses H1–H5).
-- **Session 5:** team-verified Eid/Ramadan dates; M2 manuscript (Sections II–III). **M2 submitted, full marks.** The
-  submitted files are in `milestones/M2_data_eda_hypotheses/` (untracked; added by the user).
-- **Session 6 (2026-10-21): Milestone 3 built.** `src/models/baseline.py`, `train_baselines.py`, notebooks 03 and 04,
-  models in `models/m3_baselines/`, figures `figB1`–`figB10`, manuscript Sections IV–V.
-- **Session 7 (2026-10-22): audit and lecture-scope pass.** Timing, folds, reproducibility and metrics verified; the
-  oracle, DeLong test, Bayes-threshold formula and jargon removed; H1 out of sample uses the week-block bootstrap.
-- **Session 8 (2026-10-25): clean-up, review and team merge** (commits `ffa0165`, `2169507`, `c08a481`, `4f68a42`,
-  `ae84944`, all pushed). Notebooks find the root via `requirements.txt`; no pipeline diagram; no decision labels in
-  notebooks 03–04; C below the grid checked (plateau); team review list (KNN wording, top-5 drivers Table 24, H3 caveat);
-  the team's Google Docs edits merged into Section IV. Report 13 pages, 3,529 body words.
-- **Session 9 (2026-10-26, pushed 2026-10-29): combined viva preparation for M2 and M3.**
-  - **`DS4SG_Viva_Guide_M2_M3.docx`** (35 pages; `tools/build_viva_guide.js`): how to answer (four steps; tags "at the
-    time" / "afterwards" / "not checked"); contributions table (roles pre-filled, last column for each member to fill
-    in); tables of every chosen number with the alternatives checked (M2 18 rows, M3 14 rows) and of methods used vs not
-    used; decision cards for M2 (scope, collection, D1–D5, P1–P7, F1–F4, eight EDA/hypothesis choices) and M3 (B1–B20)
-    with say-this-first, detail, other options checked, why not, show it; key numbers; a 64-question bank grouped by
-    question type; the after-submission checks.
-  - **`src/models/sensitivity_checks.py`** (prints only, ~4 min). Findings: 1% shock = 85th percentile; 0.5% makes 37%
-    of training rows shocks, 2% leaves no shock in 2024 and 4 test weeks; fuel cut-off sits in a gap (0.25–1% flag
-    137–127 weeks); EDA cut-offs and the Eid window robust (momentum ≥ 3 spikes not significant); 8-week rupee window
-    AUC 0.67 vs 13-week 0.68 (corr 0.76); 4-week SPI change best; momentum core stable (onions, potatoes always); H2/H3
-    robust to HAC lags 1–16; seeds and bootstrap size do not matter. **Two defaults were not the best in CV:** entropy
-    (tree within-year 0.651 vs Gini 0.578) and Manhattan distance (KNN pooled 0.670 at k = 150 vs 0.643). Not applied
-    to M3 (test already seen); M4 grids should include them.
-  - `DS4SG_M3_Reference.docx` now holds files, run order, concepts and limitations only (its old decisions, numbers
-    and viva sections moved into the viva guide; it lists the new script and builder). The script reference doc
-    points to the viva guide. README and CLAUDE.md point to it too.
+- **Sessions 1–5:** scaffolding, handoff hook, scraping (370/370 weeks), SBP, FX, Eid/Ramadan calendar; notebook 01 →
+  `master_model_ready.csv`; `build_features.py` → `master_features.csv`; notebook 02 (EDA, H1–H5). **M2 full marks.**
+- **Sessions 6–8:** M3 (`baseline.py`, notebooks 03–04, Sections IV–V); audit, lecture-scope pass, team merge.
+- **Session 9:** combined M2+M3 viva guide; `sensitivity_checks.py` (found Gini and Euclidean defaults not best).
+- **Session 10 (2026-11-10): Milestone 4.**
+  - **User decisions (10 Nov):** manuscript = new sections only (VI–VIII); hyperparameter selection by **within-year
+    AUC**; models = **random forest + gradient boosting** (no neural network); final model = **random forest** (KNN
+    0.683 vs forest 0.678 was a tie; KNN cannot take row weights, which pre-/in-processing mitigation need).
+  - **My calls (flagged to the user):** new features only from existing data (`shock_rate_26w`, `july_next_week`);
+    NEPRA/OGRA notification dates moved to M5; a missed Q1 shock counts 2× in the group-cost policy (sensitivity 1–3×);
+    equal-opportunity tolerance 0.05; the test period called a "second look" (seen in M3).
+  - **`src/models/advanced.py`** (decisions A1–A6, R1–R4 in the docstring): features, five learners and grids, `tune()`
+    (within-year selection), `oof_predict()` with per-fold row weights, fairness tools (`group_rates`,
+    `fairness_summary`, `bootstrap_fairness`), mitigation (`reweighing_weights`, `group_cost_weights`,
+    `group_thresholds`), `pareto_frontier()` (exact search), `diebold_mariano()`. `baseline.py` unchanged.
+  - **Notebook 05** (~20 min; RF grid ~9 min in Jupyter): data + new features (Fig. A1), folds (both classes for every
+    quintile in every year), grids (48/88/196/128/144 settings), tuning + validation curves (A2), M3 vs M4 comparison
+    with bootstrap (A3), feature ablation, leakage check, threshold curves (A4) and cost ratios, calibration (A5), H4
+    (Wald + LR + pooled vs own models), permutation importance overall and Q1 vs Q5 (A6); saves `models/m4_advanced/`.
+  - **Notebook 06** (~3 min): attribute and base rates, fairness metrics for all learners, final model with bootstrap
+    (F1), H5 (Diebold–Mariano), shock drivers by quintile, mitigation (pre/in/post), Pareto frontier (F2), asymmetric
+    thresholds (F3), recommended policy, FATEN table, living lab.
+  - **Manuscript** `tools/build_manuscript_m4.js` (+ `m4_manuscript_vi/vii/viii.js`, numbers from
+    `tools/collect_m4_numbers.py` → `m4_manuscript_numbers.js`): Tables 25–34, Figs. 14–19, refs [18]–[25]; 14 pages,
+    4,763 body words; team style (no colons/semicolons in prose). PDF in `milestones/M4_advanced_model/`.
+  - **`DS4SG_M4_Reference.docx`** (17 pp, `tools/build_m4_reference_doc.js` + `m4_reference_*.js`) and
+    **`DS4SG_Viva_Guide_M2_M4.docx`** (44 pp, `build_viva_guide.js` + `tools/viva_m4_content.js`: §3.3, §4.3, §7 M4
+    decision cards A1–A9 and R1–R6, §8.3, §9.6; sections renumbered). The old `DS4SG_Viva_Guide_M2_M3.docx` is kept.
+  - `milestones/M4_advanced_model/M4_rubric.md` holds the brief, rubric and where each item is answered.
 
 ## 3. Where we are now
-- **M2 and M3 deliverables are complete; viva preparation is in one document.** Nothing submitted was changed.
-- **All session 9 work is committed and pushed** (2026-10-29). Still untracked on purpose: `docs/` (team Google Docs
-  export) and the submitted M2 files in `milestones/M2_data_eda_hypotheses/` (open question below).
-- **Methods beyond the slides (viva guide §4.3):** expanding-window CV, permutation importance, week-clustered errors
-  (M3); Spearman correlation and Fisher's exact test (M2); logit LR test, HAC errors, Brier score (M2 plan);
-  Diebold–Mariano (M4 plan). Entropy and Manhattan distance ARE in the slides (Units 09 and 11).
-- **Decision labels are our own bookkeeping IDs, not course terms**; not in the manuscripts or the M3 notebooks. D1–D5:
-  `build_master.py`; P1–P7: notebook 01 §4; F1–F4: `build_features.py`; B1–B8: `baseline.py`; B9–B20 only in the viva
-  guide. Figures are also numbered B1–B10; "Figure B1" is not "decision B1".
-- **Repo-level session files stay** (CLAUDE.md, HANDOFF.md, logs/, .claude/, .claudeignore): the repo is for the team.
-- **Rebuilding docs:** `NODE_PATH=<folder with node_modules/docx> node tools/build_viva_guide.js
-  DS4SG_Viva_Guide_M2_M3.docx` (same pattern for `build_m3_reference_doc.js`, `build_reference_doc.js`,
-  `build_manuscript_m3.js`). Close the file in Word first (EBUSY). The script reference doc has a Word TOC field: update
-  it in Word after rebuilding; the other two have static contents lists.
-- **Word automation (COM):** a NEW hidden instance only; a failed start can leave a window-less WINWORD (stop only that
-  PID, retry); use `$w.Quit()`. Never touch the user's own Word process.
-- **Known caveats (disclosed):** momentum basket chosen on all training years; LR at the grid edge (a plateau) and
-  uncalibrated (Brier 0.24); only 13 test shock weeks; pooled AUC flattered the tree; Gini and Euclidean defaults not
-  tuned (found afterwards).
+- **M4 deliverables are complete and verified:** both notebooks execute top to bottom with no errors or warnings; every
+  manuscript number traces to `reports/tables/m4_*.csv`; deliverables scanned clean of tool traces.
+- **Headline results (for the viva):**
+  - CV within-year AUC: LR 0.640, KNN 0.683, tree 0.657, forest 0.678, boosting 0.635 (all tied; SD 0.03–0.10).
+  - Test: forest 0.674 vs M3 KNN 0.679 (diff −0.005, −0.10 to +0.11). Ensembling did not beat the best baseline.
+  - Shuffled stratified K-fold would report 0.83 for the forest (ours 0.68).
+  - No threshold beats "never alert" in 2025–26: break-even precision at 5:1 is 1/6, forest's best 0.153; probabilities
+    over-predict by half (0.114 vs 0.077).
+  - New features did not improve ranking (0.684 without, 0.678 with); kept as designed (dropping them would be
+    test-informed).
+  - H4 not supported (Wald p = 0.067; only fuel review × Q5 significant, 0.90, p = 0.017); pooled beats own models.
+  - Fairness: DI 1.05 (80% rule met), EOD −0.026 (n.s.), AUC within group Q1 0.64 vs Q5 0.72; H5 not supported
+    (Brier 0.148 vs 0.136, p = 0.26). Perishables drive 42% of Q1's shocks vs 24% of Q5's; recall perishables 0.62 vs
+    fuel 0.88.
+  - Mitigation: reweighing useless (base rates equal); Q1-weighted training moves the imbalance; equal-opportunity
+    quintile thresholds fairer and cheaper in 2021–24 (gap 0.05 vs 0.13; cost 0.637 vs 0.651). Shared threshold lies
+    above the Pareto frontier. Nothing transfers cleanly to the test period (6–9 shocks per quintile).
+- **Known caveats (disclosed):** test period is a second look; boosting's selected learning rate (0.01) and trees (300)
+  sit at the grid edge (not extended, not the final model); KNN k = 250 at the edge (limited by fold 1); 26-week window
+  not varied; final-model rule decided after seeing the CV tie.
+- **Not committed on purpose:** Assignment 2 working-tree changes (pre-existing, not from this session), `docs/`, the
+  submitted M2/M3 files in `milestones/`, `assignments/assignment 1/`, `assignments/drive/`, the A2 rar.
+- **Rebuilding:** `python tools/build_m4_notebooks.py` then nbconvert both notebooks (commands in its docstring);
+  `python tools/build_m4_notebooks.py text` refreshes only text cells (refuses if code changed). Then
+  `python tools/prepare_manuscript_figures.py`, `python tools/collect_m4_numbers.py`, and
+  `NODE_PATH=<folder>/node_modules node tools/build_manuscript_m4.js manuscript/M4_manuscript_sections_VI_VIII.docx`
+  (same pattern for `build_m4_reference_doc.js`, `build_viva_guide.js`). PDF via a NEW hidden Word instance
+  (`ExportAsFixedFormat(path, 17)`), never the user's Word. The docx package was installed in this session's scratchpad;
+  `npm install docx@9.5.1` in any folder works.
+- **Bash heredocs that contain quotes or `${` sometimes fail in this harness**; write patch scripts with the file tool
+  and run them instead. A `\n` inside a heredoc-written Python string became a real newline twice: check after edits.
 
 ## 4. What's next
-1. **Viva (M2 + M3):** each member fills in their row of the viva guide §2 and agrees it with the team; study §3–§6,
-   quiz with §8, read §9; run notebooks 01–04 and `python src/models/sensitivity_checks.py` once.
-2. **M3 (due 2026-10-24):** confirm it was submitted.
-3. **M4 (Week 12, Nov 2–6): final model, fairness and ethics.** Methods within the lectures/syllabus where possible;
-   notebook in plain wording (no labels, tooling references or estimator diagrams); manuscript in the team's style.
-   - Ensembles (random forest, gradient boosting) under the same protocol; report within-year AUC next to pooled AUC
-     and fix the selection criterion before looking at the test.
-   - Add the tree's split criterion (Gini/entropy) and KNN's distance (Euclidean/Manhattan) to the grids.
-   - H4: quintile-specific vs pooled models (signal × group interactions, LR test).
-   - Calibration (probabilities that match observed shock rates; Brier score).
-   - New features: a NEPRA/OGRA tariff calendar, a first-month-of-FY window, a rolling shock rate.
-   - H5 fairness: Brier and miss rate Q1 vs Q5 (Diebold–Mariano, planned in M2), equal recall, quintile thresholds.
-   - Ethics: self-fulfilling warnings, transparency, rural exclusion. Consider re-selecting the momentum basket per fold.
-   - Add the M4 decisions and numbers to the same viva guide (extend, do not start a new one).
-4. **M5 (Week 14):** walk-forward retraining with new weekly releases; measure how fast the thresholds adapt.
-5. Carry-overs: verify Eid ul-Adha 2026 (27 May) in the overrides file; write the abstract, introduction and
-   literature review for the final paper.
+1. **Submit M4** (due 10 Nov, extension requested): the PDF in `milestones/M4_advanced_model/` and notebooks 05 and 06
+   (they need `src/`, `data/processed/`, `models/m3_baselines/`, `reports/` and `requirements.txt` next to them).
+2. **Team review:** SDP members confirm the value judgements (5:1 cost; Q1 miss 2×; recommending equal-opportunity
+   thresholds with Q1 × 2 as the equity option) and the FATEN/living-lab text; fill in viva guide §2 contributions.
+3. **Viva prep:** study viva guide §3.3, §4.3, §7, §8.3, §9.6; run notebooks 05–06 once.
+4. **M5 (Week 14, Nov 16–20): new data integration and re-training.**
+   - Download the new weekly SPI releases since Oct 2026 (clean out-of-sample test).
+   - Walk-forward retraining; re-choose thresholds on recent weeks; measure recovery after a regime change.
+   - Candidate new data: NEPRA/OGRA tariff notification calendar, wholesale perishable prices; re-test the 26-week
+     window and the July feature on new weeks; repeat the fairness audit on new weeks.
+5. Carry-overs: verify Eid ul-Adha 2026 (27 May) in the overrides file; abstract, introduction and literature review.
 
 ## 5. Decisions & rationale
-- **Data (M2), labels as in `build_master.py` / `build_features.py`:** D1 printed report dates, aligned to the nearest
-  Thursday; D2 missing weeks filled from the next report's official previous-week value; D3 PBS revisions use the
-  revised figure; D4 weekly (Fri–Thu) average PKR/USD without bad ticks; D5 fuel-revision week = petrol or diesel moved
-  > 1%. F1 shock = weekly SPI rise ≥ 1%; F2 fuel reviews on the 1st and 16th; F3 momentum items from training weeks
-  only; F4 component inflation Combined-weighted. Sample 5 Sep 2019 – 1 Oct 2026; outliers kept; signals known at the
-  end of week t.
-- **Lecture scope (user, 2026-10-22):** methods from the slides, syllabus or rubric; a few meaningful outside methods,
-  each with a one-line reason (viva guide §4.3).
-- **Submitted work is plain (user, 2026-10-25):** no session-file references, no estimator diagrams, no decision labels
-  in the current milestone's notebooks.
-- **Viva preparation (user, 2026-10-26):** one combined guide for M2 and M3. Checks run after a submission are labelled
-  "afterwards" and never presented as part of the original decision; they change no submitted result (choosing with
-  hindsight would be tuning on the results).
-- **Report style (team, 2026-10-25):** commas or words instead of colons/semicolons, "instead of" not "rather than",
-  no code names in prose. Session 8's new Section V text still uses the older style.
-- **M3 modelling** (IDs as in `baseline.py` and the viva guide):
-  - B1 Q1–Q5 rows only. B2 chronological split (train ≤ 2024, test 2025–26; about 75/25), fixed in M2.
-  - B3 expanding-window CV, K = 4 calendar years 2021–24, whole weeks together, no gap.
-  - B4 scaling inside pipelines (LR z-scores all; KNN scales continuous only; tree unscaled).
-  - B5 selection by pooled out-of-fold ROC-AUC (kept as planned despite rewarding regime tracking).
-  - B6 no resampling; class weights, cost threshold and imbalance-aware metrics.
-  - B7 threshold minimises 1 × FP + 5 × FN on 2021–24 out-of-fold predictions; ratios 1–20 reported.
-  - B8 listwise deletion of 9 weeks. B9 LR + KNN + shallow tree with two benchmarks. B10 18 features.
-  - B11 grids extended at their edges; LR's C = 0.0001 is a checked plateau (smaller C changes AUC ≤ 0.001).
-  - B12 three importance measures; permutation on CV folds; odds ratios from an unpenalised clustered logit.
-  - B13 H1: clustered Wald in sample, week-block bootstrap out of sample (DeLong replaced).
-  - B14 H2 difference regression on the training period. B15 H3 as pre-stated, split exploratory, coefficients
-    descriptive (the gap is built from basket weights).
-  - B16 test used once. B17 shock driver = largest upward item impact. B18 momentum-basket exception disclosed.
-  - B19 seed 42; the script reproduces the notebook byte for byte. B20 Gini and Euclidean left at defaults (afterwards
-    check: alternatives slightly better in CV; for M4).
-- **Manuscript:** M3 = new sections only. Numbering continues M2. Black text, Times New Roman, no header or footer,
-  three-rule tables. Every number traces to the notebooks.
+- **Data (M2):** D1 report dates → nearest Thursday; D2 gaps from next report; D3 revised figures; D4 weekly average
+  PKR/USD; D5 fuel-revision week > 1%. F1 shock = weekly SPI rise ≥ 1%; F2 fuel reviews 1st/16th; F3 momentum items from
+  training weeks; F4 component inflation Combined-weighted. Sample Sep 2019 – Oct 2026; outliers kept.
+- **M3 (B1–B20, in `baseline.py` and the viva guide):** Q1–Q5 rows; chronological split (≤ 2024 / 2025–26); expanding
+  window, 4 yearly folds, whole weeks; scaling inside pipelines; pooled-AUC selection (M3 only); no resampling; threshold
+  at 5:1 on OOF; listwise deletion; three learners + two benchmarks; week-block bootstrap; seed 42.
+- **M4 (A1–A9, R1–R6; A1–A6 and R1–R4 in `advanced.py`, all in the viva guide §7):**
+  - A1 RF + GB, M3 learners re-tuned under the same protocol. A2 within-year AUC (team). A3 two derived features
+    (disclosed as test-inspired). A4 Gini/entropy and Euclidean/Manhattan in grids. A5 same folds; stratification's
+    purpose checked instead of shuffled folds. A6 final model = best within-year AUC among learners taking row weights
+    (team, after the tie). A7 test period = second look. A8 same threshold rule. A9 H4 with week-clustered Wald.
+  - R1 quintile = sensitive attribute; alarm = favourable outcome. R2 audit on 2021–24 OOF, test as check, bootstrap.
+    R3 equal opportunity = main criterion. R4 three mitigation families. R5 Q1 miss 2× (value judgement, 1–3×).
+    R6 recommended policy: equal-opportunity quintile thresholds; Q1 × 2 as the equity option; re-choose by regime.
+- **Lecture scope:** ensembles (Week 12), fairness (Week 15 + brief). Outside methods listed in viva guide §4.4:
+  reweighing, exact Pareto search, Diebold–Mariano (M2 plan), plus M3's permutation importance, clustered errors, HAC.
+- **Submitted work is plain:** no session-file references, no decision labels in notebooks; team prose style in reports.
+- **Manuscript:** new sections only; numbering continues (Tables 25–34, Figs. 14–19, refs [18]–[25] in first-citation
+  order); black text, Times New Roman, no header/footer.
 
 ## 6. Open questions
-- Was M3 submitted on time (due 2026-10-24)?
-- Each member's contributions for the viva guide §2 (only roles are pre-filled).
-- Apply the team's prose style to the rest of the report (Sections IV-C onwards and the session 8 Section V additions)?
-- Does the team accept FN:FP = 5:1 as the headline cost ratio (a value judgement for the SDP members)?
-- M4 selection criterion: pooled AUC, within-year AUC, or both? Fix it before the M4 test evaluation.
-- Walk-forward retraining in M4 already, or in M5 as planned?
-- Commit the submitted M2 files and the team's Google Docs export (`docs/`) as records?
+- Was the M4 extension granted, and to when?
+- Do the SDP members accept the Q1 miss weight (2×) and the recommended policy? (value judgements, VII-F/VII-I)
+- Each member's contributions for viva guide §2.
+- M5: which new data source first (tariff calendar vs perishable wholesale prices)? Drop the two M4 features if new
+  weeks do not support them?
+- Commit the submitted M2/M3 files in `milestones/` and the team's `docs/` export as records?
 - Carry-overs: Sarah's source for the Eid/Ramadan dates; extend the series to Sep 2018; SBP EasyData registration.
 
 ## 7. Key files
-- `CLAUDE.md`: narrative, data facts, conventions, milestone dates. `milestones/M3_baseline_model/M3_rubric.md`.
-- **Lecture slides:** `course/lecture_slides/` Units 01–11 (not in git); syllabus in `course/syllabus/`.
-- **Viva guide (M2 + M3):** `DS4SG_Viva_Guide_M2_M3.docx` ← `tools/build_viva_guide.js`; checks in
-  `src/models/sensitivity_checks.py`.
-- **References:** `DS4SG_M3_Reference.docx` ← `tools/build_m3_reference_doc.js` (M3 files, concepts);
-  `DS4SG_Script_and_Data_Reference.docx` ← `tools/build_reference_doc.js` (M1–M2 pipeline).
-- **M3 code:** `src/models/baseline.py`, `src/models/train_baselines.py`.
-- **M3 notebooks:** `notebooks/03_baseline_models.ipynb`, `notebooks/04_hypothesis_tests.ipynb`.
-- **M3 outputs:** `models/m3_baselines/`, `reports/figures/figB1`–`figB10`, `reports/tables/m3_*.csv` (24 files).
-- **M3 manuscript:** `tools/build_manuscript_m3.js` → `manuscript/M3_manuscript_sections_IV_V.docx` →
-  `milestones/M3_baseline_model/M3_manuscript_sections_IV_V.pdf`. Team version: `docs/M3_manuscript_sections_IV_V_team.docx`.
-- **M2:** `notebooks/01_data_preparation.ipynb`, `notebooks/02_eda.ipynb`, `tools/build_manuscript_m2.js`.
-- **Data:** `data/processed/master_features.csv` + `FEATURES_DICTIONARY.md`; `master_model_ready.csv` +
-  `DATA_DICTIONARY.md`; `items_weekly_panel.csv`; `cleaning_report.txt`.
+- `CLAUDE.md`; rubrics in `milestones/*/` (M4: `milestones/M4_advanced_model/M4_rubric.md`).
+- **M4 code:** `src/models/advanced.py` (uses `src/models/baseline.py`).
+- **M4 notebooks:** `notebooks/05_advanced_models.ipynb`, `notebooks/06_fairness_audit.ipynb`; builders
+  `tools/build_m4_notebooks.py`, `tools/nb05_code.py`, `tools/nb06_code.py`, `tools/nb_text_m4.py`,
+  `tools/nb_text_m4_results.py`, `tools/nbtools.py`.
+- **M4 outputs:** `models/m4_advanced/` (5 joblib models, OOF/test predictions, `model_card.json`),
+  `reports/figures/figA1`–`figA6`, `figF1`–`figF3`, `reports/tables/m4_*.csv`.
+- **M4 manuscript:** `tools/build_manuscript_m4.js` → `manuscript/M4_manuscript_sections_VI_VIII.docx` →
+  `milestones/M4_advanced_model/M4_manuscript_sections_VI_VIII.pdf`.
+- **Docs:** `DS4SG_M4_Reference.docx`, `DS4SG_Viva_Guide_M2_M4.docx` (supersedes `..._M2_M3.docx`),
+  `DS4SG_M3_Reference.docx`, `DS4SG_Script_and_Data_Reference.docx`.
+- **M3:** `src/models/baseline.py`, `train_baselines.py`, notebooks 03–04, `models/m3_baselines/`.
+- **Data:** `data/processed/master_features.csv` (+ `FEATURES_DICTIONARY.md`), `items_weekly_panel.csv`.
