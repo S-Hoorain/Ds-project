@@ -1,5 +1,5 @@
-// Builds "DS4SG_Viva_Guide_M2_M3.docx": one viva preparation guide for Milestones 2 and 3 (the instructor examines
-// both together). For every decision it says what we did, why, which other values or methods we checked (and when),
+// Builds "DS4SG_Viva_Guide_M2_M4.docx": one viva preparation guide for Milestones 2, 3 and 4 (M2 and M3 were
+// examined together; M4 content is in tools/viva_m4_content.js). For every decision it says what we did, why, which other values or methods we checked (and when),
 // and why we did not use the alternatives. It also has the chosen numbers, the methods used and not used, the key
 // numbers and a question bank.
 // Usage (from a folder where the npm package "docx" is installed, or with NODE_PATH pointing at its node_modules):
@@ -14,7 +14,8 @@ const {
   PageNumber, PageBreak, VerticalAlign, TableLayoutType, Bookmark, InternalHyperlink,
 } = require("docx");
 
-const OUT = process.argv[2] || "DS4SG_Viva_Guide_M2_M3.docx";
+const OUT = process.argv[2] || "DS4SG_Viva_Guide_M2_M4.docx";
+const M4 = require("./viva_m4_content.js");
 const FONT = "Calibri";
 const MONO = "Consolas";
 const INK = "1F1F1F", MUTED = "5A5A5A", ACCENT = "1F4E79", HEAD_FILL = "DCE6F1", KEY_FILL = "F2F2F2";
@@ -570,7 +571,7 @@ const M3_DECISIONS = [
   },
 ];
 
-// ---------------------------------------------------------------- key numbers (Section 7)
+// ---------------------------------------------------------------- key numbers (Section 8)
 const M2_KEY = [
   ["Reports", "359 of 370 weeks (222 archived PDFs, 137 current-site files); 15 dead links"],
   ["Cleaning counts", "11 weeks recovered (D2); 14 reports realigned (D1); 13 revisions (largest 2.04 points, Q1, 20 Nov 2025); 2 bad ticks; 127 of 369 fuel-revision weeks"],
@@ -616,7 +617,7 @@ const M3_KEY = [
   ["H3", "β_food = 0.12 (p = 0.003); β_energy = +0.04 (p = 0.92); split R² 0.16 → 0.38"],
 ];
 
-// ---------------------------------------------------------------- question bank (Section 8)
+// ---------------------------------------------------------------- question bank (Section 9)
 const Q_NUMBERS = [
   ["[M2] Why is a shock week a 1% rise? Did you try other numbers?", "A normal week moves about 0.2%, so 1% is a big jump: the 85th percentile, 13–17% of weeks. It is rare enough to mean something and frequent enough to learn from, and the same size for every quintile, so we can compare them. We fixed it in M2 before modelling. We did not compare thresholds at the time; preparing for this viva we checked 0.5% to 2%. At 0.5% over a third of weeks become 'shocks'; at 2% there is no shock at all in 2024 and only 4 in the test. The threshold defines the problem, so we would not pick it by model score."],
   ["[M2] Why 1% for a fuel revision?", "Fuel prices are administered and move in steps. Between revisions the average barely moves: 232 weeks move by 0.1% or less and only 10 weeks fall between 0.25% and 1%, so any cut-off in that range flags almost the same weeks (checked afterwards)."],
@@ -696,7 +697,7 @@ const Q_PROCESS = [
   ["What will you do in M4?", "Ensembles (random forest, gradient boosting) under the same protocol; calibrated probabilities; a tariff-notification calendar; within-year AUC next to pooled AUC; the H4 test of quintile-specific models; the fairness audit (H5: Brier scores and miss rates Q1 vs Q5 with the Diebold–Mariano test; equal recall across quintiles); ethics of public warnings."],
 ];
 
-// ---------------------------------------------------------------- checks made after the submission (Section 9)
+// ---------------------------------------------------------------- checks made after the M3 submission (Section 10)
 const AFTER_CHECKS = [
   ["Shock threshold 0.5–2%", "0.5%: 37% of training rows are shocks; 2%: 4.5%, none in 2024, 4 test weeks. AUC 0.60–0.64 (0.5%), 0.64–0.65 (1%), up to 0.71 pooled (1.5%).", "1% is a sensible middle. We would not choose a definition by model score."],
   ["Fuel-revision cut-off 0.25–3%", "0.25%, 0.5%, 1%: 137, 135, 127 weeks; only 10 weeks between 0.25% and 1%.", "The flag barely depends on the exact cut-off."],
@@ -714,11 +715,11 @@ const body = [];
 
 // Cover
 body.push(new Paragraph({ children: [new TextRun({ text: "Viva Preparation Guide", font: FONT, size: 52, bold: true, color: ACCENT })], spacing: { after: 120 } }));
-body.push(P("Milestones 2 and 3: why we chose what we chose", { size: 32, color: ACCENT, after: 200 }));
+body.push(P("Milestones 2, 3 and 4: why we chose what we chose", { size: 32, color: ACCENT, after: 200 }));
 body.push(P("Early-warning system for essential-price shocks across income quintiles in Pakistan", { size: 24, color: MUTED, after: 120 }));
 body.push(P("CS/SDP 312/314 Data Science for Social Good · Team: Syeda Hoorain Imran, Muhammad Munib Sattar, Sarah Khalid", { size: 22, color: MUTED, after: 120 }));
-body.push(P("Version: 26 October 2026", { size: 22, color: MUTED, after: 600 }));
-body.push(P("The viva covers Milestones 2 and 3 together and asks mostly open questions about our decisions: why a number was chosen, whether we tried other values and how we settled on the final one, why a method was used and another was not, why a technique was applied one way and not another, and who did what. This guide answers those questions for every decision in both milestones. File-by-file references stay in `DS4SG_Script_and_Data_Reference.docx` (Milestones 1–2) and `DS4SG_M3_Reference.docx` (Milestone 3, with a concepts glossary).", { size: 22 }));
+body.push(P("Version: 10 November 2026 (Milestone 4 added)", { size: 22, color: MUTED, after: 600 }));
+body.push(P("The viva covers Milestones 2 and 3 together and asks mostly open questions about our decisions: why a number was chosen, whether we tried other values and how we settled on the final one, why a method was used and another was not, why a technique was applied one way and not another, and who did what. This guide answers those questions for every decision in Milestones 2, 3 and 4. File-by-file references stay in `DS4SG_Script_and_Data_Reference.docx` (Milestones 1–2), `DS4SG_M3_Reference.docx` (Milestone 3) and `DS4SG_M4_Reference.docx` (Milestone 4); the last two have concepts glossaries.", { size: 22 }));
 body.push(pageBreak());
 
 // Contents
@@ -745,14 +746,15 @@ body.push(P("Every 'Other options checked' entry starts with one of three tags:"
 body.push(BUL(`${AT} the check is in the submitted notebooks or report.`));
 body.push(BUL(`${AFTER} the check was run on 26 October 2026 for this viva with \`python src/models/sensitivity_checks.py\`. It is not in the submitted work.`));
 body.push(BUL(`${NOT} the value was set by convention or judgement and never varied.`));
+body.push(BUL("**Team decision:** (Milestone 4) the team chose between options the work had laid out, on the date given."));
 body.push(P("If you are asked about an afterwards check, say so plainly: 'We did not compare that at the time. Preparing for this viva we checked, and …'. Never present it as part of the original decision. An honest 'we have not checked that' with a reason is better than an invented answer.", { before: 80 }));
 body.push(H2("1.4 Preparation plan"));
 body.push(NUM("Read Sections 3 and 4 (the numbers and the methods): they answer most 'why this?' questions in one line.", 2));
-body.push(NUM("For each decision card in Sections 5 and 6, say the green text out loud, then the grey text.", 2));
+body.push(NUM("For each decision card in Sections 5, 6 and 7, say the green text out loud, then the grey text.", 2));
 body.push(NUM("Fill in your own row of Section 2 and agree it with the team.", 2));
-body.push(NUM("Learn the key numbers (Section 7) and quiz each other with Section 8.", 2));
-body.push(NUM("Run notebooks 01–04 and `python src/models/sensitivity_checks.py` (about 4 minutes) once yourself, so you have seen every number.", 2));
-body.push(NUM("Read Section 9: two of the after-submission checks found that a default setting was not the best one. Know how to answer that honestly.", 2));
+body.push(NUM("Learn the key numbers (Section 8) and quiz each other with Section 9.", 2));
+body.push(NUM("Run notebooks 01–06 and `python src/models/sensitivity_checks.py` once yourself, so you have seen every number.", 2));
+body.push(NUM("Read Section 10: two of the after-submission checks of M3 found that a default setting was not the best one, and M4 tuned both. Know how to answer that honestly.", 2));
 
 // 2. Contributions
 body.push(pageBreak());
@@ -775,6 +777,8 @@ body.push(H2("3.1 Milestone 2: data, features and EDA"));
 body.push(grid(["Number or setting", "Why this value", "Other values checked (result)", "When"], M2_NUMBERS, [1800, 2700, 3526, 1000], { size: 17, firstBold: true }));
 body.push(H2("3.2 Milestone 3: models and evaluation"));
 body.push(grid(["Number or setting", "Why this value", "Other values checked (result)", "When"], M3_NUMBERS, [1800, 2700, 3526, 1000], { size: 17, firstBold: true }));
+body.push(H2("3.3 Milestone 4: advanced models and fairness"));
+body.push(grid(["Number or setting", "Why this value", "Other values checked (result)", "When"], M4.M4_NUMBERS, [1800, 2700, 3526, 1000], { size: 17, firstBold: true }));
 
 // 4. Methods
 body.push(pageBreak());
@@ -783,10 +787,12 @@ body.push(H2("4.1 Milestone 2"));
 body.push(grid(["We used", "Why", "We did not use", "Why not"], M2_METHODS, [2200, 2400, 1900, 2526], { size: 17, firstBold: true }));
 body.push(H2("4.2 Milestone 3"));
 body.push(grid(["We used", "Why", "We did not use", "Why not"], M3_METHODS, [2200, 2400, 1900, 2526], { size: 17, firstBold: true }));
-body.push(H2("4.3 Methods from beyond the lecture slides"));
+body.push(H2("4.3 Milestone 4"));
+body.push(grid(["We used", "Why", "We did not use", "Why not"], M4.M4_METHODS, [2200, 2400, 1900, 2526], { size: 17, firstBold: true }));
+body.push(H2("4.4 Methods from beyond the lecture slides"));
 body.push(P("Almost everything comes from the lecture slides, the syllabus or the rubrics. These are the exceptions; each is there because the course method alone would have given a wrong or incomplete answer, so be ready to say why in one sentence."));
-body.push(grid(["Method", "Why we needed it", "One-line explanation"], BEYOND, [2300, 3600, 3126], { size: 17, firstBold: true }));
-body.push(P("Dropped: the DeLong test planned in M2 (replaced by the week-block bootstrap, built from bootstrap and cluster sampling in Unit 04).", { before: 80 }));
+body.push(grid(["Method", "Why we needed it", "One-line explanation"], BEYOND.concat(M4.M4_BEYOND), [2300, 3600, 3126], { size: 17, firstBold: true }));
+body.push(P("The fairness metrics, the mitigation families, the Pareto frontier, FATEN and the living lab are named in the M4 brief, so they count as course material. Dropped: the DeLong test planned in M2 (replaced by the week-block bootstrap, built from bootstrap and cluster sampling in Unit 04).", { before: 80 }));
 
 // 5. and 6. Decision cards
 function decisionCards(list) {
@@ -813,33 +819,42 @@ body.push(H1("6. Milestone 3 decisions in detail"));
 body.push(P("B1–B8 match the docstring of `src/models/baseline.py`; B9–B20 cover the remaining choices. Figures are also numbered B1–B10: 'Figure B1' is not 'decision B1'."));
 decisionCards(M3_DECISIONS);
 
+body.push(pageBreak());
+body.push(H1("7. Milestone 4 decisions in detail"));
+body.push(P("A1–A9 cover the advanced models (A1–A6 match the docstring of `src/models/advanced.py`) and R1–R6 the fairness audit and mitigation. Figures are numbered A1–A6 and F1–F3 in the notebooks: Figure A1 is not decision A1."));
+decisionCards(M4.M4_DECISIONS);
+
 // 7. Key numbers
 body.push(pageBreak());
-body.push(H1("7. Key numbers"));
-body.push(H2("7.1 Milestone 2"));
+body.push(H1("8. Key numbers"));
+body.push(H2("8.1 Milestone 2"));
 body.push(grid(["Quantity", "Value"], M2_KEY, [2600, 6426], { size: 18, firstBold: true }));
-body.push(H2("7.2 Milestone 3"));
+body.push(H2("8.2 Milestone 3"));
 body.push(grid(["Quantity", "Value"], M3_KEY, [2600, 6426], { size: 18, firstBold: true }));
+body.push(H2("8.3 Milestone 4"));
+body.push(grid(["Quantity", "Value"], M4.M4_KEY, [2600, 6426], { size: 18, firstBold: true }));
 
 // 8. Question bank
 body.push(pageBreak());
-body.push(H1("8. Question bank"));
-body.push(P("Grouped by the kinds of question the instructor described. [M2] or [M3] marks the milestone. Expect follow-ups such as 'did you try anything else?' and 'how did you decide?': the answers in Sections 3–6 cover them."));
+body.push(H1("9. Question bank"));
+body.push(P("Grouped by the kinds of question the instructor described. [M2], [M3] or [M4] marks the milestone. Expect follow-ups such as 'did you try anything else?' and 'how did you decide?': the answers in Sections 3–7 cover them."));
 const Q_W = [3000, 6026];
-body.push(H2("8.1 Why this number?"));
+body.push(H2("9.1 Why this number?"));
 body.push(grid(["Question", "Short answer"], Q_NUMBERS, Q_W, { size: 18, firstBold: true, cantSplit: true }));
-body.push(H2("8.2 Why this method, and why not another?"));
+body.push(H2("9.2 Why this method, and why not another?"));
 body.push(grid(["Question", "Short answer"], Q_METHODS, Q_W, { size: 18, firstBold: true, cantSplit: true }));
-body.push(H2("8.3 Why did you do it this way?"));
+body.push(H2("9.3 Why did you do it this way?"));
 body.push(grid(["Question", "Short answer"], Q_WAY, Q_W, { size: 18, firstBold: true, cantSplit: true }));
-body.push(H2("8.4 What did you find, and what does it mean?"));
+body.push(H2("9.4 What did you find, and what does it mean?"));
 body.push(grid(["Question", "Short answer"], Q_RESULTS, Q_W, { size: 18, firstBold: true, cantSplit: true }));
-body.push(H2("8.5 Process, checks and contributions"));
+body.push(H2("9.5 Process, checks and contributions"));
 body.push(grid(["Question", "Short answer"], Q_PROCESS, Q_W, { size: 18, firstBold: true, cantSplit: true }));
+body.push(H2("9.6 Milestone 4: models, fairness and ethics"));
+body.push(grid(["Question", "Short answer"], M4.Q_M4, Q_W, { size: 18, firstBold: true, cantSplit: true }));
 
 // 9. After-submission checks
 body.push(pageBreak());
-body.push(H1("9. Checks made after the submission"));
+body.push(H1("10. Checks made after the M3 submission"));
 body.push(P("Run on 26 October 2026 with `python src/models/sensitivity_checks.py` (prints only; writes no files). None of them changes a submitted result: choosing a definition or a setting because it scores better after the fact would be tuning on the results. Use them to answer 'did you try other values?' honestly."));
 body.push(grid(["Check", "Result", "What it means"], AFTER_CHECKS, [2000, 3800, 3226], { size: 17, firstBold: true }));
 body.push(P("**Two findings to be ready for.** The tree's split measure and KNN's distance were left at their defaults. The alternatives would have scored a little higher in cross-validation (entropy: within-year AUC 0.651 against 0.578; Manhattan: pooled 0.670 against 0.643). If asked, say: 'We used the defaults and did not tune them. We checked afterwards and the alternatives are slightly better in cross-validation, so they are in the M4 grids. We did not change M3, because we had already seen the test results.'", { before: 120 }));
@@ -858,11 +873,11 @@ const STYLES = {
     { id: "Heading3", name: "Heading 3", basedOn: "Normal", next: "Normal", quickFormat: true, run: { size: 22, bold: true, font: FONT, color: ACCENT }, paragraph: { spacing: { before: 160, after: 80 }, outlineLevel: 2 } },
   ],
 };
-const header = new Header({ children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: "DS4SG · Viva Preparation Guide, Milestones 2 and 3", font: FONT, size: 16, color: MUTED })] })] });
+const header = new Header({ children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: "DS4SG · Viva Preparation Guide, Milestones 2 to 4", font: FONT, size: 16, color: MUTED })] })] });
 const footer = new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ children: ["Page ", PageNumber.CURRENT, " of ", PageNumber.TOTAL_PAGES], font: FONT, size: 16, color: MUTED })] })] });
 
 const doc = new Document({
-  creator: "DS4SG team", title: "Viva Preparation Guide: Milestones 2 and 3", styles: STYLES,
+  creator: "DS4SG team", title: "Viva Preparation Guide: Milestones 2 to 4", styles: STYLES,
   numbering: { config: [
     { reference: "bullets", levels: [{ level: 0, format: LevelFormat.BULLET, text: "•", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 540, hanging: 270 } } } }, { level: 1, format: LevelFormat.BULLET, text: "–", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 1080, hanging: 270 } } } }] },
     { reference: "steps", levels: [{ level: 0, format: LevelFormat.DECIMAL, text: "%1.", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 540, hanging: 300 } } } }] },

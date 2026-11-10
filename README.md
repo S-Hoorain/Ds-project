@@ -20,5 +20,9 @@ python -m ipykernel install --user --name ds4sg --display-name "DS4SG (.venv)"  
 ## Reference
 
 See DS4SG_Script_and_Data_Reference.docx for explanations for each script and data file.
-DS4SG_M3_Reference.docx describes the Milestone 3 files and concepts, and DS4SG_Viva_Guide_M2_M3.docx prepares the viva
-for Milestones 2 and 3 (every decision, the alternatives checked, key numbers and likely questions).
+DS4SG_M3_Reference.docx and DS4SG_M4_Reference.docx describe the Milestone 3 and 4 files and concepts, and
+DS4SG_Viva_Guide_M2_M4.docx prepares the viva for Milestones 2 to 4 (every decision, the alternatives checked, key
+numbers and likely questions).
+
+Milestone 4 (advanced models, fairness audit and ethics): run notebooks/05_advanced_models.ipynb (about 20 minutes)
+and then notebooks/06_fairness_audit.ipynb (about 3 minutes); both use src/models/advanced.py.
