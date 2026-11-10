@@ -20,7 +20,10 @@ FIGURES = ["figP1_log_transform", "figE3_weekly_change_distribution", "figE1_rot
            "figE2_shocks_vs_grind", "figE4_early_warning_signals", "figE5_fx_passthrough",
            # Milestone 3 (Sections IV-V)
            "figB1_cv_design", "figB2_validation_curves", "figB3_roc_pr_test", "figB4_cost_analysis",
-           "figB5_confusion_matrices", "figB7_feature_importance", "figB10_rotating_burden_test"]
+           "figB5_confusion_matrices", "figB7_feature_importance", "figB10_rotating_burden_test",
+           # Milestone 4 (Sections VI-VIII)
+           "figA1_rolling_shock_rate", "figA3_roc_pr_test", "figA4_threshold_curves", "figA6_feature_importance",
+           "figF1_rates_by_quintile", "figF2_pareto_frontier"]
 MIN_GAP = 25  # blank pixel rows that separate the caption block from the plot
 
 
