@@ -6,6 +6,7 @@ const STEPS = [
   ["3", "run `notebooks/06_fairness_audit.ipynb` (about 2 minutes)", "`models/m4_advanced/*`, `master_features.csv`, `items_weekly_panel.csv`", "figures F1–F3, `reports/tables/m4_*` (fairness tables)"],
   ["4", "`python tools/prepare_manuscript_figures.py`", "`reports/figures/*.png`", "caption-free copies in `manuscript/figures/`"],
   ["5", "`node tools/build_manuscript_m4.js manuscript/M4_manuscript_sections_VI_VIII.docx`", "`manuscript/figures/figA*.png`, `figF*.png`", "the M4 manuscript (Word); export to PDF from Word"],
+  ["6", "`python src/models/sensitivity_checks_m4.py` (about 6 minutes, for the viva)", "`master_features.csv`, `models/m4_advanced/model_card.json`, `reports/tables/m4_cv_grid_*.csv`", "nothing (prints the checks of the fixed M4 numbers; results in the viva guide, Section 11)"],
 ];
 
 const FILES = [
@@ -35,6 +36,15 @@ const FILES = [
     writes: ["`reports/figures/figF1`–`figF3`", "`reports/tables/m4_base_rates_by_group.csv`, `m4_fairness_*`, `m4_final_rates_by_group.csv`, `m4_h5_diebold_mariano.csv`, `m4_shock_driver_mix_by_group.csv`, `m4_recall_by_driver.csv`, `m4_mitigation_policies.csv`, `m4_pareto_*`, `m4_q1_cost_sensitivity.csv`"],
     run: "Run notebook 05 first, then run all cells (about 2 minutes).",
     concepts: "sensitive attribute, demographic parity, disparate impact and the 80% rule, equalized odds, equal opportunity, predictive equality, Diebold–Mariano, reweighing, group thresholds, Pareto frontier, FATEN, living lab.",
+  },
+  {
+    path: "src/models/sensitivity_checks_m4.py", type: "Python script (command line, prints only)",
+    what: "Checks every M4 number we fixed by judgement: the 26-week window, the number of trees, the seed, the edges of the boosting and KNN grids, the pooled-AUC selection rule, the in-processing weight, the equal-opportunity tolerance, the threshold step, bottom 40% vs top 40% as the compared groups, the bootstrap size, the permutation repeats, and the run-to-run variation of the fairness results.",
+    why: "The viva asks whether other values were tried. These checks were run after the analysis was final and change no result.",
+    reads: ["`data/processed/master_features.csv`", "`models/m4_advanced/model_card.json`, `reports/tables/m4_cv_grid_*.csv`"],
+    writes: ["nothing"],
+    run: "`python src/models/sensitivity_checks_m4.py` after notebook 05 (about 6 minutes).",
+    concepts: "sensitivity analysis, seed variation, grid edges.",
   },
   {
     path: "tools/build_manuscript_m4.js (+ m4_manuscript_viii.js)", type: "Node.js script (docx package)",

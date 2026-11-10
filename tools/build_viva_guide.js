@@ -747,6 +747,7 @@ body.push(BUL(`${AT} the check is in the submitted notebooks or report.`));
 body.push(BUL(`${AFTER} the check was run on 26 October 2026 for this viva with \`python src/models/sensitivity_checks.py\`. It is not in the submitted work.`));
 body.push(BUL(`${NOT} the value was set by convention or judgement and never varied.`));
 body.push(BUL("**Team decision:** (Milestone 4) the team chose between options the work had laid out, on the date given."));
+body.push(BUL("**Afterwards (10 Nov):** (Milestone 4) the check was run on 10 November 2026 with `python src/models/sensitivity_checks_m4.py`, after the M4 analysis was final. It is not in the M4 notebooks or report and changes no result (Section 11)."));
 body.push(P("If you are asked about an afterwards check, say so plainly: 'We did not compare that at the time. Preparing for this viva we checked, and …'. Never present it as part of the original decision. An honest 'we have not checked that' with a reason is better than an invented answer.", { before: 80 }));
 body.push(H2("1.4 Preparation plan"));
 body.push(NUM("Read Sections 3 and 4 (the numbers and the methods): they answer most 'why this?' questions in one line.", 2));
@@ -755,6 +756,7 @@ body.push(NUM("Fill in your own row of Section 2 and agree it with the team.", 2
 body.push(NUM("Learn the key numbers (Section 8) and quiz each other with Section 9.", 2));
 body.push(NUM("Run notebooks 01–06 and `python src/models/sensitivity_checks.py` once yourself, so you have seen every number.", 2));
 body.push(NUM("Read Section 10: two of the after-submission checks of M3 found that a default setting was not the best one, and M4 tuned both. Know how to answer that honestly.", 2));
+body.push(NUM("Read Section 11, the M4 checks of every number we had fixed. Two need care: KNN would be slightly higher at k = 275, and the pre- and in-processing mitigation results are within run-to-run (seed) noise.", 2));
 
 // 2. Contributions
 body.push(pageBreak());
@@ -858,6 +860,16 @@ body.push(H1("10. Checks made after the M3 submission"));
 body.push(P("Run on 26 October 2026 with `python src/models/sensitivity_checks.py` (prints only; writes no files). None of them changes a submitted result: choosing a definition or a setting because it scores better after the fact would be tuning on the results. Use them to answer 'did you try other values?' honestly."));
 body.push(grid(["Check", "Result", "What it means"], AFTER_CHECKS, [2000, 3800, 3226], { size: 17, firstBold: true }));
 body.push(P("**Two findings to be ready for.** The tree's split measure and KNN's distance were left at their defaults. The alternatives would have scored a little higher in cross-validation (entropy: within-year AUC 0.651 against 0.578; Manhattan: pooled 0.670 against 0.643). If asked, say: 'We used the defaults and did not tune them. We checked afterwards and the alternatives are slightly better in cross-validation, so they are in the M4 grids. We did not change M3, because we had already seen the test results.'", { before: 120 }));
+
+// 11. M4 checks made after the analysis
+body.push(pageBreak());
+body.push(H1("11. Checks of the Milestone 4 choices"));
+body.push(P("The instructor asks whether we tried other values before settling on a number. For Milestone 4 many alternatives were compared in the notebooks themselves: every hyperparameter grid, cost ratios from 1 : 1 to 20 : 1, Q1 miss weights from 1 to 3, the whole fairness-accuracy frontier, 1 to 13 lags for H5, the feature ablation and three validation designs (Section 3.3, tagged 'At the time'). The remaining numbers we had fixed by judgement were checked on 10 November 2026, after the analysis was final, with `python src/models/sensitivity_checks_m4.py` (about 6 minutes; prints only, writes no files). Cross-validated scores use the training period only; test-period numbers are for information. None of these checks changes a result: choosing a setting because it scores better once the results are known would be tuning on them."));
+body.push(grid(["Check", "Result", "What it means"], M4.M4_AFTER_CHECKS, [2300, 3800, 2926], { size: 17, firstBold: true }));
+body.push(P("**Two findings to be ready for.**", { before: 120, after: 60 }));
+body.push(BUL("**KNN at k = 275.** Our KNN grid stopped at k = 250. Just beyond it, k = 275 gives a within-year AUC of 0.690 instead of 0.683. If asked: 'We checked afterwards. KNN would be slightly higher, but it is still a tie with the forest, whose own score moves between 0.676 and 0.682 with the random seed, and KNN cannot be retrained with row weights, which the mitigation needs. So the final model would not change.'"));
+body.push(BUL("**Seed noise in the mitigation results.** With row weights, scikit-learn's forest draws its bootstrap samples in a different way, so reweighing and weighted training change the random draw as well as the weights. Over five seeds, against a forest with all weights equal to 1, both narrow the Q1–Q5 recall gap by 3 to 4 points on average, while one seed alone moves the gap by up to 4 points. Notebook 06 describes seed 42 only (reweighing widened the gap, weighted training evened recall out). If asked: 'Those two results are within run-to-run noise. On average both mitigations narrow the gap a little. The post-processing thresholds are the reliable result, because they reuse the same predictions.'"));
+body.push(P("Everything else was confirmed: the 26-week window, the number of trees, the threshold step, the bootstrap size and the permutation repeats make no difference; boosting is on a plateau beyond its grid edge; 0.05 is where the fairness tolerance stops paying; and comparing the bottom 40% with the top 40% gives the same fairness picture as Q1 against Q5.", { before: 80 }));
 
 // ================================================================ DOCUMENT
 body.splice(TOC_AT, 0, ...HEADINGS.map((h) => new Paragraph({
