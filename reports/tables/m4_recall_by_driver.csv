@@ -1,0 +1,10 @@
+period,driver,recall,caught,shock rows
+2021-24 (out-of-fold),energy: motor fuel,0.8780487804878049,36,41
+2021-24 (out-of-fold),energy: utility tariffs,0.6911764705882353,47,68
+2021-24 (out-of-fold),food: perishables,0.6216216216216216,46,74
+2021-24 (out-of-fold),food: staples,0.8888888888888888,16,18
+2021-24 (out-of-fold),other non-food,0.5,1,2
+test 2025-26,energy: motor fuel,0.5714285714285714,4,7
+test 2025-26,energy: utility tariffs,0.3,3,10
+test 2025-26,food: perishables,0.46153846153846156,6,13
+test 2025-26,food: staples,1.0,5,5

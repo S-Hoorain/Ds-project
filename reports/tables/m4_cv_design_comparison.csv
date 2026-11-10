@@ -1,0 +1,3 @@
+model,Shuffled stratified K-fold (rows),Shuffled stratified K-fold (whole weeks),Expanding window by year (ours)
+Gradient boosting,0.7987874810194748,0.6508900754288521,0.6346226013455634
+Random forest,0.8303187403993856,0.6932405790340299,0.6779170888395601

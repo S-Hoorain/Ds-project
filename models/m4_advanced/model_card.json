@@ -1,0 +1,130 @@
+{
+  "features": [
+    "spi_wow_pct",
+    "spi_chg_4w",
+    "fx_chg_8w",
+    "shocks_last_4w",
+    "momentum_spikes_4w",
+    "infl_staples_4w",
+    "fuel_review_next_week",
+    "fy_start_next_week",
+    "infl_perishables_4w",
+    "infl_utilities_4w",
+    "infl_motor_fuel_4w",
+    "policy_rate",
+    "ramadan_next_week",
+    "pre_eid_adha_4w",
+    "grp_Q1",
+    "grp_Q2",
+    "grp_Q3",
+    "grp_Q4",
+    "shock_rate_26w",
+    "july_next_week"
+  ],
+  "train_end": "2024-12-31",
+  "validation_years": [
+    2021,
+    2022,
+    2023,
+    2024
+  ],
+  "selection": "within-year AUC (mean of the four per-fold ROC-AUCs)",
+  "final_model": "Random forest",
+  "cost_fp": 1.0,
+  "cost_fn": 5.0,
+  "sklearn_version": "1.9.1",
+  "models": {
+    "Logistic regression": {
+      "params": {
+        "C": 0.0001,
+        "class_weight": "balanced",
+        "l1_ratio": 0.0
+      },
+      "threshold": 0.5,
+      "within-year AUC": 0.6402634682993852,
+      "within-year SD": 0.03522850090462037,
+      "AUC 1": 0.6844091618948465,
+      "AUC 2": 0.6410050788559208,
+      "AUC 3": 0.6495007396449705,
+      "AUC 4": 0.5861388928018031,
+      "pooled AUC": 0.6346145923454043,
+      "pooled PR-AUC": 0.3198071270381012,
+      "pooled Brier": 0.247037698275709
+    },
+    "KNN": {
+      "params": {
+        "metric": "manhattan",
+        "n_neighbors": 250,
+        "weights": "distance",
+        "cont": "StandardScaler"
+      },
+      "threshold": 0.11,
+      "within-year AUC": 0.6827102529699611,
+      "within-year SD": 0.09901500587550528,
+      "AUC 1": 0.8430504945340969,
+      "AUC 2": 0.6162122427158514,
+      "AUC 3": 0.6841715976331362,
+      "AUC 4": 0.5874066769967601,
+      "pooled AUC": 0.6490397914202142,
+      "pooled PR-AUC": 0.30198892980768066,
+      "pooled Brier": 0.15488216085481515
+    },
+    "Decision tree": {
+      "params": {
+        "class_weight": null,
+        "criterion": "entropy",
+        "max_depth": 4,
+        "min_samples_leaf": 80
+      },
+      "threshold": 0.02,
+      "within-year AUC": 0.6573945031372557,
+      "within-year SD": 0.07001871182604268,
+      "AUC 1": 0.7392634044768349,
+      "AUC 2": 0.5544974605720396,
+      "AUC 3": 0.7003051035502958,
+      "AUC 4": 0.6355120439498521,
+      "pooled AUC": 0.6011794410014655,
+      "pooled PR-AUC": 0.2802545900681591,
+      "pooled Brier": 0.16072631634726647
+    },
+    "Random forest": {
+      "params": {
+        "class_weight": null,
+        "criterion": "gini",
+        "max_depth": 5,
+        "max_features": "sqrt",
+        "min_samples_leaf": 20
+      },
+      "threshold": 0.14,
+      "within-year AUC": 0.6779170888395601,
+      "within-year SD": 0.06002092896549756,
+      "AUC 1": 0.7738157209786569,
+      "AUC 2": 0.6248997594226142,
+      "AUC 3": 0.6837093195266272,
+      "AUC 4": 0.6292435554303423,
+      "pooled AUC": 0.6514410485489461,
+      "pooled PR-AUC": 0.30473463315764715,
+      "pooled Brier": 0.1522548529920451
+    },
+    "Gradient boosting": {
+      "params": {
+        "class_weight": null,
+        "l2_regularization": 0.0,
+        "learning_rate": 0.01,
+        "max_depth": 2,
+        "max_iter": 300,
+        "min_samples_leaf": 50
+      },
+      "threshold": 0.14,
+      "within-year AUC": 0.6346226013455634,
+      "within-year SD": 0.030106994470052488,
+      "AUC 1": 0.6622201978136387,
+      "AUC 2": 0.6372293504410586,
+      "AUC 3": 0.6541697485207101,
+      "AUC 4": 0.584871108606846,
+      "pooled AUC": 0.6385136924625245,
+      "pooled PR-AUC": 0.3095742148789823,
+      "pooled Brier": 0.15451518432888978
+    }
+  }
+}

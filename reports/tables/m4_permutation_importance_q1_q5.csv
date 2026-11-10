@@ -1,0 +1,21 @@
+feature,feature,Q1,Q5
+spi_chg_4w,"SPI change, past 4 weeks (%)",0.01844102852167301,0.04103286877811222
+momentum_spikes_4w,"Momentum-item spikes, past 4 weeks",0.008129933614187214,0.006843055420438812
+fx_chg_8w,"PKR/USD change, past 8 weeks (%)",0.011055258494690936,0.026537451143373827
+spi_wow_pct,SPI change this week (%),0.01626135408653886,0.01166709228442044
+infl_motor_fuel_4w,"Motor-fuel inflation, past 4 weeks (%)",-0.0013644501145374218,0.013314986466070763
+infl_staples_4w,"Staple-food inflation, past 4 weeks (%)",-0.013142190020582596,-0.006930724332268936
+shocks_last_4w,Shock weeks in past 4 weeks,0.00523941540928147,0.010502284983156503
+ramadan_next_week,Ramadan next week,0.002616527684379294,0.0008881772210331984
+policy_rate,SBP policy rate (%),0.0033910778985507344,0.0032981745647968964
+fuel_review_next_week,Fuel-price review next week,0.0033672866980700576,-0.0007308846363674598
+july_next_week,Next week is in July,0.0007075370274507942,0.00010915664736245722
+grp_Q2,Group Q2 (vs Q5),0.0,0.0
+grp_Q4,Group Q4 (vs Q5),0.0,0.0
+grp_Q3,Group Q3 (vs Q5),0.0,0.0
+fy_start_next_week,Fiscal year starts next week,0.0,0.0
+grp_Q1,Group Q1 (vs Q5),0.0,0.0
+pre_eid_adha_4w,Eid ul-Adha within 4 weeks,-0.0009768034503945366,-0.0021675466343530985
+shock_rate_26w,"Shock rate, past 26 weeks",0.0008898765272328251,-0.0021603099403324417
+infl_utilities_4w,"Utility-tariff inflation, past 4 weeks (%)",-0.013342649409990486,-0.012142941874682869
+infl_perishables_4w,"Perishables inflation, past 4 weeks (%)",0.0036096752357404147,0.01912826748060996

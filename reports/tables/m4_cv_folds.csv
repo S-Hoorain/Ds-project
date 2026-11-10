@@ -1,0 +1,5 @@
+fold,train weeks,n train weeks,validation weeks,n validation weeks,train shock rate %,validation shock rate %,validation shocks (rows),shock rows Q1,shock rows Q2,shock rows Q3,shock rows Q4,shock rows Q5
+1,31 Oct 2019 – 31 Dec 2020,62,07 Jan 2021 – 30 Dec 2021,52,9.35483870967742,13.076923076923078,34,4,7,7,8,8
+2,31 Oct 2019 – 30 Dec 2021,114,06 Jan 2022 – 29 Dec 2022,52,11.052631578947368,33.07692307692307,86,19,19,18,18,12
+3,31 Oct 2019 – 29 Dec 2022,166,05 Jan 2023 – 28 Dec 2023,52,17.951807228915662,20.0,52,9,11,8,11,13
+4,31 Oct 2019 – 28 Dec 2023,218,04 Jan 2024 – 26 Dec 2024,52,18.440366972477065,11.923076923076923,31,6,6,7,7,5
