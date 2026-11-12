@@ -1,6 +1,6 @@
 # HANDOFF
 
-**Last updated:** 2026-11-12 (session 11; committed and pushed)
+**Last updated:** 2026-11-13 (session 11; team review of notebook 05 applied; committed and pushed)
 **Session summary:** The M4 report was shortened from 7,106 to 4,541 words (everything counted, PDF text; Word counts
 4,575), 14 → 10 pages, to match the length of the M2 (4,159) and M3 (5,454) reports. The seed-noise caveat was added
 to report Section VII-F and to notebook 06 §6 (text only), and the viva guide was updated to match. Earlier, in session
@@ -53,6 +53,12 @@ model ranks Q1's weeks worse because Q1's shocks are more often perishable-drive
     markdown only (`tools/nb_text_m4_results.py`, `build_m4_notebooks.py text`); code cells and outputs unchanged.
   - Viva guide: the "Afterwards (10 Nov)" tag says only the seed check is mentioned in the M4 work (notebook 06 §6,
     report VII-F); §11 and the R-card updated. Rebuilt `DS4SG_Viva_Guide_M2_M4.docx`.
+- **2026-11-13: team review of notebook 05.** A teammate's edited copy is in `notebooks/team_reviewed/` (left
+  untracked). Her edits were comment wording in 7 code cells. At the user's request the line
+  `print("M3 baselines reproduce their submitted pooled CV AUCs exactly")` was removed (she had changed it to
+  "after being retuned", which is not true: the M3 rows are the submitted models; the assert above it still checks
+  this silently). Applied to `tools/nb05_code.py` and to the executed notebook (only that cell's output removed, its
+  only output; no re-run needed). `build_m4_notebooks.py text` confirms the notebook matches the builder.
 
 ## 3. Where we are now
 - **M4 deliverables are complete:** notebooks 05–06 execute top to bottom; the report PDF is in
