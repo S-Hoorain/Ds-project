@@ -3,8 +3,9 @@
 **Last updated:** 2026-11-12 (session 11; committed and pushed)
 **Session summary:** The M4 report was shortened from 7,106 to 4,541 words (everything counted, PDF text; Word counts
 4,575), 14 → 10 pages, to match the length of the M2 (4,159) and M3 (5,454) reports. The seed-noise caveat was added
-to Section VII-F, and the viva guide was updated to match. Earlier, in session 10 (10 Nov), M4 was built end to end and
-every fixed M4 number was checked. M4 was due 10 Nov; the class asked for an extension.
+to report Section VII-F and to notebook 06 §6 (text only), and the viva guide was updated to match. Earlier, in session
+10 (10 Nov), M4 was built end to end and every fixed M4 number was checked. M4 was due 10 Nov; the class asked for an
+extension.
 
 M3 was submitted (files in `milestones/M3_baseline_model/`). **Only the report (PDF) and the notebooks are submitted**,
 never the scripts.
@@ -34,7 +35,7 @@ model ranks Q1's weeks worse because Q1's shocks are more often perishable-drive
     "Afterwards (10 Nov)"): window, trees, seeds, boosting beyond the edge, KNN k = 275 (0.690, still a tie), pooled
     rule, in-processing weights 1–3, tolerance 0.03–0.10, threshold step, bottom/top 40%, bootstrap size, permutation
     repeats, run-to-run fairness variation (five seeds).
-- **Session 11 (2026-11-12): report shortened, caveat added.**
+- **Session 11 (2026-11-12): report shortened, seed caveat added.**
   - User asked for the M4 report under 5,000 words "everything combined". Now **4,541 words** (pdftotext, incl.
     tables, captions, references) and **4,575** (Word's count), 10 pages. All subsections, tables 25–34 and figs. 14–19
     kept with the same numbers, so the viva guide and `M4_rubric.md` map are still right. No number changed.
@@ -45,19 +46,18 @@ model ranks Q1's weeks worse because Q1's shocks are more often perishable-drive
   - Cut from the report (still in the notebooks and the viva guide): the tree's higher test AUC (0.687) argument, why
     the clustered H4 statistic is larger, the forest being steadier across years with the new features, the long
     explanations of the RF/GB architectures and the Q1 false-positive detail of the Q1-weighted thresholds.
-  - **Seed caveat added to VII-F** (user approved): reweighing now "changes almost nothing" (no "widened the gap");
-    the Q1 × 2 results "hold for our random seed only"; over five seeds both narrow the gap by 3–4 points against a
-    forest with equal weights, within seed variation; the unweighted forest's Q1 recall is below Q5's in every seed
-    (2.6 to 10.5 points); post-processing avoids the problem.
-  - Viva guide: the "Afterwards (10 Nov)" tag now says the report mentions only the seed check (VII-F); §11 and the
-    R-card note the report caveat. Rebuilt `DS4SG_Viva_Guide_M2_M4.docx`.
+  - **Seed caveat (user approved) in report VII-F and notebook 06 §6 + §12 summary:** reweighing "changes almost
+    nothing"; its wider gap and the Q1 × 2 even recall hold for seed 42 only; over five seeds both narrow the gap by 3–4
+    points against a forest with equal weights, within seed variation; the unweighted forest's Q1 recall is below Q5's
+    in every seed (2.6 to 10.5 points); post-processing does not retrain and avoids the problem. Notebook change is
+    markdown only (`tools/nb_text_m4_results.py`, `build_m4_notebooks.py text`); code cells and outputs unchanged.
+  - Viva guide: the "Afterwards (10 Nov)" tag says only the seed check is mentioned in the M4 work (notebook 06 §6,
+    report VII-F); §11 and the R-card updated. Rebuilt `DS4SG_Viva_Guide_M2_M4.docx`.
 
 ## 3. Where we are now
 - **M4 deliverables are complete:** notebooks 05–06 execute top to bottom; the report PDF is in
   `milestones/M4_advanced_model/`; every report number traces to `reports/tables/m4_*.csv` or the checks script.
-- **Notebook 06 still has the seed-42 sentences** (§6 reading: "reweighing widened the gap", "weighted training evens
-  out recall"). The user asked for the caveat in the report only. The notebook and report now differ in tone on this
-  point; the viva guide (§11, R-cards) explains both.
+  Notebook 06 and the report now say the same about the mitigation results.
 - **Known pre-existing layout point:** the M4 figure images carry their own titles ("Figure A1. …", "Figure F2. …")
   above report captions numbered Fig. 14–19. The M3 figures had titles without letter labels. Not changed (offered).
 - **Headline results:** CV within-year AUC LR 0.640, KNN 0.683, tree 0.657, forest 0.678, boosting 0.635 (tied). Test
@@ -84,8 +84,7 @@ model ranks Q1's weeks worse because Q1's shocks are more often perishable-drive
 ## 4. What's next
 1. **Submit M4:** the PDF in `milestones/M4_advanced_model/` and notebooks 05 and 06 (they need `src/`,
    `data/processed/`, `models/`, `reports/` and `requirements.txt` next to them).
-2. Optional, if the user wants: seed caveat in notebook 06 §6 (edit `tools/nb_text_m4_results.py`, run
-   `python tools/build_m4_notebooks.py text`); strip the "Figure A1."-style titles from the report copies of the figures.
+2. Optional, if the user wants: strip the "Figure A1."-style titles from the report copies of the figures.
 3. **Team review:** SDP members confirm the value judgements (5:1; Q1 miss 2×; recommended policy) and FATEN/living-lab
    text; fill in viva guide §2.
 4. **Viva prep:** viva guide §3.3, §4.3, §7, §8.3, §9.6, §11; run notebooks 05–06 and `sensitivity_checks_m4.py` once.
@@ -109,15 +108,15 @@ model ranks Q1's weeks worse because Q1's shocks are more often perishable-drive
   outcome; audit on 2021–24 OOF with bootstrap; equal opportunity as main criterion; three mitigation families; Q1 miss
   2× (value judgement); recommended policy = equal-opportunity quintile thresholds, Q1 × 2 as the equity option.
 - **Checks after the analysis never change a result** (choosing with hindsight would be tuning on results); tagged
-  "Afterwards" in the viva guide. Exception by user decision (12 Nov): the seed check is reported as a caveat in VII-F,
-  because it qualifies a claim, without changing any number.
+  "Afterwards" in the viva guide. Exception by user decision (12 Nov): the seed check is reported as a caveat in report
+  VII-F and notebook 06 §6, because it qualifies a claim, without changing any number.
 - **Report length (12 Nov):** under 5,000 words everything combined, close to M2/M3; reference list = cited works only.
 - **Lecture scope:** ensembles (Week 12), fairness (Week 15 + brief). Outside methods in viva guide §4.4: reweighing,
   exact Pareto search, Diebold–Mariano, plus M3's permutation importance, clustered errors, HAC.
 - **Manuscript:** new sections only; numbering continues; black text, Times New Roman, no header/footer; team style.
 
 ## 6. Open questions
-- Seed caveat in notebook 06 too? Strip the in-image "Figure A1." titles from the report figures?
+- Strip the in-image "Figure A1." titles from the report figures?
 - Was the M4 extension granted, and to when?
 - Do the SDP members accept the Q1 miss weight (2×) and the recommended policy?
 - Each member's contributions for viva guide §2.
