@@ -224,13 +224,19 @@ T6["drivers_read"] = r"""
 
 T6["mitigation_read"] = r"""
 **Reading the mitigation results**
-* **Pre-processing (reweighing) changes almost nothing, and what it changes goes the wrong way.** Because the shock rate
-  is nearly the same in every quintile, the weights are close to 1 (0.91 to 1.13). The retrained forest widened the Q1–Q5
-  recall gap in 2021–24 (−0.08 against −0.03) and raised the cost of errors (0.663 against 0.651). Reweighing corrects
-  unequal base rates, and our audit found none, so this is the expected result.
-* **In-processing (Q1 shocks counted twice in training) evens out recall in 2021–24** (Q1 0.74, Q5 0.71) at a slightly
-  higher cost (0.671). In the test period it had the lowest cost of any policy (1.07) but caught only 2 of Q5's 6
-  shocks, so it moved the imbalance instead of removing it.
+* **Pre-processing (reweighing) changes almost nothing.** Because the shock rate is nearly the same in every quintile, the
+  weights are close to 1 (0.91 to 1.13). Reweighing corrects unequal base rates, and our audit found none, so this is the
+  expected result. In this run the retrained forest had a wider Q1–Q5 recall gap in 2021–24 (−0.08 against −0.03) and a
+  higher cost of errors (0.663 against 0.651), but see the next point.
+* **In-processing (Q1 shocks counted twice in training) evens out recall in 2021–24 in this run** (Q1 0.74, Q5 0.71) at
+  a slightly higher cost (0.671). In the test period it had the lowest cost of any policy (1.07) but caught only 2 of
+  Q5's 6 shocks, so it moved the imbalance instead of removing it.
+* **These two retraining results hold for this random seed only.** Training with row weights also changes the forest's
+  random draws, so part of each difference above comes from the draw and not from the weights. Re-running with five
+  seeds (`src/models/sensitivity_checks_m4.py`) and comparing with a forest trained with all weights equal to 1, both
+  methods narrow the recall gap by only 3 to 4 points on average, which is within the variation between seeds. The
+  unweighted forest's Q1 recall is below Q5's in every seed (by 2.6 to 10.5 points). Post-processing does not retrain
+  the forest, so its results below do not have this problem.
 * **Post-processing works best in the validation years.** The equal-opportunity thresholds cut the largest recall gap
   between any two quintiles from 0.13 to 0.05 and lower the cost of errors (0.637 against 0.651). The shared threshold
   was neither the fairest nor the cheapest choice. The cost-based thresholds with a Q1 miss counted twice raise Q1's
@@ -311,7 +317,8 @@ T6["summary"] = r"""
 5. **Mechanism:** Q1's shocks are more often perishable-driven (42% against 24% for Q5), and perishable and tariff shocks
    are the ones the model catches least (recall 0.62 and 0.69, against 0.88 for fuel).
 6. **Mitigation:** reweighing does nothing useful here, because base rates are already equal. Group-weighted training moves
-   the imbalance. **Quintile thresholds** are fairer and cheaper than one shared threshold in the validation years.
+   the imbalance. Over five random seeds both narrow the recall gap only within run-to-run variation. **Quintile
+   thresholds** are fairer and cheaper than one shared threshold in the validation years.
 7. **Trade-off:** fairness is cheap until it must be exact. The shared threshold lies above the Pareto frontier.
 8. **Test period:** with 6 to 9 shocks per quintile, fairness cannot be measured precisely, and no policy beats never
    alerting at 5 : 1. Re-choosing the thresholds by regime is the next step (Milestone 5).
