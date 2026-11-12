@@ -156,7 +156,7 @@ print(f"Final model (highest within-year AUC among learners that accept row weig
 '''
 
 FIG_A2 = r'''
-# Figure A2: validation curves of the two ensembles (one hyperparameter varied, the others at their selected values)
+# Figure A2: validation curves of the two ensembles
 def same(col, v):
     # numbers are compared as numbers (5 and 5.0 are equal), None as missing, text as text
     if v is None:
@@ -202,7 +202,6 @@ plt.show()
 '''
 
 M3_LOAD = r'''
-# The Milestone 3 baselines exactly as submitted: same 18 features, same settings and thresholds
 card3 = json.loads((ROOT / "models" / "m3_baselines" / "model_card.json").read_text(encoding="utf-8"))
 M3 = ["Logistic regression", "KNN", "Decision tree"]
 m3_fit = {n: joblib.load(ROOT / "models" / "m3_baselines" / (n.lower().replace(" ", "_") + ".joblib")) for n in M3}
@@ -215,11 +214,10 @@ m3_oof["Persistence"], m3_test["Persistence"] = B.oof_predict(pers, X3, y, folds
 m3_thr["Persistence"] = 0.5
 for n in M3:
     assert abs(roc_auc_score(y[val], m3_oof[n][val]) - card3["models"][n]["pooled_cv_auc"]) < 1e-9
-print("M3 baselines reproduce their submitted pooled CV AUCs exactly.")
 '''
 
 COMPARE = r'''
-# One table: M3 baselines (as submitted) against the five learners under the M4 protocol
+# One table: M3 baselines against the five learners under the M4 protocol
 thr = {n: B.best_threshold(y, oof[n]) for n in MODELS}            # cost 5:1 on 2021-24 out-of-fold predictions
 p_test = {n: fitted[n].predict_proba(Xt)[:, 1] for n in MODELS}
 entries = [(f"M3 {n}", m3_oof[n], m3_test[n], m3_thr[n]) for n in M3 + ["Persistence"]] + \
@@ -249,7 +247,7 @@ ci = pd.DataFrame({"test AUC": [comp.loc[k, "test ROC-AUC"] for k in boot.column
                    "95% CI low": boot.quantile(0.025).values, "95% CI high": boot.quantile(0.975).values},
                   index=boot.columns)
 display(ci.round(3))
-ref = "M3 KNN"                                  # the best M3 baseline on the test period
+ref = "M3 KNN" # the best M3 baseline on the test period
 gain = []
 for n in MODELS:
     d = boot[f"M4 {n}"] - boot[ref]
@@ -262,7 +260,7 @@ gain.to_csv(TABLE_DIR / "m4_test_auc_gain_vs_m3.csv")
 '''
 
 ABLATION = r'''
-# Where does the change come from? The final model's setting, retrained with and without the new features
+# the change comes from the final model's setting, retrained with and without the new features
 final_params = grid_res[FINAL].iloc[0]["_params"]
 variants = {"18 features of M3": B.FEATURES,
             "+ shock rate, past 26 weeks": B.FEATURES + ["shock_rate_26w"],
@@ -314,7 +312,7 @@ plt.show()
 '''
 
 LEAKAGE = r'''
-# Leakage check: what would shuffled stratified K-fold have reported for the two ensembles?
+# Leakage check: what the shuffled stratified K-fold would have reported for the two ensembles?
 designs = {"Shuffled stratified K-fold (rows)": B.random_folds(train),
            "Shuffled stratified K-fold (whole weeks)": B.random_folds(train, by_week=True),
            "Expanding window by year (ours)": folds}
@@ -457,7 +455,7 @@ H4_OOS = r'''
 rows = []
 est = clone(fitted[FINAL])
 if "n_jobs" in est.named_steps["model"].get_params():
-    est.set_params(model__n_jobs=1)      # small per-quintile fits run faster on one core
+    est.set_params(model__n_jobs=1) # small per-quintile fits run faster on one core
 pooled_oof, pooled_test = oof[FINAL], p_test[FINAL]
 for g in A.GROUPS:
     mtr, mte = g_tr == g, g_te == g
@@ -538,7 +536,7 @@ plt.show()
 '''
 
 SAVE = r'''
-# Save the five fitted pipelines, the out-of-fold and test predictions (used by notebook 06) and a model card
+# Saving the five fitted pipelines, the out-of-fold and test predictions (to be used by notebook 06) and a model card
 for n in MODELS:
     joblib.dump(fitted[n], MODEL_DIR / (n.lower().replace(" ", "_") + ".joblib"))
 pred_oof = train[["week_end", "group", A.TARGET]].copy()
