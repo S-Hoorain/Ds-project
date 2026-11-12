@@ -3,28 +3,28 @@ module.exports = {
  "gridRows": [
   [
    "Logistic regression",
-   "C 12 values (10⁻⁴ to 100), L1 or L2, class weights none or balanced",
-   "C 0.0001, class weights balanced, L1 ratio 0.0 (within-year AUC 0.640)"
+   "C (12 values, 10⁻⁴ to 100), L1 or L2, class weights",
+   "C = 0.0001, balanced class weights, L2"
   ],
   [
    "KNN",
-   "k 11 values (5 to 250), uniform or distance weights, Euclidean or Manhattan, z-score or Min-Max",
-   "distance manhattan, k 250, weights distance, scaling StandardScaler (within-year AUC 0.683)"
+   "k (11 values, 5 to 250), uniform or distance weights, Euclidean or Manhattan, z-score or Min-Max",
+   "Manhattan, k = 250, distance-weighted, z-score"
   ],
   [
    "Decision tree",
-   "depth 1 to 8, minimum leaf 5 to 160 rows, Gini or entropy, class weights",
-   "class weights none, criterion entropy, depth 4, min. leaf 80 (within-year AUC 0.657)"
+   "depth 1 to 8, minimum leaf 5 to 160, Gini or entropy, class weights",
+   "no class weights, entropy, depth 4, minimum leaf 80"
   ],
   [
    "Random forest",
-   "300 trees, depth 3, 5, 8 or unlimited, minimum leaf 5, 20, 50 or 100, √20 or half the features per split, Gini or entropy, class weights",
-   "class weights none, criterion gini, depth 5, features per split sqrt, min. leaf 20 (within-year AUC 0.678)"
+   "300 trees, depth 3 to unlimited (4 values), minimum leaf 5 to 100 (4 values), √20 or half the features, Gini or entropy, class weights",
+   "no class weights, Gini, depth 5, √20 features, minimum leaf 20"
   ],
   [
    "Gradient boosting",
-   "learning rate 0.01, 0.03 or 0.1, 100 or 300 trees, depth 2 or 3, minimum leaf 20, 50 or 100, L2 penalty 0 or 1, class weights",
-   "class weights none, L2 penalty 0.0, learning rate 0.01, depth 2, trees 300, min. leaf 50 (within-year AUC 0.635)"
+   "learning rate 0.01 to 0.1 (3 values), 100 or 300 trees, depth 2 or 3, minimum leaf 20 to 100 (3 values), L2 penalty 0 or 1, class weights",
+   "no class weights, no L2 penalty, learning rate 0.01, depth 2, 300 trees, minimum leaf 50"
   ]
  ],
  "nSettings": "604",
@@ -35,7 +35,7 @@ module.exports = {
  "leakOurs": "0.68 and 0.63",
  "compRows": [
   [
-   "M3 · Logistic regression",
+   "M3 Logistic regression",
    "0.651",
    "0.643",
    "0.247",
@@ -50,7 +50,7 @@ module.exports = {
    "1.04"
   ],
   [
-   "M3 · KNN",
+   "M3 KNN",
    "0.672",
    "0.643",
    "0.154",
@@ -65,7 +65,7 @@ module.exports = {
    "1.19"
   ],
   [
-   "M3 · Decision tree",
+   "M3 Decision tree",
    "0.578",
    "0.652",
    "0.160",
@@ -80,7 +80,7 @@ module.exports = {
    "1.23"
   ],
   [
-   "M3 · Persistence",
+   "M3 Persistence",
    "0.569",
    "0.584",
    "0.262",
@@ -95,7 +95,7 @@ module.exports = {
    "1.17"
   ],
   [
-   "M4 · Logistic regression",
+   "M4 Logistic regression",
    "0.640",
    "0.635",
    "0.247",
@@ -110,7 +110,7 @@ module.exports = {
    "0.98"
   ],
   [
-   "M4 · KNN",
+   "M4 KNN",
    "0.683",
    "0.649",
    "0.155",
@@ -125,7 +125,7 @@ module.exports = {
    "1.15"
   ],
   [
-   "M4 · Decision tree",
+   "M4 Decision tree",
    "0.657",
    "0.601",
    "0.161",
@@ -140,7 +140,7 @@ module.exports = {
    "1.89"
   ],
   [
-   "M4 · Random forest",
+   "M4 Random forest",
    "0.678",
    "0.651",
    "0.152",
@@ -155,7 +155,7 @@ module.exports = {
    "1.12"
   ],
   [
-   "M4 · Gradient boosting",
+   "M4 Gradient boosting",
    "0.635",
    "0.639",
    "0.155",
@@ -174,14 +174,14 @@ module.exports = {
  "gainRFci": "−0.10 to +0.11",
  "h4Rows": [
   [
-   "Likelihood ratio, signal × Q5 (rows independent, as planned)",
+   "Likelihood ratio, signal × Q5 (planned)",
    "χ² = 5.73",
    "6",
    "0.454",
    "fail to reject"
   ],
   [
-   "Wald, signal × Q5 (week-clustered, main test)",
+   "Wald, signal × Q5 (week-clustered, main)",
    "χ² = 11.78",
    "6",
    "0.067",
@@ -260,7 +260,7 @@ module.exports = {
  ],
  "policyRows": [
   [
-   "No mitigation (shared threshold)",
+   "None (shared threshold)",
    "0.651 (1.120)",
    "0.58 (0.72)",
    "0.72 (0.51)",
@@ -280,7 +280,7 @@ module.exports = {
    "0.16 (0.11)"
   ],
   [
-   "In-processing: Q1 shocks weighted × 2 in training",
+   "In-processing: Q1 shocks × 2 in training",
    "0.671 (1.074)",
    "0.60 (0.75)",
    "0.67 (0.46)",
@@ -300,7 +300,7 @@ module.exports = {
    "0.17 (0.27)"
   ],
   [
-   "Post-processing: equal opportunity (recall gap <= 0.05)",
+   "Post-processing: equal opportunity (gap ≤ 0.05)",
    "0.637 (1.149)",
    "0.57 (0.70)",
    "0.75 (0.54)",
@@ -323,75 +323,27 @@ module.exports = {
  "asymRows": [
   [
    "1 ×",
-   "2021–24",
    "0.14",
    "0.12",
-   "0.74",
-   "0.87",
-   "0.632"
+   "0.74 (0.57)",
+   "0.87 (0.67)",
+   "0.632 (1.149)"
   ],
   [
-   "1 ×",
-   "test 2025–26",
-   "0.14",
-   "0.12",
-   "0.57",
-   "0.67",
-   "1.149"
-  ],
-  [
-   "1.5 ×",
-   "2021–24",
+   "1.5 or 2 ×",
    "0.09",
    "0.12",
-   "0.89",
-   "0.87",
-   "0.643"
-  ],
-  [
-   "1.5 ×",
-   "test 2025–26",
-   "0.09",
-   "0.12",
-   "0.71",
-   "0.67",
-   "1.229"
-  ],
-  [
-   "2 ×",
-   "2021–24",
-   "0.09",
-   "0.12",
-   "0.89",
-   "0.87",
-   "0.643"
-  ],
-  [
-   "2 ×",
-   "test 2025–26",
-   "0.09",
-   "0.12",
-   "0.71",
-   "0.67",
-   "1.229"
+   "0.89 (0.71)",
+   "0.87 (0.67)",
+   "0.643 (1.229)"
   ],
   [
    "3 ×",
-   "2021–24",
    "0.01",
    "0.12",
-   "1.00",
-   "0.87",
-   "0.673"
-  ],
-  [
-   "3 ×",
-   "test 2025–26",
-   "0.01",
-   "0.12",
-   "1.00",
-   "0.67",
-   "1.400"
+   "1.00 (1.00)",
+   "0.87 (0.67)",
+   "0.673 (1.400)"
   ]
  ]
 };
